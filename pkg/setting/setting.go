@@ -40,26 +40,6 @@ type FileConfig struct {
 	Database *Database `mapstructure:"database"`
 }
 
-// TestContextType :
-type TestContextType struct {
-	Provider string
-
-	ClusterLoader struct {
-		Projects []struct {
-			Number    int    `mapstructure:"num"`
-			BaseName  string `mapstructure:"basename"`
-			Tuning    string `mapstructure:"tuning"`
-			Templates []struct {
-				Number int    `mapstructure:"num"`
-				File   string `mapstructure:"file"`
-			} `mapstructure:"templates"`
-		} `mapstructure:"projects"`
-	}
-}
-
-// TestContextTypeSetting :
-var TestContextTypeSetting = &TestContextType{}
-
 // FileConfigSetting :
 var FileConfigSetting = &FileConfig{}
 

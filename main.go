@@ -1,14 +1,15 @@
 package main
 
 import (
-	"net/http"
-	"property/framework/pkg/setting"
-
 	"github.com/labstack/echo"
+	"net/http"
+	"property/framework/pkg/connection"
+	"property/framework/pkg/setting"
 )
 
 func init() {
 	setting.Setup()
+	connection.Setup()
 }
 
 func main() {
