@@ -1,0 +1,22 @@
+{
+    "debug": true,
+    "server": {
+        "RunMode": "debug",
+        "HTTPPort": 8484,
+        "ReadTimeout": 600,
+        "WriteTimeout": 600,
+        "_comment": "debug or release"
+    },
+    "context": {
+        "timeout": 600
+    },
+    "database": {
+        "type": "postgres",
+        "host": "127.0.0.1",
+        "port": "5432",
+        "user": "postgres",
+        "password": "12345",
+        "name": "PropertyA",
+        "table_prefix": ""
+    }
+}
