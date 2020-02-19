@@ -10,10 +10,10 @@ import (
 
 // Server :
 type Server struct {
-	RunMode      string
-	HTTPPort     int
-	ReadTimeout  time.Duration
-	WriteTimeout time.Duration
+	RunMode      string        `mapstructure:"run_mode"`
+	HTTPPort     int           `mapstructure:"http_port"`
+	ReadTimeout  time.Duration `mapstructure:"read_timeout"`
+	WriteTimeout time.Duration `mapstructure:"write_timeout"`
 }
 
 // ServerSetting :
@@ -33,6 +33,36 @@ type Database struct {
 // DatabaseSetting :
 var DatabaseSetting = &Database{}
 
+// FileConfig :
+type FileConfig struct {
+	Debug    bool      `mapstructure:"debug"`
+	Server   *Server   `mapstructure:"server"`
+	Database *Database `mapstructure:"database"`
+}
+
+// TestContextType :
+type TestContextType struct {
+	Provider string
+
+	ClusterLoader struct {
+		Projects []struct {
+			Number    int    `mapstructure:"num"`
+			BaseName  string `mapstructure:"basename"`
+			Tuning    string `mapstructure:"tuning"`
+			Templates []struct {
+				Number int    `mapstructure:"num"`
+				File   string `mapstructure:"file"`
+			} `mapstructure:"templates"`
+		} `mapstructure:"projects"`
+	}
+}
+
+// TestContextTypeSetting :
+var TestContextTypeSetting = &TestContextType{}
+
+// FileConfigSetting :
+var FileConfigSetting = &FileConfig{}
+
 // Setup Load config.json and map to struct
 func Setup() {
 	now := time.Now()
@@ -46,7 +76,7 @@ func Setup() {
 		fmt.Println("Service RUN on DEBUG mode")
 	}
 
-	err = viper.Unmarshal(DatabaseSetting)
+	err = viper.Unmarshal(FileConfigSetting)
 	if err != nil {
 		log.Fatalf("setting.Setup, fail to Unmarshal 'config.json': %v", err)
 	}

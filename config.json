@@ -1,14 +1,11 @@
 {
     "debug": true,
     "server": {
-        "RunMode": "debug",
-        "HTTPPort": 8484,
-        "ReadTimeout": 600,
-        "WriteTimeout": 600,
+        "run_mode": "debug",
+        "http_port": 8484,
+        "read_timeout": 600,
+        "write_timeout": 600,
         "_comment": "debug or release"
-    },
-    "context": {
-        "timeout": 600
     },
     "database": {
         "type": "postgres",
