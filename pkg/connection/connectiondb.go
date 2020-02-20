@@ -53,7 +53,9 @@ func Setup() {
 func autoMigrate() {
 	// Add auto migrate bellow this line
 	log.Println("STARTING AUTO MIGRATE ")
-	Conn.db.AutoMigrate(models.SaUser{})
+	Conn.db.AutoMigrate(
+		models.SaUser{},
+	)
 
 	log.Println("FINISHING AUTO MIGRATE ")
 }
