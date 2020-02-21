@@ -3,6 +3,7 @@ module property/framework
 go 1.12
 
 require (
+	github.com/bxcodec/go-clean-arch v2.0.1+incompatible
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/jinzhu/gorm v1.9.12
 	github.com/labstack/echo v3.3.10+incompatible

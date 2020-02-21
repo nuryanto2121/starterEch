@@ -12,14 +12,15 @@ import (
 )
 
 // Connections :
-type Connections struct {
-	db *gorm.DB
-}
+// type Connections struct {
+// 	db *gorm.DB
+// }
 
-// Conn :
-var Conn = &Connections{}
+// // Conn :
+// var Conn = &Connections{}
 
-//var conn *gorm.DB
+// Conn connection ke DB
+var Conn *gorm.DB
 
 // Setup connection to DB
 func Setup() {
@@ -34,7 +35,7 @@ func Setup() {
 		setting.FileConfigSetting.Database.Host,
 		setting.FileConfigSetting.Database.Port)
 	fmt.Printf("%s", connectionstring)
-	Conn.db, err = gorm.Open(setting.FileConfigSetting.Database.Type, connectionstring)
+	Conn, err = gorm.Open(setting.FileConfigSetting.Database.Type, connectionstring)
 	if err != nil {
 		log.Printf("connection.setup err : %v", err)
 		panic(err)
@@ -42,9 +43,9 @@ func Setup() {
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
 		return setting.FileConfigSetting.Database.TablePrefix + defaultTableName
 	}
-	Conn.db.SingularTable(true)
-	Conn.db.DB().SetMaxIdleConns(10)
-	Conn.db.DB().SetMaxOpenConns(100)
+	Conn.SingularTable(true)
+	Conn.DB().SetMaxIdleConns(10)
+	Conn.DB().SetMaxOpenConns(100)
 
 	go autoMigrate()
 
@@ -57,7 +58,7 @@ func Setup() {
 func autoMigrate() {
 	// Add auto migrate bellow this line
 	log.Println("STARTING AUTO MIGRATE ")
-	Conn.db.AutoMigrate(
+	Conn.AutoMigrate(
 		models.SaUser{},
 	)
 

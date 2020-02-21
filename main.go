@@ -1,10 +1,17 @@
 package main
 
 import (
-	"github.com/labstack/echo"
-	"net/http"
+	"fmt"
+	"log"
+	_contsauser "property/framework/controllers/sa/sa_user"
+	"property/framework/middleware"
 	"property/framework/pkg/connection"
 	"property/framework/pkg/setting"
+	_reposauser "property/framework/repository/sa/sa_user"
+	_usesauser "property/framework/usecase/sa/sa_user"
+	"time"
+
+	"github.com/labstack/echo"
 )
 
 func init() {
@@ -13,12 +20,17 @@ func init() {
 }
 
 func main() {
-	r := echo.New()
+	e := echo.New()
+	middL := middleware.InitMiddleware()
+	e.Use(middL.CORS)
 
-	r.GET("/", func(ctx echo.Context) error {
-		dd := setting.FileConfigSetting
-		return ctx.JSON(http.StatusOK, dd)
-	})
+	timeoutContext := time.Duration(setting.FileConfigSetting.Server.ReadTimeout) * time.Second
 
-	r.Start(":9000")
+	repoSaUser := _reposauser.NewRepoSaUser(connection.Conn)
+	useSaUser := _usesauser.NewUseSaUser(repoSaUser, timeoutContext)
+	_contsauser.NewContSaUser(e, useSaUser)
+
+	sPort := fmt.Sprintf(":%d", setting.FileConfigSetting.Server.HTTPPort)
+	log.Fatal(e.Start(sPort))
+	// log.Fatal(e.Start(":" + string(setting.FileConfigSetting.Server.HTTPPort)))
 }
