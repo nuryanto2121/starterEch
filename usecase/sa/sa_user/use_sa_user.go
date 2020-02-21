@@ -3,7 +3,7 @@ package usesauser
 import (
 	"context"
 	isauser "property/framework/interface/sa/sa_user"
-	models "property/framework/models/sa"
+	models "property/framework/models"
 	util "property/framework/pkg/utils"
 	"time"
 )

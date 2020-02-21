@@ -3,7 +3,7 @@ package connection
 import (
 	"fmt"
 	"log"
-	models "property/framework/models/sa"
+	models "property/framework/models"
 	"property/framework/pkg/setting"
 	"time"
 
@@ -11,14 +11,17 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres" // add database driver bridge
 )
 
+// Connections :
 type Connections struct {
 	db *gorm.DB
 }
 
+// Conn :
 var Conn = &Connections{}
 
 //var conn *gorm.DB
 
+// Setup connection to DB
 func Setup() {
 	now := time.Now()
 	var err error
@@ -50,6 +53,7 @@ func Setup() {
 
 }
 
+// autoMigrate : create or alter table from struct
 func autoMigrate() {
 	// Add auto migrate bellow this line
 	log.Println("STARTING AUTO MIGRATE ")

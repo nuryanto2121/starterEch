@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/jinzhu/gorm"
 	isauser "property/framework/interface/sa/sa_user"
-	models "property/framework/models/sa"
+	models "property/framework/models"
 )
 
 type repoSaUser struct {
