@@ -2,6 +2,7 @@ package models
 
 import "time"
 
+// SaUser :
 type SaUser struct {
 	UserID      int16     `json:"user_id" gorm:"PRIMARY_KEY"`
 	Passwd      string    `json:"passwd" gorm:"type:varchar(60);not null"`
@@ -12,7 +13,7 @@ type SaUser struct {
 	HandphoneNo string    `json:"handphone_no" gorm:"type:varchar(20)"`
 	CompanyID   int16     `json:"company_id" gorm:"type:integer;not null"`
 	ProjectID   int16     `json:"project_id" gorm:"type:integer;not null"`
-	PictureUrl  string    `json:"picture_url" gorm:"type:varchar(100)"`
+	PictureURL  string    `json:"picture_url" gorm:"type:varchar(100)"`
 	UserStatus  int16     `json:"user_status" gorm:"type:integer;default:1"`
 	CreatedBy   string    `json:"created_by" gorm:"type:varchar(20);not null"`
 	CreatedAt   time.Time `json:"crated_at" gorm:"type:timestamp(0) without time zone;default:now()"`
