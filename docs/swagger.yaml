@@ -1,0 +1,41 @@
+definitions:
+  app.ResponseModel:
+    properties:
+      data:
+        type: object
+      error:
+        type: boolean
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+info:
+  contact:
+    email: nuryantofattih@gmail.com
+    name: Nuryanto
+    url: https://www.linkedin.com/in/nuryanto-1b2721156/
+  description: Backend REST API for golang starter
+  license: {}
+  title: Starter
+  version: "1.0"
+paths:
+  /user/{id}:
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: Get SaUser
+      tags:
+      - SaUser
+swagger: "2.0"

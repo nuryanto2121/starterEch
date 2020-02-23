@@ -21,13 +21,14 @@ func NewUseSaUser(a isauser.Repository, timeout time.Duration) isauser.Usercase 
 	}
 }
 
-func (u *useSaUser) GetBySaUser(ctx context.Context, userID int16) (result *models.SaUser, err error) {
+func (u *useSaUser) GetBySaUser(ctx context.Context, userID int16) (result models.SaUser, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
+	a := models.SaUser{}
 	result, err = u.repoSaUser.GetBySaUser(ctx, userID)
 	if err != nil {
-		return nil, err
+		return a, err
 	}
 	return result, nil
 }

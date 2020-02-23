@@ -2,12 +2,28 @@
     "debug": true,
     "server": {
         "run_mode": "debug",
-        "http_port": 8484,
+        "http_port": 8084,
         "read_timeout": 600,
         "write_timeout": 600,
         "_comment": "debug or release"
     },
-    "databaseMac": {
+    "app":{
+        "jwt_secret":"",
+        "page_size":10,
+        "prefix_url":"http://127.0.0.1:8000",
+        "runtime_root_path":"runtime/",
+        "image_save_path":"uploads/images",
+        "image_size":5,
+        "image_allow_ext":".jpg,.jpeg,.png",
+        "export_save_path":"export/",
+        "qr_code":"qr_code/",
+        "log_save_path":"/logs",
+        "log_save_name":"log",
+        "log_file_ext":"log",
+        "time_format":20060102,
+        "issuer":"PropertyFramework"
+    },
+    "database": {
         "type": "postgres",
         "host": "127.0.0.1",
         "port": "55432",
@@ -16,7 +32,7 @@
         "name": "PropertyA",
         "table_prefix": ""
     },
-    "database": {
+    "databasewindow": {
         "type": "postgres",
         "host": "127.0.0.1",
         "port": "5432",

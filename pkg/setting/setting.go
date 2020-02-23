@@ -17,7 +17,7 @@ type Server struct {
 }
 
 // ServerSetting :
-var ServerSetting = &Server{}
+// var ServerSetting = &Server{}
 
 // Database :
 type Database struct {
@@ -31,12 +31,34 @@ type Database struct {
 }
 
 // DatabaseSetting :
-var DatabaseSetting = &Database{}
+// var DatabaseSetting = &Database{}
+
+// App :
+type App struct {
+	JwtSecret       string   `mapstructure:"jwt_secret"`
+	PageSize        int      `mapstructure:"page_size"`
+	PrefixURL       string   `mapstructure:"prefix_url"`
+	RuntimeRootPath string   `mapstructure:"runtime_root_path"`
+	ImageSavePath   string   `mapstructure:"image_save_path"`
+	ImageMaxSize    int      `mapstructure:"image_size"`
+	ImageAllowExts  []string `mapstructure:"image_allow_ext"`
+	ExportSavePath  string   `mapstructure:"export_save_path"`
+	QrCodeSavePath  string   `mapstructure:"qr_code"`
+	LogSavePath     string   `mapstructure:"log_save_path"`
+	LogSaveName     string   `mapstructure:"log_save_name"`
+	LogFileExt      string   `mapstructure:"log_file_ext"`
+	TimeFormat      string   `mapstructure:"time_format"`
+	Issuer          string   `mapstructure:"issuer"`
+}
+
+// AppSetting interface pointer
+// var AppSetting = &App{}
 
 // FileConfig :
 type FileConfig struct {
 	Debug    bool      `mapstructure:"debug"`
 	Server   *Server   `mapstructure:"server"`
+	App      *App      `mapstructure:"app"`
 	Database *Database `mapstructure:"database"`
 }
 
@@ -60,6 +82,7 @@ func Setup() {
 	if err != nil {
 		log.Fatalf("setting.Setup, fail to Unmarshal 'config.json': %v", err)
 	}
+
 	timeSpent := time.Since(now)
 	log.Printf("Config setting is ready in %v", timeSpent)
 }

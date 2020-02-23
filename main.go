@@ -3,15 +3,17 @@ package main
 import (
 	"fmt"
 	"log"
-	_contsauser "property/framework/controllers/sa/sa_user"
-	"property/framework/middleware"
+
+	_midd "property/framework/middleware"
 	"property/framework/pkg/connection"
 	"property/framework/pkg/setting"
-	_reposauser "property/framework/repository/sa/sa_user"
-	_usesauser "property/framework/usecase/sa/sa_user"
-	"time"
+	"property/framework/routes"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	// _sausercont "property/framework/controllers/sa/sa_user"
+	// _sauserrepo "property/framework/repository/sa/sa_user"
+	// _sauseruse "property/framework/usecase/sa/sa_user"
 )
 
 func init() {
@@ -19,32 +21,49 @@ func init() {
 	connection.Setup()
 }
 
-// @title Swagger Example API
+// @title Starter
 // @version 1.0
-// @description This is a sample server Petstore server.
-// @termsOfService http://swagger.io/terms/
+// @description Backend REST API for golang starter
 
-// @contact.name API Support
-// @contact.url http://www.swagger.io/support
-// @contact.email support@swagger.io
+// @contact.name Nuryanto
+// @contact.url https://www.linkedin.com/in/nuryanto-1b2721156/
+// @contact.email nuryantofattih@gmail.com
 
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+//// @securityDefinitions.apikey ApiKeyAuth
+//// @in header
+//// @name Authorization
 
-// @host petstore.swagger.io
-// @BasePath /v2
 func main() {
 	e := echo.New()
-	middL := middleware.InitMiddleware()
+	middL := _midd.InitMiddleware()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Static("/static", "static")
 	e.Use(middL.CORS)
 
-	timeoutContext := time.Duration(setting.FileConfigSetting.Server.ReadTimeout) * time.Second
+	// timeoutContext := time.Duration(setting.FileConfigSetting.Server.ReadTimeout) * time.Second
 
-	repoSaUser := _reposauser.NewRepoSaUser(connection.Conn)
-	useSaUser := _usesauser.NewUseSaUser(repoSaUser, timeoutContext)
-	_contsauser.NewContSaUser(e, useSaUser)
+	/*sa user*/
+	// repoSaUser := _sauserrepo.NewRepoSaUser(connection.Conn)
+	// useSaUser := _sauseruse.NewUseSaUser(repoSaUser, timeoutContext)
+	// _sausercont.NewContSaUser(e, useSaUser)
+
+	app := routes.Echo{E: e}
+
+	app.InitialRouter()
 
 	sPort := fmt.Sprintf(":%d", setting.FileConfigSetting.Server.HTTPPort)
+	// maxHeaderBytes := 1 << 20
+	// s := &http.Server{
+	// 	Addr:           sPort,
+	// 	ReadTimeout:    setting.FileConfigSetting.Server.ReadTimeout,
+	// 	WriteTimeout:   setting.FileConfigSetting.Server.WriteTimeout,
+	// 	MaxHeaderBytes: maxHeaderBytes,
+	// }
+	// // e.Logger.Fatal(e.StartServer(s))
+	// s.ListenAndServe()
+
+	// log.Fatal(e.StartServer(s))
 	log.Fatal(e.Start(sPort))
 	// log.Fatal(e.Start(":" + string(setting.FileConfigSetting.Server.HTTPPort)))
 }

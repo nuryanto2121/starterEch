@@ -7,7 +7,7 @@ import (
 
 // Repository :
 type Repository interface {
-	GetBySaUser(ctx context.Context, userID int16) (result *models.SaUser, err error)
+	GetBySaUser(ctx context.Context, userID int16) (result models.SaUser, err error)
 	GetAllSaUser(ctx context.Context) (result []*models.SaUser, err error)
 	CreateSaUser(ctx context.Context, userData *models.SaUser) (err error)
 	UpdateSaUser(ctx context.Context, userData *models.SaUser) (err error)
@@ -16,7 +16,7 @@ type Repository interface {
 
 // Usercase :
 type Usercase interface {
-	GetBySaUser(ctx context.Context, userID int16) (result *models.SaUser, err error)
+	GetBySaUser(ctx context.Context, userID int16) (result models.SaUser, err error)
 	GetAllSaUser(ctx context.Context) (result []*models.SaUser, err error)
 	CreateSaUser(ctx context.Context, userData *models.SaUser) (err error)
 	UpdateSaUser(ctx context.Context, userData *models.SaUser) (err error)

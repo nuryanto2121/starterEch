@@ -1,6 +1,9 @@
 package util
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 const (
 	// WIB :
@@ -17,4 +20,10 @@ func GetTimeNow() time.Time {
 // GetLocation - get location wib
 func GetLocation() *time.Location {
 	return time.FixedZone(WIB, 7*3600)
+}
+
+// Stringify
+func Stringify(data interface{}) string {
+	dataByte, _ := json.Marshal(data)
+	return string(dataByte)
 }

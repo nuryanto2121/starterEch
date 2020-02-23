@@ -17,17 +17,22 @@ func NewRepoSaUser(Conn *gorm.DB) isauser.Repository {
 	return &repoSaUser{Conn}
 }
 
-func (db *repoSaUser) GetBySaUser(ctx context.Context, userID int16) (result *models.SaUser, err error) {
+func (db *repoSaUser) GetBySaUser(ctx context.Context, userID int16) (result models.SaUser, err error) {
 
-	var a *models.SaUser
-	var b []*models.SaUser
-	err = db.Conn.Where("user_id = ?", userID).First(&b).Error
+	a := models.SaUser{}
+	// var c *models.SaUser
+	// var b []*models.SaUser
+	err = db.Conn.Where("user_id = ?", userID).First(&a).Error
 	// member := models.SaUser{}
 	// err = db.Conn.Model(&models.SaUser{}).Where("user_id = ?", userID).First(&result).Error
 	if err != nil || err == gorm.ErrRecordNotFound {
 		return a, err
 	}
-	a = b[0]
+	// fmt.Printf("%d", len(b))
+	// if len(b) > 0 {
+	// 	c = b[0]
+	// }
+
 	return a, err
 	// return a, nil
 }
