@@ -156,12 +156,16 @@ func (u *ContSaUser) CreateSaUser(e echo.Context) error {
 		return response
 
 	}
-	user.CreatedBy = form.CreatedBy
 	err = u.useSaUser.CreateSaUser(ctx, &user)
 	if err != nil {
-		return e.JSON(util.GetStatusCode(err), err.Error())
+		data, response := appE.Response(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
+		logger.Error(data)
+		return response
 	}
-	return e.JSON(http.StatusCreated, user)
+	data, response := appE.Response(http.StatusCreated, fmt.Sprintf("%v", user), nil)
+	logger.Info(data)
+	return response
+	// return e.JSON(http.StatusCreated, user)
 }
 
 // EditUserForm : param from frond end
@@ -230,9 +234,14 @@ func (u *ContSaUser) UpdateSaUser(e echo.Context) error {
 	user.UserID = int16(id)
 	err = u.useSaUser.UpdateSaUser(ctx, &user)
 	if err != nil {
-		return e.JSON(util.GetStatusCode(err), err.Error())
+		data, response := appE.Response(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
+		logger.Error(data)
+		return response
 	}
-	return e.JSON(http.StatusCreated, user)
+	// return e.JSON(http.StatusCreated, user)
+	data, response := appE.Response(http.StatusCreated, fmt.Sprintf("%v", user), nil)
+	logger.Info(data)
+	return response
 }
 
 // DeleteSaUser :

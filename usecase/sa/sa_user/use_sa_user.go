@@ -48,6 +48,7 @@ func (u *useSaUser) CreateSaUser(ctx context.Context, userData *models.SaUser) (
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
+	userData.UpdateBy = userData.CreatedBy
 	userData.CreatedAt = util.GetTimeNow()
 	userData.UpdatedAt = util.GetTimeNow()
 	err = u.repoSaUser.CreateSaUser(ctx, userData)
