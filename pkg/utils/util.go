@@ -22,7 +22,7 @@ func GetLocation() *time.Location {
 	return time.FixedZone(WIB, 7*3600)
 }
 
-// Stringify
+// Stringify :
 func Stringify(data interface{}) string {
 	dataByte, _ := json.Marshal(data)
 	return string(dataByte)

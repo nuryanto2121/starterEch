@@ -1,13 +1,61 @@
 definitions:
   app.ResponseModel:
     properties:
+      code:
+        type: integer
       data:
         type: object
-      error:
-        type: boolean
-      message:
+      msg:
         type: string
-      status:
+    type: object
+  contsauser.AddUserForm:
+    properties:
+      company_id:
+        type: integer
+      created_by:
+        type: string
+      email_addr:
+        type: string
+      group_id:
+        type: integer
+      handphone_no:
+        type: string
+      level_no:
+        type: integer
+      passwd:
+        type: string
+      picture_url:
+        type: string
+      project_id:
+        type: integer
+      user_name:
+        type: string
+      user_status:
+        type: integer
+    type: object
+  contsauser.EditUserForm:
+    properties:
+      Updated_by:
+        type: string
+      company_id:
+        type: integer
+      email_addr:
+        type: string
+      group_id:
+        type: integer
+      handphone_no:
+        type: string
+      level_no:
+        type: integer
+      passwd:
+        type: string
+      picture_url:
+        type: string
+      project_id:
+        type: integer
+      user_name:
+        type: string
+      user_status:
         type: integer
     type: object
 info:
@@ -20,7 +68,24 @@ info:
   title: Starter
   version: "1.0"
 paths:
-  /user/{id}:
+  /api/user:
+    delete:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: GetList SaUser
+      tags:
+      - User
     get:
       parameters:
       - description: ID
@@ -35,7 +100,68 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
-      summary: Get SaUser
+      summary: GetList SaUser
       tags:
-      - SaUser
+      - User
+    post:
+      parameters:
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from forntend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/contsauser.AddUserForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: Add User
+      tags:
+      - User
+  /api/user/{id}:
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: GetById SaUser
+      tags:
+      - User
+    put:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from forntend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/contsauser.EditUserForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: Update User
+      tags:
+      - User
 swagger: "2.0"

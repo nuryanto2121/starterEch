@@ -5,48 +5,57 @@ import (
 	"strconv"
 )
 
-// Convert string to specify type.
+// StrTo string to specify type.
 type StrTo string
 
+// Exist :
 func (f StrTo) Exist() bool {
 	return string(f) != string(0x1E)
 }
 
+// Uint8 :
 func (f StrTo) Uint8() (uint8, error) {
 	v, err := strconv.ParseUint(f.String(), 10, 8)
 	return uint8(v), err
 }
 
+// Int :
 func (f StrTo) Int() (int, error) {
 	v, err := strconv.ParseInt(f.String(), 10, 0)
 	return int(v), err
 }
 
+// Int64 :
 func (f StrTo) Int64() (int64, error) {
 	v, err := strconv.ParseInt(f.String(), 10, 64)
 	return int64(v), err
 }
 
+// Float64 :
 func (f StrTo) Float64() (float64, error) {
 	v, err := strconv.ParseFloat(f.String(), 64)
 	return float64(v), err
 }
 
+// MustUint8 :
 func (f StrTo) MustUint8() uint8 {
 	v, _ := f.Uint8()
 	return v
 }
 
+// MustInt :
 func (f StrTo) MustInt() int {
 	v, _ := f.Int()
 	return v
 }
 
+// MustInt64 :
 func (f StrTo) MustInt64() int64 {
 	v, _ := f.Int64()
 	return v
 }
 
+// MustFloat64 :
 func (f StrTo) MustFloat64() float64 {
 	v, _ := f.Float64()
 	return v
@@ -59,7 +68,7 @@ func (f StrTo) String() string {
 	return ""
 }
 
-// Convert any type to string.
+// ToStr :Convert any type to string.
 func ToStr(value interface{}, args ...int) (s string) {
 	switch v := value.(type) {
 	case bool:
@@ -152,6 +161,7 @@ func Int2HexStr(num int) (hex string) {
 	return hex
 }
 
+// PowInt :
 func PowInt(x int, y int) int {
 	if y <= 0 {
 		return 1

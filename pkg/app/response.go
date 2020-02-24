@@ -1,6 +1,10 @@
 package app
 
-import "github.com/labstack/echo/v4"
+import (
+	util "property/framework/pkg/utils"
+
+	"github.com/labstack/echo/v4"
+)
 
 // Res :
 type Res struct {
@@ -11,7 +15,8 @@ type Res struct {
 // 	Message string      `json:"message"`
 // 	Error   bool        `json:"error"`
 // 	Data    interface{} `json:"data"`
-// Response :
+
+// ResponseModel :
 type ResponseModel struct {
 	Code int         `json:"code"`
 	Msg  string      `json:"msg"`
@@ -19,7 +24,7 @@ type ResponseModel struct {
 }
 
 // Response :
-func (e Res) Response(httpCode int, errMsg string, data interface{}) error {
+func (e Res) Response(httpCode int, errMsg string, data interface{}) (interface{}, error) {
 	response := ResponseModel{
 		// Status:  httpCode,
 		// Message: errMsg,
@@ -29,6 +34,21 @@ func (e Res) Response(httpCode int, errMsg string, data interface{}) error {
 		Msg:  errMsg,
 		Data: data,
 	}
-	return e.R.JSON(httpCode, response)
+	return string(util.Stringify(response)), e.R.JSON(httpCode, response)
+	// return string(util.Stringify(response))
+}
+
+// ResponseList :
+func (e Res) ResponseList(httpCode int, errMsg string, data interface{}) (interface{}, error) {
+	response := ResponseModel{
+		// Status:  httpCode,
+		// Message: errMsg,
+		// Error:   err,
+		// Data:    data,
+		Code: httpCode,
+		Msg:  errMsg,
+		Data: data,
+	}
+	return string(util.Stringify(response)), e.R.JSON(httpCode, response)
 	// return string(util.Stringify(response))
 }

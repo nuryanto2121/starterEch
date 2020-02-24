@@ -6,18 +6,17 @@ import (
 
 	_midd "property/framework/middleware"
 	"property/framework/pkg/connection"
+	"property/framework/pkg/logging"
 	"property/framework/pkg/setting"
 	"property/framework/routes"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	// _sausercont "property/framework/controllers/sa/sa_user"
-	// _sauserrepo "property/framework/repository/sa/sa_user"
-	// _sauseruse "property/framework/usecase/sa/sa_user"
 )
 
 func init() {
 	setting.Setup()
+	logging.Setup()
 	connection.Setup()
 }
 
@@ -38,15 +37,8 @@ func main() {
 	middL := _midd.InitMiddleware()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Static("/static", "static")
+	e.Static("/static", "runtime")
 	e.Use(middL.CORS)
-
-	// timeoutContext := time.Duration(setting.FileConfigSetting.Server.ReadTimeout) * time.Second
-
-	/*sa user*/
-	// repoSaUser := _sauserrepo.NewRepoSaUser(connection.Conn)
-	// useSaUser := _sauseruse.NewUseSaUser(repoSaUser, timeoutContext)
-	// _sausercont.NewContSaUser(e, useSaUser)
 
 	app := routes.Echo{E: e}
 

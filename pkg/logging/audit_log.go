@@ -39,7 +39,7 @@ func (a *auditLog) saveAudit() {
 		setting.FileConfigSetting.Database.Port)
 	fmt.Printf("%s", connectionstring)
 	conn, err = gorm.Open(setting.FileConfigSetting.Database.Type, connectionstring)
-	defer conn.Close()
+
 	if err != nil {
 		log.Printf("connection.setup err : %v", err)
 		panic(err)
@@ -57,6 +57,7 @@ func (a *auditLog) saveAudit() {
 	if err != nil {
 		log.Printf("%s", err)
 	}
+	defer conn.Close()
 }
 
 // autoMigrate : create or alter table from struct

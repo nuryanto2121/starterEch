@@ -12,15 +12,69 @@
         "version": "1.0"
     },
     "paths": {
-        "/user/{id}": {
+        "/api/user": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "SaUser"
+                    "User"
                 ],
-                "summary": "Get SaUser",
+                "summary": "GetList SaUser",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Add User",
+                "parameters": [
+                    {
+                        "description": "req param #changes are possible to adjust the form of the registration form from forntend",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/contsauser.AddUserForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "GetList SaUser",
                 "parameters": [
                     {
                         "type": "integer",
@@ -39,22 +93,158 @@
                     }
                 }
             }
+        },
+        "/api/user/{id}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "GetById SaUser",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update User",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "req param #changes are possible to adjust the form of the registration form from forntend",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/contsauser.EditUserForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
         "app.ResponseModel": {
             "type": "object",
             "properties": {
+                "code": {
+                    "type": "integer"
+                },
                 "data": {
                     "type": "object"
                 },
-                "error": {
-                    "type": "boolean"
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "contsauser.AddUserForm": {
+            "type": "object",
+            "properties": {
+                "company_id": {
+                    "type": "integer"
                 },
-                "message": {
+                "created_by": {
                     "type": "string"
                 },
-                "status": {
+                "email_addr": {
+                    "type": "string"
+                },
+                "group_id": {
+                    "type": "integer"
+                },
+                "handphone_no": {
+                    "type": "string"
+                },
+                "level_no": {
+                    "type": "integer"
+                },
+                "passwd": {
+                    "type": "string"
+                },
+                "picture_url": {
+                    "type": "string"
+                },
+                "project_id": {
+                    "type": "integer"
+                },
+                "user_name": {
+                    "type": "string"
+                },
+                "user_status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "contsauser.EditUserForm": {
+            "type": "object",
+            "properties": {
+                "Updated_by": {
+                    "type": "string"
+                },
+                "company_id": {
+                    "type": "integer"
+                },
+                "email_addr": {
+                    "type": "string"
+                },
+                "group_id": {
+                    "type": "integer"
+                },
+                "handphone_no": {
+                    "type": "string"
+                },
+                "level_no": {
+                    "type": "integer"
+                },
+                "passwd": {
+                    "type": "string"
+                },
+                "picture_url": {
+                    "type": "string"
+                },
+                "project_id": {
+                    "type": "integer"
+                },
+                "user_name": {
+                    "type": "string"
+                },
+                "user_status": {
                     "type": "integer"
                 }
             }

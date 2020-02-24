@@ -15,9 +15,8 @@ import (
 
 	"github.com/astaxie/beego/validation"
 	"github.com/labstack/echo/v4"
-	"github.com/sirupsen/logrus"
+	"github.com/mitchellh/mapstructure"
 	echoSwagger "github.com/swaggo/echo-swagger"
-	"gopkg.in/go-playground/validator.v9"
 )
 
 // ContSaUser :
@@ -34,20 +33,20 @@ func NewContSaUser(e *echo.Echo, useSaUser isauser.Usercase) {
 		url := echoSwagger.URL("http://localhost:1323/swagger/doc.json") //The url pointing to API definition
 	*/
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
-	e.GET("/user/:id", controller.GetBySaUser)
-	e.GET("/user", controller.GetAllSaUser)
-	e.POST("/user", controller.CreateSaUser)
-	e.PUT("/user/:id", controller.UpdateSaUser)
-	e.DELETE("/user/:id", controller.DeleteSaUser)
+	e.GET("/api/user/:id", controller.GetBySaUser)
+	e.GET("/api/user", controller.GetAllSaUser)
+	e.POST("/api/user", controller.CreateSaUser)
+	e.PUT("/api/user/:id", controller.UpdateSaUser)
+	e.DELETE("/api/user/:id", controller.DeleteSaUser)
 }
 
 // GetBySaUser :
-// @Summary Get SaUser
-// @Tags SaUser
+// @Summary GetById SaUser
+// @Tags User
 // @Produce  json
 // @Param id path int true "ID"
 // @Success 200 {object} app.ResponseModel
-// @Router /user/{id} [get]
+// @Router /api/user/{id} [get]
 func (u *ContSaUser) GetBySaUser(e echo.Context) error {
 	ctx := e.Request().Context()
 	if ctx == nil {
@@ -56,30 +55,41 @@ func (u *ContSaUser) GetBySaUser(e echo.Context) error {
 
 	var (
 		logger = logging.Logger{E: e}
-		appE   = app.Res{R: e}
-		id     = util.StrTo(e.Param("id")).MustInt()
-		valid  validation.Validation
+		appE   = app.Res{R: e}                       // wajib
+		id     = util.StrTo(e.Param("id")).MustInt() //kalo bukan int => 0
+		valid  validation.Validation                 // wajib
 	)
 
 	valid.Min(id, 1, "id").Message("ID must be greater than 0")
 	logger.Info(id)
 	if valid.HasErrors() {
-		// logger.Error(appE.Response(http.StatusBadRequest, app.MarkErrors(valid.Errors), nil))
-		return appE.Response(http.StatusBadRequest, app.MarkErrors(valid.Errors), nil)
+		data, response := appE.Response(http.StatusBadRequest, app.MarkErrors(valid.Errors), nil)
+		logger.Error(data)
+		return response
 	}
 
 	DataUser, err := u.useSaUser.GetBySaUser(ctx, int16(id))
 	if err != nil {
-		// logger.Error(appE.Response(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil))
-		return appE.Response(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
-		// return e.JSON(http.StatusInternalServerError, err.Error())
+		data, response := appE.Response(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
+		logger.Error(data)
+		return response
 	}
 	// logger.Info(appE.Response(http.StatusOK, "Ok", DataUser))
 	// return e.JSON(http.StatusOK, DataUser)
-	return appE.Response(http.StatusOK, "OK", DataUser)
+	// return appE.Response(http.StatusOK, "OK", DataUser)
+	data, response := appE.Response(http.StatusOK, "Ok", DataUser)
+	logger.Info(data)
+	return response
+
 }
 
 // GetAllSaUser :
+// @Summary GetList SaUser
+// @Tags User
+// @Produce  json
+// @Param id path int true "ID"
+// @Success 200 {object} app.ResponseModel
+// @Router /api/user [get]
 func (u *ContSaUser) GetAllSaUser(e echo.Context) error {
 	ctx := e.Request().Context()
 	if ctx == nil {
@@ -94,60 +104,144 @@ func (u *ContSaUser) GetAllSaUser(e echo.Context) error {
 	return e.JSON(http.StatusOK, ListDataUser)
 }
 
+// AddUserForm : param from frond end
+type AddUserForm struct {
+	Passwd      string `json:"passwd" valid:"Required"`
+	GroupID     int16  `json:"group_id" valid:"Required"`
+	LevelNo     int16  `json:"level_no" valid:"Required"`
+	UserName    string `json:"user_name" valid:"Required"`
+	EmailAddr   string `json:"email_addr"`
+	HandphoneNo string `json:"handphone_no"`
+	CompanyID   int16  `json:"company_id" valid:"Required"`
+	ProjectID   int16  `json:"project_id" valid:"Required"`
+	PictureURL  string `json:"picture_url"`
+	UserStatus  int16  `json:"user_status"`
+	CreatedBy   string `json:"created_by" valid:"Required"`
+}
+
 // CreateSaUser :
+// @Summary Add User
+// @Tags User
+// @Produce json
+// @Param req body contsauser.AddUserForm true "req param #changes are possible to adjust the form of the registration form from forntend"
+// @Success 200 {object} app.ResponseModel
+// @Router /api/user [post]
 func (u *ContSaUser) CreateSaUser(e echo.Context) error {
-	var user models.SaUser
-	err := e.Bind(&user)
-	if err != nil {
-		return e.JSON(http.StatusUnprocessableEntity, err.Error())
-	}
-
-	if ok, err := isRequestValid(&user); !ok {
-		return e.JSON(http.StatusBadRequest, err.Error())
-	}
-
 	ctx := e.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
 	}
 
+	var (
+		logger = logging.Logger{} // wajib
+		appE   = app.Res{R: e}    // wajib
+		user   models.SaUser
+		form   AddUserForm
+	)
+
+	// validasi and bind to struct
+	httpCode, errMsg := app.BindAndValid(e, &form)
+	logger.Info(util.Stringify(form))
+	if httpCode != 200 {
+		data, response := appE.Response(http.StatusBadRequest, errMsg, nil)
+		logger.Error(data)
+		return response
+	}
+
+	// mapping to struct model saSuser
+	err := mapstructure.Decode(form, &user)
+	if err != nil {
+		data, response := appE.Response(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
+		logger.Error(data)
+		return response
+
+	}
+	user.CreatedBy = form.CreatedBy
 	err = u.useSaUser.CreateSaUser(ctx, &user)
 	if err != nil {
-		return e.JSON(getStatusCode(err), err.Error())
+		return e.JSON(util.GetStatusCode(err), err.Error())
 	}
 	return e.JSON(http.StatusCreated, user)
 }
 
+// EditUserForm : param from frond end
+type EditUserForm struct {
+	Passwd      string `json:"passwd" valid:"Required"`
+	GroupID     int16  `json:"group_id" valid:"Required"`
+	LevelNo     int16  `json:"level_no" valid:"Required"`
+	UserName    string `json:"user_name" valid:"Required"`
+	EmailAddr   string `json:"email_addr"`
+	HandphoneNo string `json:"handphone_no"`
+	CompanyID   int16  `json:"company_id" valid:"Required"`
+	ProjectID   int16  `json:"project_id" valid:"Required"`
+	PictureURL  string `json:"picture_url"`
+	UserStatus  int16  `json:"user_status"`
+	UpdatedBy   string `json:"Updated_by" valid:"Required"`
+}
+
 // UpdateSaUser :
+// @Summary Update User
+// @Tags User
+// @Produce json
+// @Param id path int true "ID"
+// @Param req body contsauser.EditUserForm true "req param #changes are possible to adjust the form of the registration form from forntend"
+// @Success 200 {object} app.ResponseModel
+// @Router /api/user/{id} [put]
 func (u *ContSaUser) UpdateSaUser(e echo.Context) error {
-	var user models.SaUser
-	err := e.Bind(&user)
-	if err != nil {
-		return e.JSON(http.StatusUnprocessableEntity, err.Error())
-	}
-	userID, err := strconv.Atoi(e.Param("id"))
-	if err != nil {
-		return e.JSON(http.StatusNotFound, models.ErrNotFound.Error())
-	}
-	user.UserID = int16(userID)
-
-	if ok, err := isRequestValid(&user); !ok {
-		return e.JSON(http.StatusBadRequest, err.Error())
-	}
-
 	ctx := e.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
 	}
 
+	var (
+		logger = logging.Logger{} // wajib
+		appE   = app.Res{R: e}    // wajib
+		user   models.SaUser
+		valid  validation.Validation                 // wajib
+		id     = util.StrTo(e.Param("id")).MustInt() //kalo bukan int => 0
+		form   = EditUserForm{}
+	)
+
+	valid.Min(id, 1, "id").Message("ID must be greater than 0")
+	logger.Info(id)
+	if valid.HasErrors() {
+		data, response := appE.Response(http.StatusBadRequest, app.MarkErrors(valid.Errors), nil)
+		logger.Error(data)
+		return response
+	}
+
+	// validasi and bind to struct
+	httpCode, errMsg := app.BindAndValid(e, &form)
+	logger.Info(util.Stringify(form))
+	if httpCode != 200 {
+		data, response := appE.Response(http.StatusBadRequest, errMsg, nil)
+		logger.Error(data)
+		return response
+	}
+
+	// mapping to struct model saSuser
+	err := mapstructure.Decode(form, &user)
+	if err != nil {
+		data, response := appE.Response(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
+		logger.Error(data)
+		return response
+
+	}
+	user.UserID = int16(id)
 	err = u.useSaUser.UpdateSaUser(ctx, &user)
 	if err != nil {
-		return e.JSON(getStatusCode(err), err.Error())
+		return e.JSON(util.GetStatusCode(err), err.Error())
 	}
 	return e.JSON(http.StatusCreated, user)
 }
 
 // DeleteSaUser :
+// @Summary GetList SaUser
+// @Tags User
+// @Produce  json
+// @Param id path int true "ID"
+// @Success 200 {object} app.ResponseModel
+// @Router /api/user [delete]
 func (u *ContSaUser) DeleteSaUser(e echo.Context) error {
 	ctx := e.Request().Context()
 	if ctx == nil {
@@ -159,7 +253,7 @@ func (u *ContSaUser) DeleteSaUser(e echo.Context) error {
 	}
 	err = u.useSaUser.DeleteSaUser(ctx, int16(userID))
 	if err != nil {
-		return e.JSON(getStatusCode(err), err.Error())
+		return e.JSON(util.GetStatusCode(err), err.Error())
 	}
 	return e.NoContent(http.StatusNoContent)
 }
@@ -170,29 +264,11 @@ func (u *ContSaUser) HealthCheck(c echo.Context) error {
 }
 
 // isRequestValid
-func isRequestValid(m *models.SaUser) (bool, error) {
-	validate := validator.New()
-	err := validate.Struct(m)
-	if err != nil {
-		return false, err
-	}
-	return true, nil
-}
-
-// getStatusCode
-func getStatusCode(err error) int {
-	if err == nil {
-		return http.StatusOK
-	}
-	logrus.Error(err)
-	switch err {
-	case models.ErrInternalServerError:
-		return http.StatusInternalServerError
-	case models.ErrNotFound:
-		return http.StatusNotFound
-	case models.ErrConflict:
-		return http.StatusConflict
-	default:
-		return http.StatusInternalServerError
-	}
-}
+// func isRequestValid(m *models.SaUser) (bool, error) {
+// 	validate := validator.New()
+// 	err := validate.Struct(m)
+// 	if err != nil {
+// 		return false, err
+// 	}
+// 	return true, nil
+// }
