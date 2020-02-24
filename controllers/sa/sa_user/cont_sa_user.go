@@ -266,18 +266,3 @@ func (u *ContSaUser) DeleteSaUser(e echo.Context) error {
 	}
 	return e.NoContent(http.StatusNoContent)
 }
-
-// HealthCheck :
-func (u *ContSaUser) HealthCheck(c echo.Context) error {
-	return c.JSON(http.StatusOK, "success")
-}
-
-// isRequestValid
-// func isRequestValid(m *models.SaUser) (bool, error) {
-// 	validate := validator.New()
-// 	err := validate.Struct(m)
-// 	if err != nil {
-// 		return false, err
-// 	}
-// 	return true, nil
-// }
