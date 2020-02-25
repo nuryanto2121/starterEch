@@ -24,7 +24,7 @@ var (
 
 	logger     *log.Logger
 	logPrefix  = ""
-	levelFlags = []string{"DEBUG", "INFO", "WARN", "ERROR", "FATAL"}
+	levelFlags = []string{"DEBUG", "INFO", "QUERY", "WARN", "ERROR", "FATAL"}
 	eFlag      = ""
 	eFunc      = ""
 	eFile      = ""
@@ -35,6 +35,7 @@ var (
 const (
 	DEBUG Level = iota
 	INFO
+	QUERY
 	WARNING
 	ERROR
 	FATAL
@@ -71,6 +72,16 @@ func Debug(user string, v ...interface{}) {
 func Info(user string, v ...interface{}) {
 	var audit auditLog
 	setPrefix(&audit, INFO)
+	log.Println(v...)
+	logger.Println(v...)
+	audit.Message = fmt.Sprintf("%v", v)
+	go audit.saveAudit()
+}
+
+// Query :
+func Query(user string, v ...interface{}) {
+	var audit auditLog
+	setPrefix(&audit, QUERY)
 	log.Println(v...)
 	logger.Println(v...)
 	audit.Message = fmt.Sprintf("%v", v)

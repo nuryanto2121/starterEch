@@ -7,14 +7,12 @@ import (
 	"runtime"
 	"strings"
 	"time"
-
-	"github.com/labstack/echo/v4"
 )
 
 // Logger :
 type Logger struct {
 	UUID string `json:"uuid,omitempty"`
-	E    echo.Context
+	// E    echo.Context
 }
 
 // Debug :
@@ -31,6 +29,16 @@ func (l *Logger) Debug(v ...interface{}) {
 func (l *Logger) Info(v ...interface{}) {
 	var audit auditLog
 	l.setUserLogPrefix(&audit, INFO)
+	log.Println(v...)
+	logger.Println(v...)
+	audit.Message = fmt.Sprintf("%v", v)
+	go audit.saveAudit()
+}
+
+// Query :
+func (l *Logger) Query(v ...interface{}) {
+	var audit auditLog
+	l.setUserLogPrefix(&audit, QUERY)
 	log.Println(v...)
 	logger.Println(v...)
 	audit.Message = fmt.Sprintf("%v", v)

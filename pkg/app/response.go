@@ -1,6 +1,8 @@
 package app
 
 import (
+	"property/framework/models"
+	"property/framework/pkg/logging"
 	util "property/framework/pkg/utils"
 
 	"github.com/labstack/echo/v4"
@@ -9,6 +11,7 @@ import (
 // Res :
 type Res struct {
 	R echo.Context
+	// List ResponseModelList
 }
 
 // Status  int         `json:"status"`
@@ -24,7 +27,8 @@ type ResponseModel struct {
 }
 
 // Response :
-func (e Res) Response(httpCode int, errMsg string, data interface{}) (interface{}, error) {
+func (e Res) Response(httpCode int, errMsg string, data interface{}) error {
+	var logger = logging.Logger{}
 	response := ResponseModel{
 		// Status:  httpCode,
 		// Message: errMsg,
@@ -34,21 +38,46 @@ func (e Res) Response(httpCode int, errMsg string, data interface{}) (interface{
 		Msg:  errMsg,
 		Data: data,
 	}
-	return string(util.Stringify(response)), e.R.JSON(httpCode, response)
+	logger.Info(string(util.Stringify(response)))
+	return e.R.JSON(httpCode, response)
+	// return string(util.Stringify(response))
+}
+
+// ResponseError :
+func (e Res) ResponseError(httpCode int, errMsg string, data interface{}) error {
+	var logger = logging.Logger{}
+	response := ResponseModel{
+		// Status:  httpCode,
+		// Message: errMsg,
+		// Error:   err,
+		// Data:    data,
+		Code: httpCode,
+		Msg:  errMsg,
+		Data: data,
+	}
+	logger.Error(string(util.Stringify(response)))
+	return e.R.JSON(httpCode, response)
 	// return string(util.Stringify(response))
 }
 
 // ResponseList :
-func (e Res) ResponseList(httpCode int, errMsg string, data interface{}) (interface{}, error) {
-	response := ResponseModel{
-		// Status:  httpCode,
-		// Message: errMsg,
-		// Error:   err,
-		// Data:    data,
-		Code: httpCode,
-		Msg:  errMsg,
-		Data: data,
-	}
-	return string(util.Stringify(response)), e.R.JSON(httpCode, response)
+func (e Res) ResponseList(httpCode int, errMsg string, data models.ResponseModelList) error {
+	var logger = logging.Logger{}
+	data.Code = httpCode
+	data.Msg = errMsg
+
+	logger.Info(string(util.Stringify(data)))
+	return e.R.JSON(httpCode, data)
+	// return string(util.Stringify(response))
+}
+
+// ResponseErrorList :
+func (e Res) ResponseErrorList(httpCode int, errMsg string, data models.ResponseModelList) error {
+	var logger = logging.Logger{}
+	data.Code = httpCode
+	data.Msg = errMsg
+
+	logger.Error(string(util.Stringify(data)))
+	return e.R.JSON(httpCode, data)
 	// return string(util.Stringify(response))
 }

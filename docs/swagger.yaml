@@ -58,6 +58,21 @@ definitions:
       user_status:
         type: integer
     type: object
+  models.ResponseModelList:
+    properties:
+      code:
+        type: integer
+      data:
+        type: object
+      last_page:
+        type: integer
+      msg:
+        type: string
+      page:
+        type: integer
+      total:
+        type: integer
+    type: object
 info:
   contact:
     email: nuryantofattih@gmail.com
@@ -88,18 +103,31 @@ paths:
       - User
     get:
       parameters:
-      - description: ID
-        in: path
-        name: id
+      - description: Page
+        in: query
+        name: page
         required: true
         type: integer
+      - description: PerPage
+        in: query
+        name: perpage
+        required: true
+        type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: InitSearch
+        in: query
+        name: initsearch
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/app.ResponseModel'
+            $ref: '#/definitions/models.ResponseModelList'
       summary: GetList SaUser
       tags:
       - User

@@ -24,17 +24,36 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID",
-                        "name": "id",
-                        "in": "path",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "PerPage",
+                        "name": "perpage",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "InitSearch",
+                        "name": "initsearch",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/app.ResponseModel"
+                            "$ref": "#/definitions/models.ResponseModelList"
                         }
                     }
                 }
@@ -245,6 +264,29 @@
                     "type": "string"
                 },
                 "user_status": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.ResponseModelList": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "object"
+                },
+                "last_page": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "total": {
                     "type": "integer"
                 }
             }
