@@ -2,11 +2,11 @@ package usesauser
 
 import (
 	"context"
-	"fmt"
 	"math"
 	isauser "property/framework/interface/sa/sa_user"
 	models "property/framework/models"
 	util "property/framework/pkg/utils"
+	"reflect"
 	"time"
 )
 
@@ -39,9 +39,12 @@ func (u *useSaUser) GetList(ctx context.Context, queryparam models.ParamList) (r
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
+	/*membuat Where like dari struct*/
+	tuser := models.SaUser{}
 	if queryparam.Search != "" {
-		search := fmt.Sprintf("%%%s%%", queryparam.Search)
-		queryparam.Search = fmt.Sprintf("user_name LIKE '%s' OR email_addr LIKE '%s' OR handphone_no LIKE '%s'", search, search, search)
+		value := reflect.ValueOf(tuser)
+		types := reflect.TypeOf(&tuser)
+		queryparam.Search = util.GetWhereLikeStruct(value, types, queryparam.Search, "") // fmt.Sprintf("user_name LIKE '%s' OR email_addr LIKE '%s' OR handphone_no LIKE '%s'", search, search, search)
 	}
 	result.Data, err = u.repoSaUser.GetList(ctx, queryparam)
 	if err != nil {
@@ -63,7 +66,7 @@ func (u *useSaUser) CreateSaUser(ctx context.Context, userData *models.SaUser) (
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
-	userData.UpdateBy = userData.CreatedBy
+	userData.UpdatedBy = userData.CreatedBy
 	userData.CreatedAt = util.GetTimeNow()
 	userData.UpdatedAt = util.GetTimeNow()
 	err = u.repoSaUser.CreateSaUser(ctx, userData)

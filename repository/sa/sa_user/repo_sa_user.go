@@ -45,6 +45,7 @@ func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) 
 		pageSize = setting.FileConfigSetting.App.PageSize
 		sWhere   = ""
 		logger   = logging.Logger{}
+		orderBy  = "created_at desc"
 	)
 	// pagination
 	if queryparam.Page > 0 {
@@ -54,6 +55,12 @@ func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) 
 		pageSize = queryparam.PerPage
 	}
 	//end pagination
+
+	// Order
+	if queryparam.SortField != "" {
+		orderBy = queryparam.SortField
+	}
+	//end Order by
 
 	// WHERE
 	if queryparam.InitSearch != "" {
@@ -69,11 +76,11 @@ func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) 
 	}
 	// end where
 	if pageNum >= 0 && pageSize > 0 {
-		query := db.Conn.Where(sWhere).Offset(pageNum).Limit(pageSize).Find(&result)
+		query := db.Conn.Where(sWhere).Offset(pageNum).Limit(pageSize).Order(orderBy).Find(&result)
 		logger.Query(query.QueryExpr()) //cath to log query string
 		err = query.Error
 	} else {
-		query := db.Conn.Where(sWhere).Find(&result)
+		query := db.Conn.Where(sWhere).Order(orderBy).Find(&result)
 		logger.Query(query.QueryExpr()) //cath to log query string
 		err = query.Error
 	}

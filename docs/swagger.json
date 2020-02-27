@@ -47,6 +47,12 @@
                         "description": "InitSearch",
                         "name": "initsearch",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "SortField",
+                        "name": "sortfield",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -181,13 +187,11 @@
         "app.ResponseModel": {
             "type": "object",
             "properties": {
-                "code": {
-                    "type": "integer"
-                },
                 "data": {
                     "type": "object"
                 },
                 "msg": {
+                    "description": "Code int         `json:\"code\"`",
                     "type": "string"
                 }
             }
@@ -271,9 +275,6 @@
         "models.ResponseModelList": {
             "type": "object",
             "properties": {
-                "code": {
-                    "type": "integer"
-                },
                 "data": {
                     "type": "object"
                 },

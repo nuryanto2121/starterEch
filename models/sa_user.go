@@ -16,7 +16,7 @@ type SaUser struct {
 	PictureURL  string    `json:"picture_url" gorm:"type:varchar(100)"`
 	UserStatus  int16     `json:"user_status" gorm:"type:integer;default:1"`
 	CreatedBy   string    `json:"created_by" gorm:"type:varchar(20);not null"`
-	CreatedAt   time.Time `json:"crated_at" gorm:"type:timestamp(0) without time zone;default:now()"`
-	UpdateBy    string    `json:"updated_by" gorm:"type:varchar(20);not null"`
+	CreatedAt   time.Time `json:"created_at" gorm:"type:timestamp(0) without time zone;default:now()"`
+	UpdatedBy   string    `json:"updated_by" gorm:"type:varchar(20);not null"`
 	UpdatedAt   time.Time `json:"updated_at" gorm:"type:timestamp(0) without time zone;default:now()"`
 }

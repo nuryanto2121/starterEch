@@ -1,11 +1,10 @@
 definitions:
   app.ResponseModel:
     properties:
-      code:
-        type: integer
       data:
         type: object
       msg:
+        description: Code int         `json:"code"`
         type: string
     type: object
   contsauser.AddUserForm:
@@ -60,8 +59,6 @@ definitions:
     type: object
   models.ResponseModelList:
     properties:
-      code:
-        type: integer
       data:
         type: object
       last_page:
@@ -120,6 +117,10 @@ paths:
       - description: InitSearch
         in: query
         name: initsearch
+        type: string
+      - description: SortField
+        in: query
+        name: sortfield
         type: string
       produces:
       - application/json

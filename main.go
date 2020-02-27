@@ -3,14 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
-	"reflect"
 
 	_midd "property/framework/middleware"
-	"property/framework/models"
 	"property/framework/pkg/connection"
 	"property/framework/pkg/logging"
 	"property/framework/pkg/setting"
-	util "property/framework/pkg/utils"
 	"property/framework/routes"
 
 	"github.com/labstack/echo/v4"
@@ -48,12 +45,7 @@ func main() {
 	app.InitialRouter()
 
 	sPort := fmt.Sprintf(":%d", setting.FileConfigSetting.Server.HTTPPort)
-	ee := models.SaUser{}
 
-	dd := reflect.ValueOf(ee)
-	ff := reflect.TypeOf(&ee)
-	// tes1(ee)
-	util.Tes2(dd, ff)
 	// maxHeaderBytes := 1 << 20
 	// s := &http.Server{
 	// 	Addr:           sPort,

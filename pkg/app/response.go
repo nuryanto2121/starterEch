@@ -21,7 +21,7 @@ type Res struct {
 
 // ResponseModel :
 type ResponseModel struct {
-	Code int         `json:"code"`
+	// Code int         `json:"code"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
@@ -34,7 +34,7 @@ func (e Res) Response(httpCode int, errMsg string, data interface{}) error {
 		// Message: errMsg,
 		// Error:   err,
 		// Data:    data,
-		Code: httpCode,
+		// Code: httpCode,
 		Msg:  errMsg,
 		Data: data,
 	}
@@ -51,7 +51,7 @@ func (e Res) ResponseError(httpCode int, errMsg string, data interface{}) error 
 		// Message: errMsg,
 		// Error:   err,
 		// Data:    data,
-		Code: httpCode,
+		// Code: httpCode,
 		Msg:  errMsg,
 		Data: data,
 	}
@@ -63,7 +63,6 @@ func (e Res) ResponseError(httpCode int, errMsg string, data interface{}) error 
 // ResponseList :
 func (e Res) ResponseList(httpCode int, errMsg string, data models.ResponseModelList) error {
 	var logger = logging.Logger{}
-	data.Code = httpCode
 	data.Msg = errMsg
 
 	logger.Info(string(util.Stringify(data)))
@@ -74,7 +73,6 @@ func (e Res) ResponseList(httpCode int, errMsg string, data models.ResponseModel
 // ResponseErrorList :
 func (e Res) ResponseErrorList(httpCode int, errMsg string, data models.ResponseModelList) error {
 	var logger = logging.Logger{}
-	data.Code = httpCode
 	data.Msg = errMsg
 
 	logger.Error(string(util.Stringify(data)))

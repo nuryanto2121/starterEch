@@ -6,6 +6,5 @@ type ResponseModelList struct {
 	Total    int         `json:"total"`
 	LastPage int         `json:"last_page"`
 	Data     interface{} `json:"data"`
-	Code     int         `json:"code"`
 	Msg      string      `json:"msg"`
 }

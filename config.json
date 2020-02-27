@@ -23,7 +23,7 @@
         "time_format": 20060102,
         "issuer": "PropertyFramework"
     },
-    "database": {
+    "databaseMac": {
         "type": "postgres",
         "host": "127.0.0.1",
         "port": "55432",
@@ -32,7 +32,7 @@
         "name": "PropertyA",
         "table_prefix": ""
     },
-    "databasewindows": {
+    "database": {
         "type": "postgres",
         "host": "127.0.0.1",
         "port": "5432",

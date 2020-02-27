@@ -84,6 +84,7 @@ func (u *ContSaUser) GetBySaUser(e echo.Context) error {
 // @Param perpage query int true "PerPage"
 // @Param search query string false "Search"
 // @Param initsearch query string false "InitSearch"
+// @Param sortfield query string false "SortField"
 // @Success 200 {object} models.ResponseModelList
 // @Router /api/user [get]
 func (u *ContSaUser) GetList(e echo.Context) error {
