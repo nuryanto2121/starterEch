@@ -7,6 +7,22 @@ definitions:
         description: Code int         `json:"code"`
         type: string
     type: object
+  contsagroup.AddGroupForm:
+    properties:
+      created_by:
+        type: string
+      descs:
+        type: string
+      num:
+        type: integer
+    type: object
+  contsagroup.EditGroupForm:
+    properties:
+      Updated_by:
+        type: string
+      descs:
+        type: string
+    type: object
   contsauser.AddUserForm:
     properties:
       company_id:
@@ -80,6 +96,119 @@ info:
   title: Starter
   version: "1.0"
 paths:
+  /api/group:
+    get:
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: PerPage
+        in: query
+        name: perpage
+        required: true
+        type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: InitSearch
+        in: query
+        name: initsearch
+        type: string
+      - description: SortField
+        in: query
+        name: sortfield
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseModelList'
+      summary: GetList SaGroup
+      tags:
+      - Group
+    post:
+      parameters:
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from forntend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/contsagroup.AddGroupForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: Add Group
+      tags:
+      - Group
+  /api/group/{id}:
+    delete:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: Delete group
+      tags:
+      - Group
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: GetById SaGroup
+      tags:
+      - Group
+    put:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from forntend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/contsagroup.EditGroupForm'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: Update Group
+      tags:
+      - Group
   /api/user:
     delete:
       parameters:
