@@ -14,7 +14,7 @@ definitions:
       descs:
         type: string
       num:
-        type: integer
+        type: number
     type: object
   contsagroup.EditGroupForm:
     properties:
@@ -140,6 +140,7 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/contsagroup.AddGroupForm'
+          type: object
       produces:
       - application/json
       responses:
@@ -199,6 +200,7 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/contsagroup.EditGroupForm'
+          type: object
       produces:
       - application/json
       responses:
@@ -270,6 +272,7 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/contsauser.AddUserForm'
+          type: object
       produces:
       - application/json
       responses:
@@ -312,6 +315,7 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/contsauser.EditUserForm'
+          type: object
       produces:
       - application/json
       responses:

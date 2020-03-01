@@ -79,6 +79,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
+                            "type": "object",
                             "$ref": "#/definitions/contsagroup.AddGroupForm"
                         }
                     }
@@ -142,6 +143,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
+                            "type": "object",
                             "$ref": "#/definitions/contsagroup.EditGroupForm"
                         }
                     }
@@ -249,6 +251,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
+                            "type": "object",
                             "$ref": "#/definitions/contsauser.AddUserForm"
                         }
                     }
@@ -338,6 +341,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
+                            "type": "object",
                             "$ref": "#/definitions/contsauser.EditUserForm"
                         }
                     }
@@ -376,7 +380,7 @@
                     "type": "string"
                 },
                 "num": {
-                    "type": "integer"
+                    "type": "number"
                 }
             }
         },
