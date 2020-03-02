@@ -61,6 +61,7 @@ func autoMigrate() {
 	Conn.AutoMigrate(
 		models.SaUser{},
 		models.SaGroup{},
+		models.SaClient{},
 	)
 
 	log.Println("FINISHING AUTO MIGRATE ")

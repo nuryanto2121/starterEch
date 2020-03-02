@@ -6,11 +6,11 @@ RUN apk update && apk upgrade && \
     go get -u github.com/golang/dep/cmd/dep
 
 
-WORKDIR /hello
+WORKDIR /app
 
 COPY . .
 
-RUN make engine 
+RUN make engine
 #dep init -v && build -o engine app/main.go
 
 ## Distribution
@@ -24,6 +24,6 @@ WORKDIR /app
 
 EXPOSE 8084
 
-COPY --from=builder /hello/engine /app
+COPY --from=builder /app/engine /app
 
 CMD /app/engine
