@@ -1,29 +1,41 @@
-# Builder
-FROM golang:1.12.8-alpine3.10 as builder
+# Dockerfile References: https://docs.docker.com/engine/reference/builder/
 
-RUN apk update && apk upgrade && \
-    apk --no-cache --update add git make && \
-    go get -u github.com/golang/dep/cmd/dep
+# Start from the latest golang base image
+FROM golang:1.12.5
 
+# Add Maintainer Info
+LABEL maintainer="Rajeev Singh <callicoder@gmail.com>"
 
+# Set the Current Working Directory inside the container
 WORKDIR /app
 
+# Build Args
+ARG LOG_DIR=/app/runtime/logs
+
+
+# Create Log Directory
+RUN mkdir -p ${LOG_DIR}
+
+# Environment Variables
+ENV LOG_FILE_LOCATION=${LOG_DIR}/app.log 
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+RUN go mod download
+
+# Copy the source from the current directory to the Working Directory inside the container
 COPY . .
 
-RUN make engine
-#dep init -v && build -o engine app/main.go
+# Build the Go app
+RUN go build -o main .
 
-## Distribution
-FROM alpine:latest
-
-RUN apk update && apk upgrade && \
-    apk --no-cache --update add ca-certificates tzdata && \
-    mkdir /app
-
-WORKDIR /app
-
+# This container exposes port 8080 to the outside world
 EXPOSE 8084
 
-COPY --from=builder /app/engine /app
+# Declare volumes to mount
+VOLUME [${LOG_DIR}]
 
-CMD /app/engine
+# Run the binary program produced by `go install`
+CMD ["./main"]
