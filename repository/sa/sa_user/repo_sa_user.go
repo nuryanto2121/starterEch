@@ -2,6 +2,7 @@ package reposauser
 
 import (
 	"context"
+	"fmt"
 	isauser "property/framework/interface/sa/sa_user"
 	models "property/framework/models"
 	"property/framework/pkg/logging"
@@ -25,7 +26,7 @@ func (db *repoSaUser) GetBySaUser(ctx context.Context, userID int16) (result mod
 		logger = logging.Logger{}
 	)
 	query := db.Conn.Where("user_id = ?", userID).First(&a)
-	logger.Query(query.QueryExpr())
+	logger.Query(fmt.Sprintf("%v", query.QueryExpr()))
 	err = query.Error
 
 	if err != nil {
@@ -77,11 +78,11 @@ func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) 
 	// end where
 	if pageNum >= 0 && pageSize > 0 {
 		query := db.Conn.Where(sWhere).Offset(pageNum).Limit(pageSize).Order(orderBy).Find(&result)
-		logger.Query(query.QueryExpr()) //cath to log query string
+		logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 		err = query.Error
 	} else {
 		query := db.Conn.Where(sWhere).Order(orderBy).Find(&result)
-		logger.Query(query.QueryExpr()) //cath to log query string
+		logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 		err = query.Error
 	}
 
@@ -99,7 +100,7 @@ func (db *repoSaUser) CreateSaUser(ctx context.Context, userData *models.SaUser)
 		logger = logging.Logger{}
 	)
 	query := db.Conn.Create(userData)
-	logger.Query(query.QueryExpr()) //cath to log query string
+	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 	// err = db.Conn.Create(userData).Error
 	if err != nil {
@@ -113,7 +114,7 @@ func (db *repoSaUser) UpdateSaUser(ctx context.Context, userData *models.SaUser)
 		logger = logging.Logger{}
 	)
 	query := db.Conn.Save(userData)
-	logger.Query(query.QueryExpr()) //cath to log query string
+	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 	// err = db.Conn.Save(userData).Error
 	if err != nil {
@@ -130,7 +131,7 @@ func (db *repoSaUser) DeleteSaUser(ctx context.Context, userID int16) (err error
 	userData.UserID = userID
 
 	query := db.Conn.Delete(&userData)
-	logger.Query(query.QueryExpr()) //cath to log query string
+	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 	// err = db.Conn.Where("user_id = ?", userID).Delete(&userData).Error
 	// err = db.Conn.Delete(&userData).Error
@@ -159,7 +160,7 @@ func (db *repoSaUser) CountUserList(ctx context.Context, queryparam models.Param
 	// end where
 
 	query := db.Conn.Model(&models.SaUser{}).Where(sWhere).Count(&result)
-	logger.Query(query.QueryExpr()) //cath to log query string
+	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 
 	return result, err

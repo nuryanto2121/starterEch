@@ -23,7 +23,7 @@
         "time_format": 20060102,
         "issuer": "PropertyFramework"
     },
-    "database": {
+    "databasemac": {
         "type": "postgres",
         "host": "127.0.0.1",
         "port": "5432",
@@ -35,6 +35,15 @@
     "databasewind": {
         "type": "postgres",
         "host": "127.0.0.1",
+        "port": "5432",
+        "user": "postgres",
+        "password": "12345",
+        "name": "PropertyA",
+        "table_prefix": ""
+    },
+    "database": {
+        "type": "postgres",
+        "host": "192.168.6.98",
         "port": "5432",
         "user": "postgres",
         "password": "12345",
