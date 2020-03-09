@@ -6,6 +6,7 @@ import (
 	"net/http"
 	isagroup "property/framework/interface/sa/sa_group"
 	"property/framework/models"
+	sa_models "property/framework/models/sa"
 	"property/framework/pkg/app"
 	"property/framework/pkg/logging"
 	util "property/framework/pkg/utils"
@@ -131,7 +132,7 @@ func (u *ContSaGroup) CreateSaGroup(e echo.Context) error {
 	var (
 		logger = logging.Logger{} // wajib
 		appE   = app.Res{R: e}    // wajib
-		group  models.SaGroup
+		group  sa_models.SaGroup
 		form   AddGroupForm
 	)
 	// validasi and bind to struct
@@ -178,7 +179,7 @@ func (u *ContSaGroup) UpdateSaGroup(e echo.Context) error {
 	var (
 		logger = logging.Logger{} // wajib
 		appE   = app.Res{R: e}    // wajib
-		group  models.SaGroup
+		group  sa_models.SaGroup
 		valid  validation.Validation                 // wajib
 		id     = util.StrTo(e.Param("id")).MustInt() //kalo bukan int => 0
 		form   = EditGroupForm{}

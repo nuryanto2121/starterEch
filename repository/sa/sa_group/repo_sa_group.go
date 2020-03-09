@@ -5,6 +5,7 @@ import (
 	"fmt"
 	isagroup "property/framework/interface/sa/sa_group"
 	"property/framework/models"
+	sa_models "property/framework/models/sa"
 	"property/framework/pkg/logging"
 	"property/framework/pkg/setting"
 
@@ -20,9 +21,9 @@ func NewRepoSaGroup(Conn *gorm.DB) isagroup.Repository {
 	return &repoSaGroup{Conn}
 }
 
-func (db *repoSaGroup) GetBySaGroup(ctx context.Context, groupID int16) (models.SaGroup, error) {
+func (db *repoSaGroup) GetBySaGroup(ctx context.Context, groupID int16) (sa_models.SaGroup, error) {
 	var (
-		dataGroup = models.SaGroup{}
+		dataGroup = sa_models.SaGroup{}
 		logger    = logging.Logger{}
 		err       error
 	)
@@ -41,7 +42,7 @@ func (db *repoSaGroup) GetBySaGroup(ctx context.Context, groupID int16) (models.
 	return dataGroup, err
 }
 
-func (db *repoSaGroup) GetList(ctx context.Context, queryparam models.ParamList) ([]*models.SaGroup, error) {
+func (db *repoSaGroup) GetList(ctx context.Context, queryparam models.ParamList) ([]*sa_models.SaGroup, error) {
 	var (
 		pageNum  = 0
 		pageSize = setting.FileConfigSetting.App.PageSize
@@ -49,7 +50,7 @@ func (db *repoSaGroup) GetList(ctx context.Context, queryparam models.ParamList)
 		logger   = logging.Logger{}
 		orderBy  = "created_at desc"
 		err      error
-		result   = []*models.SaGroup{}
+		result   = []*sa_models.SaGroup{}
 	)
 
 	// pagination
@@ -101,7 +102,7 @@ func (db *repoSaGroup) GetList(ctx context.Context, queryparam models.ParamList)
 
 }
 
-func (db *repoSaGroup) CreateSaGroup(ctx context.Context, groupData *models.SaGroup) error {
+func (db *repoSaGroup) CreateSaGroup(ctx context.Context, groupData *sa_models.SaGroup) error {
 	var (
 		logger = logging.Logger{}
 		err    error
@@ -116,7 +117,7 @@ func (db *repoSaGroup) CreateSaGroup(ctx context.Context, groupData *models.SaGr
 	return nil
 }
 
-func (db *repoSaGroup) UpdateSaGroup(ctx context.Context, groupData *models.SaGroup) error {
+func (db *repoSaGroup) UpdateSaGroup(ctx context.Context, groupData *sa_models.SaGroup) error {
 	var (
 		logger = logging.Logger{}
 		err    error
@@ -136,7 +137,7 @@ func (db *repoSaGroup) DeleteSaGroup(ctx context.Context, groupID int16) error {
 		logger = logging.Logger{}
 		err    error
 	)
-	userData := &models.SaGroup{}
+	userData := &sa_models.SaGroup{}
 	userData.GroupID = groupID
 
 	query := db.Conn.Delete(&userData)
@@ -169,7 +170,7 @@ func (db *repoSaGroup) CountGroupList(ctx context.Context, queryparam models.Par
 	}
 	// end where
 
-	query := db.Conn.Model(&models.SaUser{}).Where(sWhere).Count(&result)
+	query := db.Conn.Model(&sa_models.SaUser{}).Where(sWhere).Count(&result)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 

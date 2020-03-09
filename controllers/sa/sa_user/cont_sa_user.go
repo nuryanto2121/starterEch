@@ -6,6 +6,7 @@ import (
 	"net/http"
 	isauser "property/framework/interface/sa/sa_user"
 	"property/framework/models"
+	sa_models "property/framework/models/sa"
 	"property/framework/pkg/app"
 	"property/framework/pkg/logging"
 	util "property/framework/pkg/utils"
@@ -149,7 +150,7 @@ func (u *ContSaUser) CreateSaUser(e echo.Context) error {
 	var (
 		logger = logging.Logger{} // wajib
 		appE   = app.Res{R: e}    // wajib
-		user   models.SaUser
+		user   sa_models.SaUser
 		form   AddUserForm
 	)
 
@@ -206,7 +207,7 @@ func (u *ContSaUser) UpdateSaUser(e echo.Context) error {
 	var (
 		logger = logging.Logger{} // wajib
 		appE   = app.Res{R: e}    // wajib
-		user   models.SaUser
+		user   sa_models.SaUser
 		valid  validation.Validation                 // wajib
 		id     = util.StrTo(e.Param("id")).MustInt() //kalo bukan int => 0
 		form   = EditUserForm{}

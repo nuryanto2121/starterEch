@@ -5,6 +5,7 @@ import (
 	"math"
 	isagroup "property/framework/interface/sa/sa_group"
 	"property/framework/models"
+	sa_models "property/framework/models/sa"
 	util "property/framework/pkg/utils"
 	"reflect"
 	"time"
@@ -23,12 +24,12 @@ func NewUseSaGroup(a isagroup.Repository, timeout time.Duration) isagroup.UseCas
 	}
 }
 
-func (u *useSaGroup) GetBySaGroup(ctx context.Context, groupID int16) (models.SaGroup, error) {
+func (u *useSaGroup) GetBySaGroup(ctx context.Context, groupID int16) (sa_models.SaGroup, error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 
 	var (
-		result = models.SaGroup{}
+		result = sa_models.SaGroup{}
 		err    error
 	)
 
@@ -45,7 +46,7 @@ func (u *useSaGroup) GetList(ctx context.Context, queryparam models.ParamList) (
 	defer cancel()
 	var (
 		result = models.ResponseModelList{}
-		tgroup = models.SaGroup{}
+		tgroup = sa_models.SaGroup{}
 		err    error
 	)
 
@@ -72,7 +73,7 @@ func (u *useSaGroup) GetList(ctx context.Context, queryparam models.ParamList) (
 	return result, nil
 }
 
-func (u *useSaGroup) CreateSaGroup(ctx context.Context, groupData *models.SaGroup) error {
+func (u *useSaGroup) CreateSaGroup(ctx context.Context, groupData *sa_models.SaGroup) error {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 	var (
@@ -89,7 +90,7 @@ func (u *useSaGroup) CreateSaGroup(ctx context.Context, groupData *models.SaGrou
 	return nil
 }
 
-func (u *useSaGroup) UpdateSaGroup(ctx context.Context, groupData *models.SaGroup) error {
+func (u *useSaGroup) UpdateSaGroup(ctx context.Context, groupData *sa_models.SaGroup) error {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 	var (

@@ -4,7 +4,8 @@ import (
 	"context"
 	"fmt"
 	isauser "property/framework/interface/sa/sa_user"
-	models "property/framework/models"
+	"property/framework/models"
+	sa_models "property/framework/models/sa"
 	"property/framework/pkg/logging"
 	"property/framework/pkg/setting"
 
@@ -20,9 +21,9 @@ func NewRepoSaUser(Conn *gorm.DB) isauser.Repository {
 	return &repoSaUser{Conn}
 }
 
-func (db *repoSaUser) GetBySaUser(ctx context.Context, userID int16) (result models.SaUser, err error) {
+func (db *repoSaUser) GetBySaUser(ctx context.Context, userID int16) (result sa_models.SaUser, err error) {
 	var (
-		a      = models.SaUser{}
+		a      = sa_models.SaUser{}
 		logger = logging.Logger{}
 	)
 	query := db.Conn.Where("user_id = ?", userID).First(&a)
@@ -40,7 +41,7 @@ func (db *repoSaUser) GetBySaUser(ctx context.Context, userID int16) (result mod
 	return a, err
 }
 
-func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) (result []*models.SaUser, err error) {
+func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) (result []*sa_models.SaUser, err error) {
 	var (
 		pageNum  = 0
 		pageSize = setting.FileConfigSetting.App.PageSize
@@ -95,7 +96,7 @@ func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) 
 	return result, nil
 }
 
-func (db *repoSaUser) CreateSaUser(ctx context.Context, userData *models.SaUser) (err error) {
+func (db *repoSaUser) CreateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error) {
 	var (
 		logger = logging.Logger{}
 	)
@@ -109,7 +110,7 @@ func (db *repoSaUser) CreateSaUser(ctx context.Context, userData *models.SaUser)
 	return nil
 }
 
-func (db *repoSaUser) UpdateSaUser(ctx context.Context, userData *models.SaUser) (err error) {
+func (db *repoSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error) {
 	var (
 		logger = logging.Logger{}
 	)
@@ -127,7 +128,7 @@ func (db *repoSaUser) DeleteSaUser(ctx context.Context, userID int16) (err error
 	var (
 		logger = logging.Logger{}
 	)
-	userData := &models.SaUser{}
+	userData := &sa_models.SaUser{}
 	userData.UserID = userID
 
 	query := db.Conn.Delete(&userData)
@@ -159,7 +160,7 @@ func (db *repoSaUser) CountUserList(ctx context.Context, queryparam models.Param
 	}
 	// end where
 
-	query := db.Conn.Model(&models.SaUser{}).Where(sWhere).Count(&result)
+	query := db.Conn.Model(&sa_models.SaUser{}).Where(sWhere).Count(&result)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 

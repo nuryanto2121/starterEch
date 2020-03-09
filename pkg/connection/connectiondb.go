@@ -3,7 +3,7 @@ package connection
 import (
 	"fmt"
 	"log"
-	models "property/framework/models"
+	sa_models "property/framework/models/sa"
 	"property/framework/pkg/setting"
 	"time"
 
@@ -59,9 +59,9 @@ func autoMigrate() {
 	// Add auto migrate bellow this line
 	log.Println("STARTING AUTO MIGRATE ")
 	Conn.AutoMigrate(
-		models.SaUser{},
-		models.SaGroup{},
-		models.SaClient{},
+		sa_models.SaUser{},
+		sa_models.SaGroup{},
+		sa_models.SaClient{},
 	)
 
 	log.Println("FINISHING AUTO MIGRATE ")

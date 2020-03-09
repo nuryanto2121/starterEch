@@ -4,7 +4,8 @@ import (
 	"context"
 	"math"
 	isauser "property/framework/interface/sa/sa_user"
-	models "property/framework/models"
+	"property/framework/models"
+	sa_models "property/framework/models/sa"
 	util "property/framework/pkg/utils"
 	"reflect"
 	"time"
@@ -23,11 +24,11 @@ func NewUseSaUser(a isauser.Repository, timeout time.Duration) isauser.Usercase 
 	}
 }
 
-func (u *useSaUser) GetBySaUser(ctx context.Context, userID int16) (result models.SaUser, err error) {
+func (u *useSaUser) GetBySaUser(ctx context.Context, userID int16) (result sa_models.SaUser, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
-	a := models.SaUser{}
+	a := sa_models.SaUser{}
 	result, err = u.repoSaUser.GetBySaUser(ctx, userID)
 	if err != nil {
 		return a, err
@@ -40,7 +41,7 @@ func (u *useSaUser) GetList(ctx context.Context, queryparam models.ParamList) (r
 	defer cancel()
 
 	/*membuat Where like dari struct*/
-	tuser := models.SaUser{}
+	tuser := sa_models.SaUser{}
 	if queryparam.Search != "" {
 		value := reflect.ValueOf(tuser)
 		types := reflect.TypeOf(&tuser)
@@ -62,7 +63,7 @@ func (u *useSaUser) GetList(ctx context.Context, queryparam models.ParamList) (r
 	return result, nil
 }
 
-func (u *useSaUser) CreateSaUser(ctx context.Context, userData *models.SaUser) (err error) {
+func (u *useSaUser) CreateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
@@ -76,7 +77,7 @@ func (u *useSaUser) CreateSaUser(ctx context.Context, userData *models.SaUser) (
 	return nil
 }
 
-func (u *useSaUser) UpdateSaUser(ctx context.Context, userData *models.SaUser) (err error) {
+func (u *useSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
