@@ -9,6 +9,8 @@ import (
 	util "property/framework/pkg/utils"
 	"reflect"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 type useSaUser struct {
@@ -24,7 +26,7 @@ func NewUseSaUser(a isauser.Repository, timeout time.Duration) isauser.Usercase 
 	}
 }
 
-func (u *useSaUser) GetBySaUser(ctx context.Context, userID int16) (result sa_models.SaUser, err error) {
+func (u *useSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result sa_models.SaUser, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
@@ -90,7 +92,7 @@ func (u *useSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser
 	return nil
 }
 
-func (u *useSaUser) DeleteSaUser(ctx context.Context, userID int16) (err error) {
+func (u *useSaUser) DeleteSaUser(ctx context.Context, userID uuid.UUID) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 

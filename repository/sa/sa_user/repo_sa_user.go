@@ -10,6 +10,7 @@ import (
 	"property/framework/pkg/setting"
 
 	"github.com/jinzhu/gorm"
+	uuid "github.com/satori/go.uuid"
 )
 
 type repoSaUser struct {
@@ -21,7 +22,7 @@ func NewRepoSaUser(Conn *gorm.DB) isauser.Repository {
 	return &repoSaUser{Conn}
 }
 
-func (db *repoSaUser) GetBySaUser(ctx context.Context, userID int16) (result sa_models.SaUser, err error) {
+func (db *repoSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result sa_models.SaUser, err error) {
 	var (
 		a      = sa_models.SaUser{}
 		logger = logging.Logger{}
@@ -124,7 +125,7 @@ func (db *repoSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUs
 	return nil
 }
 
-func (db *repoSaUser) DeleteSaUser(ctx context.Context, userID int16) (err error) {
+func (db *repoSaUser) DeleteSaUser(ctx context.Context, userID uuid.UUID) (err error) {
 	var (
 		logger = logging.Logger{}
 	)

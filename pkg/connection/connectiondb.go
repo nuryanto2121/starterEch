@@ -57,6 +57,7 @@ func Setup() {
 // autoMigrate : create or alter table from struct
 func autoMigrate() {
 	// Add auto migrate bellow this line
+	Conn.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`)
 	log.Println("STARTING AUTO MIGRATE ")
 	Conn.AutoMigrate(
 		sa_models.SaUser{},

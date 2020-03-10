@@ -275,7 +275,7 @@
                 "summary": "GetList SaUser",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "ID",
                         "name": "id",
                         "in": "path",
@@ -303,7 +303,7 @@
                 "summary": "GetById SaUser",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "ID",
                         "name": "id",
                         "in": "path",
@@ -329,7 +329,7 @@
                 "summary": "Update User",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "ID",
                         "name": "id",
                         "in": "path",

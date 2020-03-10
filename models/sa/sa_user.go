@@ -1,10 +1,14 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	uuid "github.com/satori/go.uuid"
+)
 
 // SaUser :
 type SaUser struct {
-	UserID      int16     `json:"user_id" gorm:"PRIMARY_KEY"`
+	UserID      uuid.UUID `json:"user_id" gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	Passwd      string    `json:"passwd" gorm:"type:varchar(60);not null"`
 	GroupID     int16     `json:"group_id" gorm:"type:integer;not null"`
 	LevelNo     int16     `json:"level_no" gorm:"type:integer;default:0;not null"`

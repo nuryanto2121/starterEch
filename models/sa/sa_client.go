@@ -3,13 +3,12 @@ package models
 import (
 	"time"
 
-	"github.com/jinzhu/gorm"
-	"go.mongodb.org/mongo-driver/x/mongo/driver/uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 // SaClient :
 type SaClient struct {
-	ClientID         uuid.UUID `json:"client_id" gorm:"type:uuid;primary_key;"`
+	ClientID         uuid.UUID `json:"client_id" gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	ClientName       string    `json:"client_name" gorm:"type:varchar(60);not null"`
 	Address          string    `json:"address" gorm:"type:varchar(150)"`
 	PostCd           string    `json:"post_cd" gorm:"type:varchar(60)"`
@@ -27,10 +26,10 @@ type SaClient struct {
 }
 
 // BeforeCreate will set a UUID rather than numeric ID.
-func (base *SaClient) BeforeCreate(scope *gorm.Scope) error {
-	uuid, err := uuid.New()
-	if err != nil {
-		return err
-	}
-	return scope.SetColumn("ClientID", uuid)
-}
+// func (base *SaClient) BeforeCreate(scope *gorm.Scope) error {
+// 	uuid, err := uuid.New()
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return scope.SetColumn("ClientID", uuid)
+// }
