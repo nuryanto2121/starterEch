@@ -221,7 +221,7 @@ func (u *ContSaUser) UpdateSaUser(e echo.Context) error {
 	userID, err := uuid.FromString(id)
 
 	// valid.Min(id, 1, "id").Message("ID must be greater than 0")
-	logger.Info(userID)
+	logger.Info(id)
 	if err != nil {
 		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
 	}

@@ -105,7 +105,7 @@
                 "summary": "GetById SaGroup",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "ID",
                         "name": "id",
                         "in": "path",
@@ -131,7 +131,7 @@
                 "summary": "Update Group",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "ID",
                         "name": "id",
                         "in": "path",
@@ -167,7 +167,7 @@
                 "summary": "Delete group",
                 "parameters": [
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "ID",
                         "name": "id",
                         "in": "path",

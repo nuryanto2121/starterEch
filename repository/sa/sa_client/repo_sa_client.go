@@ -1,9 +1,9 @@
-package reposauser
+package reposaclient
 
 import (
 	"context"
 	"fmt"
-	isauser "property/framework/interface/sa/sa_user"
+	isclient "property/framework/interface/sa/sa_client"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/logging"
@@ -13,21 +13,22 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type repoSaUser struct {
+// repoSaClient :
+type repoSaClient struct {
 	Conn *gorm.DB
 }
 
-// NewRepoSaUser :
-func NewRepoSaUser(Conn *gorm.DB) isauser.Repository {
-	return &repoSaUser{Conn}
+// NewRepoSaClient :
+func NewRepoSaClient(Conn *gorm.DB) isclient.Repository {
+	return &repoSaClient{Conn}
 }
 
-func (db *repoSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result sa_models.SaUser, err error) {
+func (db *repoSaClient) GetBySaClient(ctx context.Context, clientID uuid.UUID) (result sa_models.SaClient, err error) {
 	var (
-		a      = sa_models.SaUser{}
+		a      = sa_models.SaClient{}
 		logger = logging.Logger{}
 	)
-	query := db.Conn.Where("user_id = ?", userID).First(&a)
+	query := db.Conn.Where("client_id = ?", clientID).First(&a)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr()))
 	err = query.Error
 
@@ -42,7 +43,7 @@ func (db *repoSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result
 	return a, err
 }
 
-func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) (result []*sa_models.SaUser, err error) {
+func (db *repoSaClient) GetList(ctx context.Context, queryparam models.ParamList) (result []*sa_models.SaClient, err error) {
 	var (
 		pageNum  = 0
 		pageSize = setting.FileConfigSetting.App.PageSize
@@ -97,75 +98,52 @@ func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) 
 	return result, nil
 }
 
-func (db *repoSaUser) CreateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error) {
+func (db *repoSaClient) CreateSaClient(ctx context.Context, clientData *sa_models.SaClient) (err error) {
 	var (
 		logger = logging.Logger{}
 	)
-	query := db.Conn.Create(userData)
+	query := db.Conn.Create(clientData)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
-	// err = db.Conn.Create(userData).Error
+	// err = db.Conn.Create(clientData).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (db *repoSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error) {
+func (db *repoSaClient) UpdateSaClient(ctx context.Context, clientData *sa_models.SaClient) (err error) {
 	var (
 		logger = logging.Logger{}
 	)
-	query := db.Conn.Save(userData)
+	query := db.Conn.Save(clientData)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
-	// err = db.Conn.Save(userData).Error
+	// err = db.Conn.Save(clientData).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (db *repoSaUser) DeleteSaUser(ctx context.Context, userID uuid.UUID) (err error) {
+func (db *repoSaClient) DeleteSaClient(ctx context.Context, clientID uuid.UUID) (err error) {
 	var (
 		logger = logging.Logger{}
 	)
-	userData := &sa_models.SaUser{}
-	userData.UserID = userID
+	clientData := &sa_models.SaClient{}
+	clientData.ClientID = clientID
 
-	query := db.Conn.Delete(&userData)
+	query := db.Conn.Delete(&clientData)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
-	// err = db.Conn.Where("user_id = ?", userID).Delete(&userData).Error
-	// err = db.Conn.Delete(&userData).Error
+
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (db *repoSaUser) CountUserList(ctx context.Context, queryparam models.ParamList) (result int, err error) {
-	var (
-		logger = logging.Logger{}
-		sWhere = ""
-	)
-	result = 0
-	// WHERE
-	if queryparam.InitSearch != "" {
-		sWhere = queryparam.InitSearch
-	}
-
-	if queryparam.Search != "" {
-		if sWhere != "" {
-			sWhere += " and " + queryparam.Search
-		} else {
-			sWhere += queryparam.Search
-		}
-	}
-	// end where
-
-	query := db.Conn.Model(&sa_models.SaUser{}).Where(sWhere).Count(&result)
-	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
-	err = query.Error
-
-	return result, err
+// CountClientList :
+func (db *repoSaClient) CountClientList(ctx context.Context, queryparam models.ParamList) (result int, err error) {
+	return result, nil
 }

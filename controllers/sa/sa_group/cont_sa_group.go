@@ -11,9 +11,10 @@ import (
 	"property/framework/pkg/logging"
 	util "property/framework/pkg/utils"
 
-	"github.com/astaxie/beego/validation"
 	"github.com/labstack/echo/v4"
 	"github.com/mitchellh/mapstructure"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 // ContSaGroup :
@@ -38,7 +39,7 @@ func NewContSaGroup(e *echo.Echo, a isagroup.UseCase) {
 // @Summary GetById SaGroup
 // @Tags Group
 // @Produce  json
-// @Param id path int true "ID"
+// @Param id path string true "ID"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/group/{id} [get]
 func (u *ContSaGroup) GetBySaGroup(e echo.Context) error {
@@ -49,17 +50,17 @@ func (u *ContSaGroup) GetBySaGroup(e echo.Context) error {
 
 	var (
 		logger = logging.Logger{}
-		appE   = app.Res{R: e}                       // wajib
-		id     = util.StrTo(e.Param("id")).MustInt() //kalo bukan int => 0
-		valid  validation.Validation                 // wajib
+		appE   = app.Res{R: e} // wajib
+		id     = e.Param("id") //kalo bukan int => 0
+		// valid  validation.Validation                 // wajib
 	)
-	valid.Min(id, 1, "id").Message("ID must be greater than 0")
+	GroupID, err := uuid.FromString(id)
 	logger.Info(id)
-	if valid.HasErrors() {
-		return appE.ResponseError(http.StatusBadRequest, app.MarkErrors(valid.Errors), nil)
+	if err != nil {
+		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
 	}
 
-	dataGroup, err := u.useSaGroup.GetBySaGroup(ctx, int16(id))
+	dataGroup, err := u.useSaGroup.GetBySaGroup(ctx, GroupID)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
 	}
@@ -166,7 +167,7 @@ type EditGroupForm struct {
 // @Summary Update Group
 // @Tags Group
 // @Produce json
-// @Param id path int true "ID"
+// @Param id path string true "ID"
 // @Param req body contsagroup.EditGroupForm true "req param #changes are possible to adjust the form of the registration form from forntend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/group/{id} [put]
@@ -180,15 +181,16 @@ func (u *ContSaGroup) UpdateSaGroup(e echo.Context) error {
 		logger = logging.Logger{} // wajib
 		appE   = app.Res{R: e}    // wajib
 		group  sa_models.SaGroup
-		valid  validation.Validation                 // wajib
-		id     = util.StrTo(e.Param("id")).MustInt() //kalo bukan int => 0
-		form   = EditGroupForm{}
+		err    error
+		// valid  validation.Validation                 // wajib
+		id   = e.Param("id") //kalo bukan int => 0
+		form = EditGroupForm{}
 	)
 
-	valid.Min(id, 1, "id").Message("ID must be greater than 0")
+	GroupID, err := uuid.FromString(id)
 	logger.Info(id)
-	if valid.HasErrors() {
-		return appE.ResponseError(http.StatusBadRequest, app.MarkErrors(valid.Errors), nil)
+	if err != nil {
+		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
 	}
 
 	// validasi and bind to struct
@@ -199,12 +201,12 @@ func (u *ContSaGroup) UpdateSaGroup(e echo.Context) error {
 	}
 
 	// mapping to struct model saSuser
-	err := mapstructure.Decode(form, &group)
+	err = mapstructure.Decode(form, &group)
 	if err != nil {
 		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
 
 	}
-	group.GroupID = int16(id)
+	group.GroupID = GroupID
 	err = u.useSaGroup.UpdateSaGroup(ctx, &group)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
@@ -216,7 +218,7 @@ func (u *ContSaGroup) UpdateSaGroup(e echo.Context) error {
 // @Summary Delete group
 // @Tags Group
 // @Produce  json
-// @Param id path int true "ID"
+// @Param id path string true "ID"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/group/{id} [delete]
 func (u *ContSaGroup) DeleteSaGroup(e echo.Context) error {
@@ -227,17 +229,18 @@ func (u *ContSaGroup) DeleteSaGroup(e echo.Context) error {
 
 	var (
 		logger = logging.Logger{}
-		appE   = app.Res{R: e}                       // wajib
-		id     = util.StrTo(e.Param("id")).MustInt() //kalo bukan int => 0
-		valid  validation.Validation                 // wajib
+		err    error
+		appE   = app.Res{R: e} // wajib
+		id     = e.Param("id") //kalo bukan int => 0
+		// valid  validation.Validation                 // wajib
 	)
 
-	valid.Min(id, 1, "id").Message("ID must be greater than 0")
+	GroupID, err := uuid.FromString(id)
 	logger.Info(id)
-	if valid.HasErrors() {
-		return appE.ResponseError(http.StatusBadRequest, app.MarkErrors(valid.Errors), nil)
+	if err != nil {
+		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
 	}
-	err := u.useSaGroup.DeleteSaGroup(ctx, int16(id))
+	err = u.useSaGroup.DeleteSaGroup(ctx, GroupID)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), err.Error(), nil)
 	}

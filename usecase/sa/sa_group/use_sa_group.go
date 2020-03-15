@@ -9,6 +9,8 @@ import (
 	util "property/framework/pkg/utils"
 	"reflect"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 type useSaGroup struct {
@@ -24,7 +26,7 @@ func NewUseSaGroup(a isagroup.Repository, timeout time.Duration) isagroup.UseCas
 	}
 }
 
-func (u *useSaGroup) GetBySaGroup(ctx context.Context, groupID int16) (sa_models.SaGroup, error) {
+func (u *useSaGroup) GetBySaGroup(ctx context.Context, groupID uuid.UUID) (sa_models.SaGroup, error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 
@@ -105,7 +107,7 @@ func (u *useSaGroup) UpdateSaGroup(ctx context.Context, groupData *sa_models.SaG
 
 }
 
-func (u *useSaGroup) DeleteSaGroup(ctx context.Context, groupID int16) error {
+func (u *useSaGroup) DeleteSaGroup(ctx context.Context, groupID uuid.UUID) error {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 

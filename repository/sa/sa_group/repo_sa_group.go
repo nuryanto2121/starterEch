@@ -10,6 +10,7 @@ import (
 	"property/framework/pkg/setting"
 
 	"github.com/jinzhu/gorm"
+	uuid "github.com/satori/go.uuid"
 )
 
 type repoSaGroup struct {
@@ -21,7 +22,7 @@ func NewRepoSaGroup(Conn *gorm.DB) isagroup.Repository {
 	return &repoSaGroup{Conn}
 }
 
-func (db *repoSaGroup) GetBySaGroup(ctx context.Context, groupID int16) (sa_models.SaGroup, error) {
+func (db *repoSaGroup) GetBySaGroup(ctx context.Context, groupID uuid.UUID) (sa_models.SaGroup, error) {
 	var (
 		dataGroup = sa_models.SaGroup{}
 		logger    = logging.Logger{}
@@ -132,7 +133,7 @@ func (db *repoSaGroup) UpdateSaGroup(ctx context.Context, groupData *sa_models.S
 	return nil
 }
 
-func (db *repoSaGroup) DeleteSaGroup(ctx context.Context, groupID int16) error {
+func (db *repoSaGroup) DeleteSaGroup(ctx context.Context, groupID uuid.UUID) error {
 	var (
 		logger = logging.Logger{}
 		err    error

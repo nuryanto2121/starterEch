@@ -158,7 +158,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -175,7 +175,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
@@ -192,7 +192,7 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from forntend'
         in: body

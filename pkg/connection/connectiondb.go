@@ -63,6 +63,10 @@ func autoMigrate() {
 		sa_models.SaUser{},
 		sa_models.SaGroup{},
 		sa_models.SaClient{},
+		sa_models.SaBranch{},
+		sa_models.SaCompany{},
+		sa_models.SaUserBranch{},
+		sa_models.SaUserCompany{},
 	)
 
 	log.Println("FINISHING AUTO MIGRATE ")

@@ -1,33 +1,32 @@
-package reposauser
+package reposabranch
 
 import (
 	"context"
 	"fmt"
-	isauser "property/framework/interface/sa/sa_user"
+	isabranch "property/framework/interface/sa/sa_branch"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/logging"
 	"property/framework/pkg/setting"
 
 	"github.com/jinzhu/gorm"
-	uuid "github.com/satori/go.uuid"
 )
 
-type repoSaUser struct {
+type repoSaBranch struct {
 	Conn *gorm.DB
 }
 
-// NewRepoSaUser :
-func NewRepoSaUser(Conn *gorm.DB) isauser.Repository {
-	return &repoSaUser{Conn}
+// NewRepoSaBranch :
+func NewRepoSaBranch(Conn *gorm.DB) isabranch.Repository {
+	return &repoSaBranch{Conn}
 }
 
-func (db *repoSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result sa_models.SaUser, err error) {
+func (db *repoSaBranch) GetBySaBranch(ctx context.Context, branchID int16) (result sa_models.SaBranch, err error) {
 	var (
-		a      = sa_models.SaUser{}
+		a      = sa_models.SaBranch{}
 		logger = logging.Logger{}
 	)
-	query := db.Conn.Where("user_id = ?", userID).First(&a)
+	query := db.Conn.Where("branch_id = ?", branchID).First(&a)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr()))
 	err = query.Error
 
@@ -42,7 +41,7 @@ func (db *repoSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result
 	return a, err
 }
 
-func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) (result []*sa_models.SaUser, err error) {
+func (db *repoSaBranch) GetList(ctx context.Context, queryparam models.ParamList) (result []*sa_models.SaBranch, err error) {
 	var (
 		pageNum  = 0
 		pageSize = setting.FileConfigSetting.App.PageSize
@@ -97,53 +96,53 @@ func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) 
 	return result, nil
 }
 
-func (db *repoSaUser) CreateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error) {
+func (db *repoSaBranch) CreateSaBranch(ctx context.Context, branchData *sa_models.SaBranch) (err error) {
 	var (
 		logger = logging.Logger{}
 	)
-	query := db.Conn.Create(userData)
+	query := db.Conn.Create(branchData)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
-	// err = db.Conn.Create(userData).Error
+	// err = db.Conn.Create(branchData).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (db *repoSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error) {
+func (db *repoSaBranch) UpdateSaBranch(ctx context.Context, branchData *sa_models.SaBranch) (err error) {
 	var (
 		logger = logging.Logger{}
 	)
-	query := db.Conn.Save(userData)
+	query := db.Conn.Save(branchData)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
-	// err = db.Conn.Save(userData).Error
+	// err = db.Conn.Save(branchData).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (db *repoSaUser) DeleteSaUser(ctx context.Context, userID uuid.UUID) (err error) {
+func (db *repoSaBranch) DeleteSaBranch(ctx context.Context, branchID int16) (err error) {
 	var (
 		logger = logging.Logger{}
 	)
-	userData := &sa_models.SaUser{}
-	userData.UserID = userID
+	branchData := &sa_models.SaBranch{}
+	branchData.BranchID = branchID
 
-	query := db.Conn.Delete(&userData)
+	query := db.Conn.Delete(&branchData)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
-	// err = db.Conn.Where("user_id = ?", userID).Delete(&userData).Error
-	// err = db.Conn.Delete(&userData).Error
+	// err = db.Conn.Where("branch_id = ?", branchID).Delete(&branchData).Error
+	// err = db.Conn.Delete(&branchData).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (db *repoSaUser) CountUserList(ctx context.Context, queryparam models.ParamList) (result int, err error) {
+func (db *repoSaBranch) CountBranchList(ctx context.Context, queryparam models.ParamList) (result int, err error) {
 	var (
 		logger = logging.Logger{}
 		sWhere = ""
@@ -163,7 +162,7 @@ func (db *repoSaUser) CountUserList(ctx context.Context, queryparam models.Param
 	}
 	// end where
 
-	query := db.Conn.Model(&sa_models.SaUser{}).Where(sWhere).Count(&result)
+	query := db.Conn.Model(&sa_models.SaBranch{}).Where(sWhere).Count(&result)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 
