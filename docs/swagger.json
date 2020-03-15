@@ -12,6 +12,37 @@
         "version": "1.0"
     },
     "paths": {
+        "/api/auth/register": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Add Client",
+                "parameters": [
+                    {
+                        "description": "req param #changes are possible to adjust the form of the registration form from forntend",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/contauth.RegisterForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
         "/api/group": {
             "get": {
                 "produces": [
@@ -366,6 +397,44 @@
                 },
                 "msg": {
                     "description": "Code int         `json:\"code\"`",
+                    "type": "string"
+                }
+            }
+        },
+        "contauth.RegisterForm": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "client_name": {
+                    "type": "string"
+                },
+                "client_type": {
+                    "type": "string"
+                },
+                "contact_person": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "email_addr": {
+                    "type": "string"
+                },
+                "expiry_date": {
+                    "type": "string"
+                },
+                "joining_date": {
+                    "type": "string"
+                },
+                "post_cd": {
+                    "type": "string"
+                },
+                "start_billing_date": {
+                    "type": "string"
+                },
+                "telephone_no": {
                     "type": "string"
                 }
             }
