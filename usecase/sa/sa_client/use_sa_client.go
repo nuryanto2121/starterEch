@@ -68,5 +68,7 @@ func regisCompany(clientData *sa_models.SaClient) (sa_models.SaCompany, error) {
 	if err != nil {
 		return sa_models.SaCompany{}, err
 	}
+	companyData.CompanyName = "Company " + clientData.ClientName
+
 	return companyData, nil
 }

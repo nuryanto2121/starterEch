@@ -13,6 +13,15 @@ import (
 	_sagrouprepo "property/framework/repository/sa/sa_group"
 	_sagroupuse "property/framework/usecase/sa/sa_group"
 
+	_saauthcont "property/framework/controllers/auth"
+
+	_sacompanyrepo "property/framework/repository/sa/sa_company"
+
+	_sabranchrepo "property/framework/repository/sa/sa_branch"
+
+	_saclientrepo "property/framework/repository/sa/sa_client"
+	_saclientuse "property/framework/usecase/sa/sa_client"
+
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -36,4 +45,18 @@ func (e *Echo) InitialRouter() {
 	repoSaGroup := _sagrouprepo.NewRepoSaGroup(connection.Conn)
 	useSaGroup := _sagroupuse.NewUseSaGroup(repoSaGroup, timeoutContext)
 	_sagroupcont.NewContSaGroup(e.E, useSaGroup)
+
+	/*sa Company*/
+	repoSaCompany := _sacompanyrepo.NewRepoSaCompany(connection.Conn)
+
+	/*sa Branch*/
+	repoSaBranch := _sabranchrepo.NewRepoSaBranch(connection.Conn)
+
+	/*sa Client*/
+	repoSaClient := _saclientrepo.NewRepoSaClient(connection.Conn)
+	useSaClient := _saclientuse.NewUseClient(repoSaClient, repoSaCompany, repoSaUser, repoSaBranch, timeoutContext)
+
+	//_saauthcont
+
+	_saauthcont.NewContAuth(e.E, useSaClient)
 }
