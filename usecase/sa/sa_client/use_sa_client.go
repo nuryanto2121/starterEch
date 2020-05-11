@@ -6,7 +6,9 @@ import (
 	isaclient "property/framework/interface/sa/sa_client"
 	isacompany "property/framework/interface/sa/sa_company"
 	isauser "property/framework/interface/sa/sa_user"
+	"property/framework/models"
 	sa_models "property/framework/models/sa"
+	util "property/framework/pkg/utils"
 	"time"
 
 	"github.com/mitchellh/mapstructure"
@@ -45,30 +47,62 @@ func (u *useClient) RegisterClient(ctx context.Context, clientData *sa_models.Sa
 	}
 
 	// Create COmpany
-	companyData, err := regisCompany(clientData)
+	cntCompany, err := u.repoCompany.CountCompanyList(ctx, models.ParamList{})
+	if err != nil {
+		return err
+	}
+	companyData, err := regisCompany(clientData, cntCompany)
+	if err != nil {
+		return err
+	}
 	err = u.repoCompany.CreateSaCompany(ctx, &companyData)
+	if err != nil {
+		return err
+	}
 
 	// create Branch
+	cntBranch, err := u.repoBranch.CountBranchList(ctx, models.ParamList{})
+	if err != nil {
+		return err
+	}
+	branchData, err := regisBranch(&companyData, cntBranch)
+	if err != nil {
+		return err
+	}
+	err = u.repoBranch.CreateSaBranch(ctx, &branchData)
+	if err != nil {
+		return err
+	}
 
 	// Create User
+
 	return nil
 }
 
 // regisCompany :
-func regisCompany(clientData *sa_models.SaClient) (sa_models.SaCompany, error) {
+func regisCompany(clientData *sa_models.SaClient, cntCompany int) (sa_models.SaCompany, error) {
 	companyData := sa_models.SaCompany{}
-	// companyData.ClientID = clientData.ClientID
-	// companyData.CompanyName = clientData.ClientName
-	// companyData.Address = clientData.Address
-	// companyData.EmailAddr = clientData.EmailAddr
-	// companyData.ContactPerson = clientData.ContactPerson
-	// companyData.CreatedBy = clientData.CreatedBy
-	// companyData.UpdatedBy = clientData.UpdatedBy
 	err := mapstructure.Decode(clientData, &companyData)
 	if err != nil {
 		return sa_models.SaCompany{}, err
 	}
-	companyData.CompanyName = "Company " + clientData.ClientName
+	companyData.CompanyName = "Company_" + util.StrTo(cntCompany).String() + "_" + clientData.ClientName
+	companyData.StartDate = util.GetTimeNow()
+	companyData.FinYear = int16(util.GetTimeNow().Year())
+	companyData.FinPeriod = int16(util.GetTimeNow().Month())
 
 	return companyData, nil
+}
+
+// regisBranch :
+func regisBranch(companyData *sa_models.SaCompany, cntBranch int) (sa_models.SaBranch, error) {
+	branchData := sa_models.SaBranch{}
+	err := mapstructure.Decode(companyData, &branchData)
+	if err != nil {
+		return sa_models.SaBranch{}, err
+	}
+	branchData.BranchName = "Branch_" + util.StrTo(cntBranch).String() + "_" + util.StrTo(companyData.CompanyID).String()
+	branchData.StartDate = util.GetTimeNow()
+
+	return branchData, nil
 }
