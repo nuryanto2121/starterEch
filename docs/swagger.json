@@ -470,6 +470,9 @@
                 "company_id": {
                     "type": "integer"
                 },
+                "confirm_passwd": {
+                    "type": "string"
+                },
                 "created_by": {
                     "type": "string"
                 },
