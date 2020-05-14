@@ -126,17 +126,18 @@ func (u *ContSaUser) GetList(e echo.Context) error {
 
 // AddUserForm : param from frond end
 type AddUserForm struct {
-	Passwd      string `json:"passwd" valid:"Required"`
-	GroupID     int16  `json:"group_id" valid:"Required"`
-	LevelNo     int16  `json:"level_no" valid:"Required"`
-	UserName    string `json:"user_name" valid:"Required"`
-	EmailAddr   string `json:"email_addr"`
-	HandphoneNo string `json:"handphone_no"`
-	CompanyID   int16  `json:"company_id" valid:"Required"`
-	ProjectID   int16  `json:"project_id" valid:"Required"`
-	PictureURL  string `json:"picture_url"`
-	UserStatus  int16  `json:"user_status"`
-	CreatedBy   string `json:"created_by" valid:"Required"`
+	Passwd       string `json:"passwd" valid:"Required"`
+	ConfimPasswd string `json:"confirm_passwd" valid:"Required"`
+	GroupID      int16  `json:"group_id" valid:"Required"`
+	LevelNo      int16  `json:"level_no" valid:"Required"`
+	UserName     string `json:"user_name" valid:"Required"`
+	EmailAddr    string `json:"email_addr"`
+	HandphoneNo  string `json:"handphone_no"`
+	CompanyID    int16  `json:"company_id" valid:"Required"`
+	ProjectID    int16  `json:"project_id" valid:"Required"`
+	PictureURL   string `json:"picture_url"`
+	UserStatus   int16  `json:"user_status"`
+	CreatedBy    string `json:"created_by" valid:"Required"`
 }
 
 // CreateSaUser :

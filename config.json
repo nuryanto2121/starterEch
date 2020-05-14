@@ -25,29 +25,16 @@
     },
     "database": {
         "type": "postgres",
-        "host": "127.0.0.1",
-        "port": "55432",
-        "user": "postgres",
-        "password": "postgres",
-        "name": "PropertyA1",
-        "table_prefix": ""
-    },
-    "databasewind": {
-        "type": "postgres",
-        "host": "127.0.0.1",
-        "port": "5432",
-        "user": "postgres",
-        "password": "12345",
-        "name": "PropertyA",
-        "table_prefix": ""
-    },
-    "databaseServer": {
-        "type": "postgres",
-        "host": "daw.sytes.net",
+        "host": "34.87.141.90",
         "port": "1400",
         "user": "postgres",
         "password": "postgres_dev",
-        "name": "framework_property",
+        "name": "postgres",
         "table_prefix": ""
+    },
+    "redisdb":{
+        "host":"34.87.141.90",
+        "port":1200,
+        "Password":"redis_dev"
     }
 }
