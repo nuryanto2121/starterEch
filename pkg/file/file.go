@@ -17,7 +17,8 @@ func MustOpen(filelName, filePath string) (*os.File, error) {
 		return nil, fmt.Errorf("file.CheckPermission Permimssion denied src: %s", src)
 	}
 
-	err = IsNotExistMkDir(dir + "/runtime/")
+	err = IsNotExistMkDir(dir + "/wwwroot/")
+	err = IsNotExistMkDir(dir + "/wwwroot/runtime/")
 	err = IsNotExistMkDir(src)
 	if err != nil {
 		return nil, fmt.Errorf("file.IsNotExistMkDir src: %s, err: %v", src, err)
