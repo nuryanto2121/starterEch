@@ -11,6 +11,7 @@ import (
 // Repository :
 type Repository interface {
 	GetBySaUser(ctx context.Context, userID uuid.UUID) (result sa_models.SaUser, err error)
+	GetByEmailSaUser(ctx context.Context, email string) (result sa_models.SaUser, err error)
 	GetList(ctx context.Context, queryparam models.ParamList) (result []*sa_models.SaUser, err error)
 	CreateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error)
 	UpdateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error)
@@ -21,6 +22,7 @@ type Repository interface {
 // Usercase :
 type Usercase interface {
 	GetBySaUser(ctx context.Context, userID uuid.UUID) (result sa_models.SaUser, err error)
+	GetByEmailSaUser(ctx context.Context, email string) (result sa_models.SaUser, err error)
 	GetList(ctx context.Context, queryparam models.ParamList) (result models.ResponseModelList, err error)
 	CreateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error)
 	UpdateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error)

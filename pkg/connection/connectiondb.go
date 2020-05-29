@@ -61,7 +61,7 @@ func autoMigrate() {
 	log.Println("STARTING AUTO MIGRATE ")
 	Conn.AutoMigrate(
 		sa_models.SaUser{},
-		sa_models.SaGroup{},
+		sa_models.SaRole{},
 		sa_models.SaClient{},
 		sa_models.SaBranch{},
 		sa_models.SaCompany{},

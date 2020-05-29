@@ -57,7 +57,7 @@ func (a *auditLog) saveAudit() {
 	if err != nil {
 		log.Printf("%s", err)
 	}
-	defer conn.Close()
+	// defer conn.Close()
 }
 
 // autoMigrate : create or alter table from struct

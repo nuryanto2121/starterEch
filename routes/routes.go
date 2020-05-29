@@ -9,9 +9,9 @@ import (
 	_sauserrepo "property/framework/repository/sa/sa_user"
 	_sauseruse "property/framework/usecase/sa/sa_user"
 
-	_sagroupcont "property/framework/controllers/sa/sa_group"
-	_sagrouprepo "property/framework/repository/sa/sa_group"
-	_sagroupuse "property/framework/usecase/sa/sa_group"
+	_sarolecont "property/framework/controllers/sa/sa_role"
+	_sarolerepo "property/framework/repository/sa/sa_role"
+	_saroleuse "property/framework/usecase/sa/sa_role"
 
 	_saauthcont "property/framework/controllers/auth"
 
@@ -41,10 +41,10 @@ func (e *Echo) InitialRouter() {
 	useSaUser := _sauseruse.NewUseSaUser(repoSaUser, timeoutContext)
 	_sausercont.NewContSaUser(e.E, useSaUser)
 
-	/*sa Group*/
-	repoSaGroup := _sagrouprepo.NewRepoSaGroup(connection.Conn)
-	useSaGroup := _sagroupuse.NewUseSaGroup(repoSaGroup, timeoutContext)
-	_sagroupcont.NewContSaGroup(e.E, useSaGroup)
+	/*sa Role*/
+	repoSaRole := _sarolerepo.NewRepoSaRole(connection.Conn)
+	useSaRole := _saroleuse.NewUseSaRole(repoSaRole, timeoutContext)
+	_sarolecont.NewContSaRole(e.E, useSaRole)
 
 	/*sa Company*/
 	repoSaCompany := _sacompanyrepo.NewRepoSaCompany(connection.Conn)
@@ -58,5 +58,5 @@ func (e *Echo) InitialRouter() {
 
 	//_saauthcont
 
-	_saauthcont.NewContAuth(e.E, useSaClient)
+	_saauthcont.NewContAuth(e.E, useSaClient, useSaUser)
 }

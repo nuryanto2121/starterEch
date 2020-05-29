@@ -13,7 +13,7 @@ type SaClient struct {
 	Address          string    `json:"address" gorm:"type:varchar(150)"`
 	PostCd           string    `json:"post_cd" gorm:"type:varchar(60)"`
 	TelephoneNo      string    `json:"telephone_no" gorm:"type:varchar(15)"`
-	EmailAddr        string    `json:"email_addr" gorm:"type:varchar(60)"`
+	EmailAddr        string    `json:"email_addr" gorm:"type:varchar(60);unique_index;not null"`
 	ContactPerson    string    `json:"contact_person" gorm:"type:varchar(60)"`
 	ClientType       string    `json:"client_type" gorm:"type:varchar(60)"`
 	JoiningDate      time.Time `json:"joining_date" gorm:"type:timestamp(0) without time zone;default:now()"`

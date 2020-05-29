@@ -126,25 +126,26 @@ func (u *ContSaUser) GetList(e echo.Context) error {
 
 // AddUserForm : param from frond end
 type AddUserForm struct {
-	Passwd       string `json:"passwd" valid:"Required"`
-	ConfimPasswd string `json:"confirm_passwd" valid:"Required"`
-	GroupID      int16  `json:"group_id" valid:"Required"`
-	LevelNo      int16  `json:"level_no" valid:"Required"`
-	UserName     string `json:"user_name" valid:"Required"`
-	EmailAddr    string `json:"email_addr"`
-	HandphoneNo  string `json:"handphone_no"`
-	CompanyID    int16  `json:"company_id" valid:"Required"`
-	ProjectID    int16  `json:"project_id" valid:"Required"`
-	PictureURL   string `json:"picture_url"`
-	UserStatus   int16  `json:"user_status"`
-	CreatedBy    string `json:"created_by" valid:"Required"`
+	UserName     string    `json:"user_name" valid:"Required"`
+	Name         string    `json:"name" valid:"Required"`
+	EmailAddr    string    `json:"email_addr" valid:"Required"`
+	LevelNo      int       `json:"level_no"`
+	UserStatus   int       `json:"user_status"`
+	RoleID       uuid.UUID `json:"role_id" valid:"Required"`
+	HandphoneNo  string    `json:"handphone_no"`
+	Passwd       string    `json:"passwd" valid:"Required"`
+	ConfimPasswd string    `json:"confirm_passwd" valid:"Required"`
+	CompanyID    int       `json:"company_id" valid:"Required"`
+	ProjectID    int       `json:"project_id" valid:"Required"`
+	PictureURL   string    `json:"picture_url"`
+	CreatedBy    string    `json:"created_by" valid:"Required"`
 }
 
 // CreateSaUser :
 // @Summary Add User
 // @Tags User
 // @Produce json
-// @Param req body contsauser.AddUserForm true "req param #changes are possible to adjust the form of the registration form from forntend"
+// @Param req body contsauser.AddUserForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/user [post]
 func (u *ContSaUser) CreateSaUser(e echo.Context) error {
@@ -167,6 +168,10 @@ func (u *ContSaUser) CreateSaUser(e echo.Context) error {
 		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
 	}
 
+	if form.Passwd != form.ConfimPasswd {
+		return appE.ResponseError(http.StatusBadRequest, "Password and Password Confirmation doesn't match", nil)
+	}
+
 	// mapping to struct model saSuser
 	err := mapstructure.Decode(form, &user)
 	if err != nil {
@@ -178,21 +183,23 @@ func (u *ContSaUser) CreateSaUser(e echo.Context) error {
 		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
 	}
 
+	user.Passwd = ""
+
 	return appE.Response(http.StatusCreated, "Ok", user)
 }
 
 // EditUserForm : param from frond end
 type EditUserForm struct {
 	Passwd      string `json:"passwd" valid:"Required"`
-	GroupID     int16  `json:"group_id" valid:"Required"`
-	LevelNo     int16  `json:"level_no" valid:"Required"`
+	GroupID     int    `json:"group_id" valid:"Required"`
+	LevelNo     int    `json:"level_no" valid:"Required"`
 	UserName    string `json:"user_name" valid:"Required"`
 	EmailAddr   string `json:"email_addr"`
 	HandphoneNo string `json:"handphone_no"`
-	CompanyID   int16  `json:"company_id" valid:"Required"`
-	ProjectID   int16  `json:"project_id" valid:"Required"`
+	CompanyID   int    `json:"company_id" valid:"Required"`
+	ProjectID   int    `json:"project_id" valid:"Required"`
 	PictureURL  string `json:"picture_url"`
-	UserStatus  int16  `json:"user_status"`
+	UserStatus  int    `json:"user_status"`
 	UpdatedBy   string `json:"Updated_by" valid:"Required"`
 }
 
@@ -201,7 +208,7 @@ type EditUserForm struct {
 // @Tags User
 // @Produce json
 // @Param id path string true "ID"
-// @Param req body contsauser.EditUserForm true "req param #changes are possible to adjust the form of the registration form from forntend"
+// @Param req body contsauser.EditUserForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/user/{id} [put]
 func (u *ContSaUser) UpdateSaUser(e echo.Context) error {

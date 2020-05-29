@@ -1,9 +1,9 @@
-package usesagroup
+package usesarole
 
 import (
 	"context"
 	"math"
-	isagroup "property/framework/interface/sa/sa_group"
+	isarole "property/framework/interface/sa/sa_role"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
 	util "property/framework/pkg/utils"
@@ -13,29 +13,29 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type useSaGroup struct {
-	repoSaGroup   isagroup.Repository
+type useSaRole struct {
+	repoSaRole    isarole.Repository
 	contexTimeOut time.Duration
 }
 
-// NewUseSaGroup :
-func NewUseSaGroup(a isagroup.Repository, timeout time.Duration) isagroup.UseCase {
-	return &useSaGroup{
-		repoSaGroup:   a,
+// NewUseSaRole :
+func NewUseSaRole(a isarole.Repository, timeout time.Duration) isarole.UseCase {
+	return &useSaRole{
+		repoSaRole:    a,
 		contexTimeOut: timeout,
 	}
 }
 
-func (u *useSaGroup) GetBySaGroup(ctx context.Context, groupID uuid.UUID) (sa_models.SaGroup, error) {
+func (u *useSaRole) GetBySaRole(ctx context.Context, roleID uuid.UUID) (sa_models.SaRole, error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 
 	var (
-		result = sa_models.SaGroup{}
+		result = sa_models.SaRole{}
 		err    error
 	)
 
-	result, err = u.repoSaGroup.GetBySaGroup(ctx, groupID)
+	result, err = u.repoSaRole.GetBySaRole(ctx, roleID)
 	if err != nil {
 		return result, err
 	}
@@ -43,27 +43,27 @@ func (u *useSaGroup) GetBySaGroup(ctx context.Context, groupID uuid.UUID) (sa_mo
 	return result, nil
 }
 
-func (u *useSaGroup) GetList(ctx context.Context, queryparam models.ParamList) (models.ResponseModelList, error) {
+func (u *useSaRole) GetList(ctx context.Context, queryparam models.ParamList) (models.ResponseModelList, error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 	var (
 		result = models.ResponseModelList{}
-		tgroup = sa_models.SaGroup{}
+		trole  = sa_models.SaRole{}
 		err    error
 	)
 
 	/*membuat Where like dari struct*/
 	if queryparam.Search != "" {
-		value := reflect.ValueOf(tgroup)
-		types := reflect.TypeOf(&tgroup)
+		value := reflect.ValueOf(trole)
+		types := reflect.TypeOf(&trole)
 		queryparam.Search = util.GetWhereLikeStruct(value, types, queryparam.Search, "")
 	}
-	result.Data, err = u.repoSaGroup.GetList(ctx, queryparam)
+	result.Data, err = u.repoSaRole.GetList(ctx, queryparam)
 	if err != nil {
 		return result, err
 	}
 
-	result.Total, err = u.repoSaGroup.CountGroupList(ctx, queryparam)
+	result.Total, err = u.repoSaRole.CountRoleList(ctx, queryparam)
 	if err != nil {
 		return result, err
 	}
@@ -75,31 +75,31 @@ func (u *useSaGroup) GetList(ctx context.Context, queryparam models.ParamList) (
 	return result, nil
 }
 
-func (u *useSaGroup) CreateSaGroup(ctx context.Context, groupData *sa_models.SaGroup) error {
+func (u *useSaRole) CreateSaRole(ctx context.Context, roleData *sa_models.SaRole) error {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 	var (
 		err error
 	)
 
-	groupData.UpdatedBy = groupData.CreatedBy
-	groupData.CreatedAt = util.GetTimeNow()
-	groupData.UpdatedAt = util.GetTimeNow()
-	err = u.repoSaGroup.CreateSaGroup(ctx, groupData)
+	roleData.UpdatedBy = roleData.CreatedBy
+	roleData.CreatedAt = util.GetTimeNow()
+	roleData.UpdatedAt = util.GetTimeNow()
+	err = u.repoSaRole.CreateSaRole(ctx, roleData)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *useSaGroup) UpdateSaGroup(ctx context.Context, groupData *sa_models.SaGroup) error {
+func (u *useSaRole) UpdateSaRole(ctx context.Context, roleData *sa_models.SaRole) error {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 	var (
 		err error
 	)
-	groupData.UpdatedAt = util.GetTimeNow()
-	err = u.repoSaGroup.UpdateSaGroup(ctx, groupData)
+	roleData.UpdatedAt = util.GetTimeNow()
+	err = u.repoSaRole.UpdateSaRole(ctx, roleData)
 	if err != nil {
 		return err
 	}
@@ -107,11 +107,11 @@ func (u *useSaGroup) UpdateSaGroup(ctx context.Context, groupData *sa_models.SaG
 
 }
 
-func (u *useSaGroup) DeleteSaGroup(ctx context.Context, groupID uuid.UUID) error {
+func (u *useSaRole) DeleteSaRole(ctx context.Context, roleID uuid.UUID) error {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 
-	err := u.repoSaGroup.DeleteSaGroup(ctx, groupID)
+	err := u.repoSaRole.DeleteSaRole(ctx, roleID)
 	if err != nil {
 		return err
 	}

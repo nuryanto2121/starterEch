@@ -38,6 +38,18 @@ func (u *useSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result s
 	return result, nil
 }
 
+func (u *useSaUser) GetByEmailSaUser(ctx context.Context, email string) (result sa_models.SaUser, err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
+	defer cancel()
+
+	a := sa_models.SaUser{}
+	result, err = u.repoSaUser.GetByEmailSaUser(ctx, email)
+	if err != nil {
+		return a, err
+	}
+	return result, nil
+}
+
 func (u *useSaUser) GetList(ctx context.Context, queryparam models.ParamList) (result models.ResponseModelList, err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
@@ -69,6 +81,7 @@ func (u *useSaUser) CreateSaUser(ctx context.Context, userData *sa_models.SaUser
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
+	userData.Passwd, _ = util.HashAndSalt(util.GetPassword(userData.Passwd))
 	userData.UpdatedBy = userData.CreatedBy
 	userData.CreatedAt = util.GetTimeNow()
 	userData.UpdatedAt = util.GetTimeNow()

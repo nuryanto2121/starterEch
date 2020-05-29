@@ -79,6 +79,11 @@ func (u *useClient) RegisterClient(ctx context.Context, clientData *sa_models.Sa
 	return nil
 }
 
+// // GetByEmailSaClient :
+// func (u *useClient) GetByEmailSaClient(ctx context.Context, email string) (sa_models.SaClient, error) {
+
+// }
+
 // regisCompany :
 func regisCompany(clientData *sa_models.SaClient, cntCompany int) (sa_models.SaCompany, error) {
 	companyData := sa_models.SaCompany{}
@@ -88,8 +93,8 @@ func regisCompany(clientData *sa_models.SaClient, cntCompany int) (sa_models.SaC
 	}
 	companyData.CompanyName = "Company_" + util.StrTo(cntCompany).String() + "_" + clientData.ClientName
 	companyData.StartDate = util.GetTimeNow()
-	companyData.FinYear = int16(util.GetTimeNow().Year())
-	companyData.FinPeriod = int16(util.GetTimeNow().Month())
+	companyData.FinYear = util.GetTimeNow().Year()
+	companyData.FinPeriod = int(util.GetTimeNow().Month())
 
 	return companyData, nil
 }

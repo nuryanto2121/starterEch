@@ -12,6 +12,37 @@
         "version": "1.0"
     },
     "paths": {
+        "/api/auth/login": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "req param #changes are possible to adjust the form of the registration form from frontend",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/contauth.LoginForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
         "/api/auth/register": {
             "post": {
                 "produces": [
@@ -23,7 +54,7 @@
                 "summary": "Add Client",
                 "parameters": [
                     {
-                        "description": "req param #changes are possible to adjust the form of the registration form from forntend",
+                        "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
                         "in": "body",
                         "required": true,
@@ -43,15 +74,15 @@
                 }
             }
         },
-        "/api/group": {
+        "/api/role": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Group"
+                    "Role"
                 ],
-                "summary": "GetList SaGroup",
+                "summary": "GetList SaRole",
                 "parameters": [
                     {
                         "type": "integer",
@@ -100,18 +131,18 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Group"
+                    "Role"
                 ],
-                "summary": "Add Group",
+                "summary": "Add Role",
                 "parameters": [
                     {
-                        "description": "req param #changes are possible to adjust the form of the registration form from forntend",
+                        "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/contsagroup.AddGroupForm"
+                            "$ref": "#/definitions/contsarole.AddRoleForm"
                         }
                     }
                 ],
@@ -125,15 +156,15 @@
                 }
             }
         },
-        "/api/group/{id}": {
+        "/api/role/{id}": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Group"
+                    "Role"
                 ],
-                "summary": "GetById SaGroup",
+                "summary": "GetById SaRole",
                 "parameters": [
                     {
                         "type": "string",
@@ -157,9 +188,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Group"
+                    "Role"
                 ],
-                "summary": "Update Group",
+                "summary": "Update Role",
                 "parameters": [
                     {
                         "type": "string",
@@ -169,13 +200,13 @@
                         "required": true
                     },
                     {
-                        "description": "req param #changes are possible to adjust the form of the registration form from forntend",
+                        "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/contsagroup.EditGroupForm"
+                            "$ref": "#/definitions/contsarole.EditRoleForm"
                         }
                     }
                 ],
@@ -193,9 +224,9 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Group"
+                    "Role"
                 ],
-                "summary": "Delete group",
+                "summary": "Delete role",
                 "parameters": [
                     {
                         "type": "string",
@@ -277,7 +308,7 @@
                 "summary": "Add User",
                 "parameters": [
                     {
-                        "description": "req param #changes are possible to adjust the form of the registration form from forntend",
+                        "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
                         "in": "body",
                         "required": true,
@@ -367,7 +398,7 @@
                         "required": true
                     },
                     {
-                        "description": "req param #changes are possible to adjust the form of the registration form from forntend",
+                        "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
                         "in": "body",
                         "required": true,
@@ -397,6 +428,17 @@
                 },
                 "msg": {
                     "description": "Code int         `json:\"code\"`",
+                    "type": "string"
+                }
+            }
+        },
+        "contauth.LoginForm": {
+            "type": "object",
+            "properties": {
+                "p": {
+                    "type": "string"
+                },
+                "u": {
                     "type": "string"
                 }
             }
@@ -439,7 +481,7 @@
                 }
             }
         },
-        "contsagroup.AddGroupForm": {
+        "contsarole.AddRoleForm": {
             "type": "object",
             "properties": {
                 "created_by": {
@@ -453,7 +495,7 @@
                 }
             }
         },
-        "contsagroup.EditGroupForm": {
+        "contsarole.EditRoleForm": {
             "type": "object",
             "properties": {
                 "Updated_by": {
@@ -479,14 +521,14 @@
                 "email_addr": {
                     "type": "string"
                 },
-                "group_id": {
-                    "type": "integer"
-                },
                 "handphone_no": {
                     "type": "string"
                 },
                 "level_no": {
                     "type": "integer"
+                },
+                "name": {
+                    "type": "string"
                 },
                 "passwd": {
                     "type": "string"
@@ -496,6 +538,9 @@
                 },
                 "project_id": {
                     "type": "integer"
+                },
+                "role_id": {
+                    "type": "string"
                 },
                 "user_name": {
                     "type": "string"

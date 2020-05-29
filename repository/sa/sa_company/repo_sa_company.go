@@ -21,7 +21,7 @@ func NewRepoSaCompany(Conn *gorm.DB) isacompany.Repository {
 	return &repoSaCompany{Conn}
 }
 
-func (db *repoSaCompany) GetBySaCompany(ctx context.Context, companyID int16) (result sa_models.SaCompany, err error) {
+func (db *repoSaCompany) GetBySaCompany(ctx context.Context, companyID int) (result sa_models.SaCompany, err error) {
 	var (
 		a      = sa_models.SaCompany{}
 		logger = logging.Logger{}
@@ -124,7 +124,7 @@ func (db *repoSaCompany) UpdateSaCompany(ctx context.Context, companyData *sa_mo
 	return nil
 }
 
-func (db *repoSaCompany) DeleteSaCompany(ctx context.Context, companyID int16) (err error) {
+func (db *repoSaCompany) DeleteSaCompany(ctx context.Context, companyID int) (err error) {
 	var (
 		logger = logging.Logger{}
 	)

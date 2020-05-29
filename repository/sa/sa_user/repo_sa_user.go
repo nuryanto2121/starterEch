@@ -42,6 +42,26 @@ func (db *repoSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result
 	return a, err
 }
 
+func (db *repoSaUser) GetByEmailSaUser(ctx context.Context, email string) (result sa_models.SaUser, err error) {
+	var (
+		a      = sa_models.SaUser{}
+		logger = logging.Logger{}
+	)
+	query := db.Conn.Where("email_addr = ?", email).Or("user_name = ?", email).First(&a)
+	logger.Query(fmt.Sprintf("%v", query.QueryExpr()))
+	err = query.Error
+
+	if err != nil {
+		//
+		if err == gorm.ErrRecordNotFound {
+			return a, models.ErrNotFound
+		}
+		return a, err
+	}
+
+	return a, err
+}
+
 func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) (result []*sa_models.SaUser, err error) {
 	var (
 		pageNum  = 0

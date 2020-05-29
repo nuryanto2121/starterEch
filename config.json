@@ -1,5 +1,6 @@
 {
     "debug": true,
+    "jwt_secret": "don'tPanic",
     "server": {
         "run_mode": "debug",
         "http_port": 8084,
@@ -8,7 +9,7 @@
         "_comment": "debug or release"
     },
     "app": {
-        "jwt_secret": "",
+        "jwt_secret": "don'tPanic",
         "page_size": 10,
         "prefix_url": "http://127.0.0.1:8000",
         "runtime_root_path": "wwwroot/runtime/",

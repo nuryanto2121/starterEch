@@ -7,6 +7,13 @@ definitions:
         description: Code int         `json:"code"`
         type: string
     type: object
+  contauth.LoginForm:
+    properties:
+      p:
+        type: string
+      u:
+        type: string
+    type: object
   contauth.RegisterForm:
     properties:
       address:
@@ -32,7 +39,7 @@ definitions:
       telephone_no:
         type: string
     type: object
-  contsagroup.AddGroupForm:
+  contsarole.AddRoleForm:
     properties:
       created_by:
         type: string
@@ -41,7 +48,7 @@ definitions:
       num:
         type: number
     type: object
-  contsagroup.EditGroupForm:
+  contsarole.EditRoleForm:
     properties:
       Updated_by:
         type: string
@@ -58,18 +65,20 @@ definitions:
         type: string
       email_addr:
         type: string
-      group_id:
-        type: integer
       handphone_no:
         type: string
       level_no:
         type: integer
+      name:
+        type: string
       passwd:
         type: string
       picture_url:
         type: string
       project_id:
         type: integer
+      role_id:
+        type: string
       user_name:
         type: string
       user_status:
@@ -123,11 +132,32 @@ info:
   title: Starter
   version: "1.0"
 paths:
+  /api/auth/login:
+    post:
+      parameters:
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/contauth.LoginForm'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: Login
+      tags:
+      - Auth
   /api/auth/register:
     post:
       parameters:
       - description: 'req param #changes are possible to adjust the form of the registration
-          form from forntend'
+          form from frontend'
         in: body
         name: req
         required: true
@@ -144,7 +174,7 @@ paths:
       summary: Add Client
       tags:
       - Auth
-  /api/group:
+  /api/role:
     get:
       parameters:
       - description: Page
@@ -176,18 +206,18 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.ResponseModelList'
-      summary: GetList SaGroup
+      summary: GetList SaRole
       tags:
-      - Group
+      - Role
     post:
       parameters:
       - description: 'req param #changes are possible to adjust the form of the registration
-          form from forntend'
+          form from frontend'
         in: body
         name: req
         required: true
         schema:
-          $ref: '#/definitions/contsagroup.AddGroupForm'
+          $ref: '#/definitions/contsarole.AddRoleForm'
           type: object
       produces:
       - application/json
@@ -196,10 +226,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
-      summary: Add Group
+      summary: Add Role
       tags:
-      - Group
-  /api/group/{id}:
+      - Role
+  /api/role/{id}:
     delete:
       parameters:
       - description: ID
@@ -214,9 +244,9 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
-      summary: Delete group
+      summary: Delete role
       tags:
-      - Group
+      - Role
     get:
       parameters:
       - description: ID
@@ -231,9 +261,9 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
-      summary: GetById SaGroup
+      summary: GetById SaRole
       tags:
-      - Group
+      - Role
     put:
       parameters:
       - description: ID
@@ -242,12 +272,12 @@ paths:
         required: true
         type: string
       - description: 'req param #changes are possible to adjust the form of the registration
-          form from forntend'
+          form from frontend'
         in: body
         name: req
         required: true
         schema:
-          $ref: '#/definitions/contsagroup.EditGroupForm'
+          $ref: '#/definitions/contsarole.EditRoleForm'
           type: object
       produces:
       - application/json
@@ -256,9 +286,9 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
-      summary: Update Group
+      summary: Update Role
       tags:
-      - Group
+      - Role
   /api/user:
     delete:
       parameters:
@@ -314,7 +344,7 @@ paths:
     post:
       parameters:
       - description: 'req param #changes are possible to adjust the form of the registration
-          form from forntend'
+          form from frontend'
         in: body
         name: req
         required: true
@@ -357,7 +387,7 @@ paths:
         required: true
         type: string
       - description: 'req param #changes are possible to adjust the form of the registration
-          form from forntend'
+          form from frontend'
         in: body
         name: req
         required: true

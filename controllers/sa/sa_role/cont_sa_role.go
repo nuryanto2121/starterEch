@@ -1,10 +1,10 @@
-package contsagroup
+package contsarole
 
 import (
 	"context"
 	"fmt"
 	"net/http"
-	isagroup "property/framework/interface/sa/sa_group"
+	isarole "property/framework/interface/sa/sa_role"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/app"
@@ -17,32 +17,32 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-// ContSaGroup :
-type ContSaGroup struct {
-	useSaGroup isagroup.UseCase
+// ContSaRole :
+type ContSaRole struct {
+	useSaRole isarole.UseCase
 }
 
-// NewContSaGroup :
-func NewContSaGroup(e *echo.Echo, a isagroup.UseCase) {
-	controller := &ContSaGroup{
-		useSaGroup: a,
+// NewContSaRole :
+func NewContSaRole(e *echo.Echo, a isarole.UseCase) {
+	controller := &ContSaRole{
+		useSaRole: a,
 	}
 
-	e.GET("/api/group/:id", controller.GetBySaGroup)
-	e.GET("/api/group", controller.GetList)
-	e.POST("/api/group", controller.CreateSaGroup)
-	e.PUT("/api/group/:id", controller.UpdateSaGroup)
-	e.DELETE("/api/group/:id", controller.DeleteSaGroup)
+	e.GET("/api/role/:id", controller.GetBySaRole)
+	e.GET("/api/role", controller.GetList)
+	e.POST("/api/role", controller.CreateSaRole)
+	e.PUT("/api/role/:id", controller.UpdateSaRole)
+	e.DELETE("/api/role/:id", controller.DeleteSaRole)
 }
 
-// GetBySaGroup :
-// @Summary GetById SaGroup
-// @Tags Group
+// GetBySaRole :
+// @Summary GetById SaRole
+// @Tags Role
 // @Produce  json
 // @Param id path string true "ID"
 // @Success 200 {object} app.ResponseModel
-// @Router /api/group/{id} [get]
-func (u *ContSaGroup) GetBySaGroup(e echo.Context) error {
+// @Router /api/role/{id} [get]
+func (u *ContSaRole) GetBySaRole(e echo.Context) error {
 	ctx := e.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
@@ -54,23 +54,23 @@ func (u *ContSaGroup) GetBySaGroup(e echo.Context) error {
 		id     = e.Param("id") //kalo bukan int => 0
 		// valid  validation.Validation                 // wajib
 	)
-	GroupID, err := uuid.FromString(id)
+	RoleID, err := uuid.FromString(id)
 	logger.Info(id)
 	if err != nil {
 		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
 	}
 
-	dataGroup, err := u.useSaGroup.GetBySaGroup(ctx, GroupID)
+	dataRole, err := u.useSaRole.GetBySaRole(ctx, RoleID)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
 	}
 
-	return appE.Response(http.StatusOK, "Ok", dataGroup)
+	return appE.Response(http.StatusOK, "Ok", dataRole)
 }
 
 // GetList :
-// @Summary GetList SaGroup
-// @Tags Group
+// @Summary GetList SaRole
+// @Tags Role
 // @Produce  json
 // @Param page query int true "Page"
 // @Param perpage query int true "PerPage"
@@ -78,8 +78,8 @@ func (u *ContSaGroup) GetBySaGroup(e echo.Context) error {
 // @Param initsearch query string false "InitSearch"
 // @Param sortfield query string false "SortField"
 // @Success 200 {object} models.ResponseModelList
-// @Router /api/group [get]
-func (u *ContSaGroup) GetList(e echo.Context) error {
+// @Router /api/role [get]
+func (u *ContSaRole) GetList(e echo.Context) error {
 	ctx := e.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
@@ -100,7 +100,7 @@ func (u *ContSaGroup) GetList(e echo.Context) error {
 		return appE.ResponseErrorList(http.StatusBadRequest, errMsg, responseList)
 	}
 
-	responseList, err = u.useSaGroup.GetList(ctx, paramquery)
+	responseList, err = u.useSaRole.GetList(ctx, paramquery)
 	if err != nil {
 		// return e.JSON(http.StatusBadRequest, err.Error())
 		return appE.ResponseErrorList(util.GetStatusCode(err), fmt.Sprintf("%v", err), responseList)
@@ -110,21 +110,21 @@ func (u *ContSaGroup) GetList(e echo.Context) error {
 	return appE.ResponseList(http.StatusOK, "", responseList)
 }
 
-// AddGroupForm :
-type AddGroupForm struct {
+// AddRoleForm :
+type AddRoleForm struct {
 	Descs     string  `json:"descs" valid:"MaxSize(60)"`
 	Num       float32 `json:"num"`
 	CreatedBy string  `json:"created_by" valid:"Required"`
 }
 
-// CreateSaGroup :
-// @Summary Add Group
-// @Tags Group
+// CreateSaRole :
+// @Summary Add Role
+// @Tags Role
 // @Produce json
-// @Param req body contsagroup.AddGroupForm true "req param #changes are possible to adjust the form of the registration form from forntend"
+// @Param req body contsarole.AddRoleForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
-// @Router /api/group [post]
-func (u *ContSaGroup) CreateSaGroup(e echo.Context) error {
+// @Router /api/role [post]
+func (u *ContSaRole) CreateSaRole(e echo.Context) error {
 	ctx := e.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
@@ -133,8 +133,8 @@ func (u *ContSaGroup) CreateSaGroup(e echo.Context) error {
 	var (
 		logger = logging.Logger{} // wajib
 		appE   = app.Res{R: e}    // wajib
-		group  sa_models.SaGroup
-		form   AddGroupForm
+		role   sa_models.SaRole
+		form   AddRoleForm
 	)
 	// validasi and bind to struct
 	httpCode, errMsg := app.BindAndValid(e, &form)
@@ -143,35 +143,35 @@ func (u *ContSaGroup) CreateSaGroup(e echo.Context) error {
 		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
 	}
 
-	// mapping to struct model saGroup
-	err := mapstructure.Decode(form, &group)
+	// mapping to struct model saRole
+	err := mapstructure.Decode(form, &role)
 	if err != nil {
 		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
 
 	}
-	err = u.useSaGroup.CreateSaGroup(ctx, &group)
+	err = u.useSaRole.CreateSaRole(ctx, &role)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
 	}
 
-	return appE.Response(http.StatusCreated, "Ok", group)
+	return appE.Response(http.StatusCreated, "Ok", role)
 }
 
-// EditGroupForm :
-type EditGroupForm struct {
+// EditRoleForm :
+type EditRoleForm struct {
 	Descs     string `json:"descs" valid:"MaxSize(5)"`
 	UpdatedBy string `json:"Updated_by" valid:"Required"`
 }
 
-// UpdateSaGroup :
-// @Summary Update Group
-// @Tags Group
+// UpdateSaRole :
+// @Summary Update Role
+// @Tags Role
 // @Produce json
 // @Param id path string true "ID"
-// @Param req body contsagroup.EditGroupForm true "req param #changes are possible to adjust the form of the registration form from forntend"
+// @Param req body contsarole.EditRoleForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
-// @Router /api/group/{id} [put]
-func (u *ContSaGroup) UpdateSaGroup(e echo.Context) error {
+// @Router /api/role/{id} [put]
+func (u *ContSaRole) UpdateSaRole(e echo.Context) error {
 	ctx := e.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
@@ -180,14 +180,14 @@ func (u *ContSaGroup) UpdateSaGroup(e echo.Context) error {
 	var (
 		logger = logging.Logger{} // wajib
 		appE   = app.Res{R: e}    // wajib
-		group  sa_models.SaGroup
+		role   sa_models.SaRole
 		err    error
 		// valid  validation.Validation                 // wajib
 		id   = e.Param("id") //kalo bukan int => 0
-		form = EditGroupForm{}
+		form = EditRoleForm{}
 	)
 
-	GroupID, err := uuid.FromString(id)
+	RoleID, err := uuid.FromString(id)
 	logger.Info(id)
 	if err != nil {
 		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
@@ -201,27 +201,27 @@ func (u *ContSaGroup) UpdateSaGroup(e echo.Context) error {
 	}
 
 	// mapping to struct model saSuser
-	err = mapstructure.Decode(form, &group)
+	err = mapstructure.Decode(form, &role)
 	if err != nil {
 		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
 
 	}
-	group.GroupID = GroupID
-	err = u.useSaGroup.UpdateSaGroup(ctx, &group)
+	role.RoleID = RoleID
+	err = u.useSaRole.UpdateSaRole(ctx, &role)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
 	}
-	return appE.ResponseError(http.StatusCreated, fmt.Sprintf("%v", group), nil)
+	return appE.ResponseError(http.StatusCreated, fmt.Sprintf("%v", role), nil)
 }
 
-// DeleteSaGroup :
-// @Summary Delete group
-// @Tags Group
+// DeleteSaRole :
+// @Summary Delete role
+// @Tags Role
 // @Produce  json
 // @Param id path string true "ID"
 // @Success 200 {object} app.ResponseModel
-// @Router /api/group/{id} [delete]
-func (u *ContSaGroup) DeleteSaGroup(e echo.Context) error {
+// @Router /api/role/{id} [delete]
+func (u *ContSaRole) DeleteSaRole(e echo.Context) error {
 	ctx := e.Request().Context()
 	if ctx == nil {
 		ctx = context.Background()
@@ -235,12 +235,12 @@ func (u *ContSaGroup) DeleteSaGroup(e echo.Context) error {
 		// valid  validation.Validation                 // wajib
 	)
 
-	GroupID, err := uuid.FromString(id)
+	RoleID, err := uuid.FromString(id)
 	logger.Info(id)
 	if err != nil {
 		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
 	}
-	err = u.useSaGroup.DeleteSaGroup(ctx, GroupID)
+	err = u.useSaRole.DeleteSaRole(ctx, RoleID)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), err.Error(), nil)
 	}

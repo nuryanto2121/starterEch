@@ -1,9 +1,9 @@
-package reposagroup
+package reposarole
 
 import (
 	"context"
 	"fmt"
-	isagroup "property/framework/interface/sa/sa_group"
+	isarole "property/framework/interface/sa/sa_role"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/logging"
@@ -13,37 +13,37 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type repoSaGroup struct {
+type repoSaRole struct {
 	Conn *gorm.DB
 }
 
-// NewRepoSaGroup :
-func NewRepoSaGroup(Conn *gorm.DB) isagroup.Repository {
-	return &repoSaGroup{Conn}
+// NewRepoSaRole :
+func NewRepoSaRole(Conn *gorm.DB) isarole.Repository {
+	return &repoSaRole{Conn}
 }
 
-func (db *repoSaGroup) GetBySaGroup(ctx context.Context, groupID uuid.UUID) (sa_models.SaGroup, error) {
+func (db *repoSaRole) GetBySaRole(ctx context.Context, roleID uuid.UUID) (sa_models.SaRole, error) {
 	var (
-		dataGroup = sa_models.SaGroup{}
-		logger    = logging.Logger{}
-		err       error
+		dataRole = sa_models.SaRole{}
+		logger   = logging.Logger{}
+		err      error
 	)
-	query := db.Conn.Where("group_id = ?", groupID).First(&dataGroup)
+	query := db.Conn.Where("role_id = ?", roleID).First(&dataRole)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr()))
 	err = query.Error
 
 	if err != nil {
 		//
 		if err == gorm.ErrRecordNotFound {
-			return dataGroup, models.ErrNotFound
+			return dataRole, models.ErrNotFound
 		}
-		return dataGroup, err
+		return dataRole, err
 	}
 
-	return dataGroup, err
+	return dataRole, err
 }
 
-func (db *repoSaGroup) GetList(ctx context.Context, queryparam models.ParamList) ([]*sa_models.SaGroup, error) {
+func (db *repoSaRole) GetList(ctx context.Context, queryparam models.ParamList) ([]*sa_models.SaRole, error) {
 	var (
 		pageNum  = 0
 		pageSize = setting.FileConfigSetting.App.PageSize
@@ -51,7 +51,7 @@ func (db *repoSaGroup) GetList(ctx context.Context, queryparam models.ParamList)
 		logger   = logging.Logger{}
 		orderBy  = "created_at desc"
 		err      error
-		result   = []*sa_models.SaGroup{}
+		result   = []*sa_models.SaRole{}
 	)
 
 	// pagination
@@ -103,12 +103,12 @@ func (db *repoSaGroup) GetList(ctx context.Context, queryparam models.ParamList)
 
 }
 
-func (db *repoSaGroup) CreateSaGroup(ctx context.Context, groupData *sa_models.SaGroup) error {
+func (db *repoSaRole) CreateSaRole(ctx context.Context, roleData *sa_models.SaRole) error {
 	var (
 		logger = logging.Logger{}
 		err    error
 	)
-	query := db.Conn.Create(groupData)
+	query := db.Conn.Create(roleData)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 	// err = db.Conn.Create(userData).Error
@@ -118,12 +118,12 @@ func (db *repoSaGroup) CreateSaGroup(ctx context.Context, groupData *sa_models.S
 	return nil
 }
 
-func (db *repoSaGroup) UpdateSaGroup(ctx context.Context, groupData *sa_models.SaGroup) error {
+func (db *repoSaRole) UpdateSaRole(ctx context.Context, roleData *sa_models.SaRole) error {
 	var (
 		logger = logging.Logger{}
 		err    error
 	)
-	query := db.Conn.Save(groupData)
+	query := db.Conn.Save(roleData)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 	// err = db.Conn.Save(userData).Error
@@ -133,13 +133,13 @@ func (db *repoSaGroup) UpdateSaGroup(ctx context.Context, groupData *sa_models.S
 	return nil
 }
 
-func (db *repoSaGroup) DeleteSaGroup(ctx context.Context, groupID uuid.UUID) error {
+func (db *repoSaRole) DeleteSaRole(ctx context.Context, roleID uuid.UUID) error {
 	var (
 		logger = logging.Logger{}
 		err    error
 	)
-	userData := &sa_models.SaGroup{}
-	userData.GroupID = groupID
+	userData := &sa_models.SaRole{}
+	userData.RoleID = roleID
 
 	query := db.Conn.Delete(&userData)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
@@ -151,7 +151,7 @@ func (db *repoSaGroup) DeleteSaGroup(ctx context.Context, groupID uuid.UUID) err
 	return nil
 }
 
-func (db *repoSaGroup) CountGroupList(ctx context.Context, queryparam models.ParamList) (int, error) {
+func (db *repoSaRole) CountRoleList(ctx context.Context, queryparam models.ParamList) (int, error) {
 	var (
 		logger = logging.Logger{}
 		sWhere = ""

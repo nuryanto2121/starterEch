@@ -21,7 +21,7 @@ func NewRepoSaBranch(Conn *gorm.DB) isabranch.Repository {
 	return &repoSaBranch{Conn}
 }
 
-func (db *repoSaBranch) GetBySaBranch(ctx context.Context, branchID int16) (result sa_models.SaBranch, err error) {
+func (db *repoSaBranch) GetBySaBranch(ctx context.Context, branchID int) (result sa_models.SaBranch, err error) {
 	var (
 		a      = sa_models.SaBranch{}
 		logger = logging.Logger{}
@@ -124,7 +124,7 @@ func (db *repoSaBranch) UpdateSaBranch(ctx context.Context, branchData *sa_model
 	return nil
 }
 
-func (db *repoSaBranch) DeleteSaBranch(ctx context.Context, branchID int16) (err error) {
+func (db *repoSaBranch) DeleteSaBranch(ctx context.Context, branchID int) (err error) {
 	var (
 		logger = logging.Logger{}
 	)

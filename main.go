@@ -37,7 +37,7 @@ func main() {
 	middL := _midd.InitMiddleware()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Static("/static", "runtime")
+	e.Static("/static", "wwwroot")
 	e.Use(middL.CORS)
 
 	app := routes.Echo{E: e}
