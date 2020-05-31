@@ -28,9 +28,9 @@ func init() {
 // @contact.url https://www.linkedin.com/in/nuryanto-1b2721156/
 // @contact.email nuryantofattih@gmail.com
 
-//// @securityDefinitions.apikey ApiKeyAuth
-//// @in header
-//// @name Authorization
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 
 func main() {
 	e := echo.New()

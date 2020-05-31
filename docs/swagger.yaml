@@ -304,6 +304,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
       summary: GetList SaUser
       tags:
       - User
@@ -338,6 +340,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.ResponseModelList'
+      security:
+      - ApiKeyAuth: []
       summary: GetList SaUser
       tags:
       - User
@@ -358,6 +362,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
       summary: Add User
       tags:
       - User
@@ -376,6 +382,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
       summary: GetById SaUser
       tags:
       - User
@@ -401,6 +409,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
       summary: Update User
       tags:
       - User
@@ -423,7 +433,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
       summary: Get string Array Permission User
       tags:
       - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

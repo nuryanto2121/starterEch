@@ -10,6 +10,7 @@ import (
 
 // var screet = setting.FileConfigSetting.App.JwtSecret
 // var jwtSecret = []byte("secreet")
+// var jwtConf *middleware.JWTConfig
 
 // Claims :
 type Claims struct {
@@ -42,6 +43,12 @@ func GenerateToken(id string, role_id string, company_id int) (string, error) {
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return tokenClaims.SignedString(jwtSecret)
 }
+
+// func(c *Claims) JWTConfig() jwtConf {
+
+// 	config := middleware.JWTConfig{}
+// 	return config
+// }
 
 // ParseToken :
 func ParseToken(token string) (*Claims, error) {
