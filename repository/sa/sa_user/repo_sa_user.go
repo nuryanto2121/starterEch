@@ -42,6 +42,40 @@ func (db *repoSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result
 	return a, err
 }
 
+func (db *repoSaUser) GetJsonPermission(ctx context.Context, userID uuid.UUID, clientID uuid.UUID) (result string, err error) {
+	var (
+		logger = logging.Logger{}
+	)
+	// type Result struct {
+	// 	get_permission_json_company_branch string
+	// }
+	// var dd Result
+	var user = userID.String()
+	var client = clientID.String()
+
+	// Scan
+	type Result struct {
+		Name string
+	}
+
+	var _result Result
+	query := db.Conn.Raw("SELECT get_permission_json_company_branch as name From public.get_permission_json_company_branch( ?, ?)", user, client).Scan(&_result)
+
+	// query := db.Conn.Raw().Scan(&dd)
+	logger.Query(fmt.Sprintf("%v", query.QueryExpr()))
+	err = query.Error
+
+	if err != nil {
+		//
+		if err == gorm.ErrRecordNotFound {
+			return result, models.ErrNotFound
+		}
+		return result, err
+	}
+	result = _result.Name //dd.get_permission_json_company_branch
+	return result, err
+}
+
 func (db *repoSaUser) GetByEmailSaUser(ctx context.Context, email string) (result sa_models.SaUser, err error) {
 	var (
 		a      = sa_models.SaUser{}
@@ -97,13 +131,14 @@ func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) 
 			sWhere += queryparam.Search
 		}
 	}
+	var sfield = `user_id,client_id, role_id, level_no, user_name, "name", email_addr, handphone_no, company_id, picture_url, user_status, created_by, created_at, updated_by, updated_at `
 	// end where
 	if pageNum >= 0 && pageSize > 0 {
-		query := db.Conn.Where(sWhere).Offset(pageNum).Limit(pageSize).Order(orderBy).Find(&result)
+		query := db.Conn.Select(sfield).Where(sWhere).Offset(pageNum).Limit(pageSize).Order(orderBy).Find(&result)
 		logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 		err = query.Error
 	} else {
-		query := db.Conn.Where(sWhere).Order(orderBy).Find(&result)
+		query := db.Conn.Select(sfield).Where(sWhere).Order(orderBy).Find(&result)
 		logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 		err = query.Error
 	}

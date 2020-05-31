@@ -314,7 +314,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/contsauser.AddUserForm"
+                            "$ref": "#/definitions/models.AddUserForm"
                         }
                     }
                 ],
@@ -342,6 +342,40 @@
                         "name": "id",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/permission": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get string Array Permission User",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ClientID",
+                        "name": "client_id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "UserID",
+                        "name": "user_id",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -404,7 +438,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/contsauser.EditUserForm"
+                            "$ref": "#/definitions/models.EditUserForm"
                         }
                     }
                 ],
@@ -506,16 +540,16 @@
                 }
             }
         },
-        "contsauser.AddUserForm": {
+        "models.AddUserForm": {
             "type": "object",
             "properties": {
                 "company_id": {
                     "type": "integer"
                 },
-                "confirm_passwd": {
+                "created_by": {
                     "type": "string"
                 },
-                "created_by": {
+                "data_permission": {
                     "type": "string"
                 },
                 "email_addr": {
@@ -528,9 +562,6 @@
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "passwd": {
                     "type": "string"
                 },
                 "picture_url": {
@@ -550,20 +581,17 @@
                 }
             }
         },
-        "contsauser.EditUserForm": {
+        "models.EditUserForm": {
             "type": "object",
             "properties": {
-                "Updated_by": {
-                    "type": "string"
-                },
                 "company_id": {
                     "type": "integer"
                 },
-                "email_addr": {
+                "data_permission": {
                     "type": "string"
                 },
-                "group_id": {
-                    "type": "integer"
+                "email_addr": {
+                    "type": "string"
                 },
                 "handphone_no": {
                     "type": "string"
@@ -571,7 +599,7 @@
                 "level_no": {
                     "type": "integer"
                 },
-                "passwd": {
+                "name": {
                     "type": "string"
                 },
                 "picture_url": {
@@ -579,6 +607,12 @@
                 },
                 "project_id": {
                     "type": "integer"
+                },
+                "role_id": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
                 },
                 "user_name": {
                     "type": "string"

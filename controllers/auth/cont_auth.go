@@ -150,6 +150,7 @@ func (u *ContAuth) Login(e echo.Context) error {
 
 	restUser := map[string]interface{}{
 		"user_id":      DataUser.UserID,
+		"clinet_id":    DataUser.ClientID,
 		"user_name":    DataUser.UserName,
 		"level_no":     DataUser.LevelNo,
 		"role_id":      DataUser.RoleID,

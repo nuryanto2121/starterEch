@@ -9,6 +9,11 @@ import (
 	_sauserrepo "property/framework/repository/sa/sa_user"
 	_sauseruse "property/framework/usecase/sa/sa_user"
 
+	_sausercompany "property/framework/repository/sa/sa_user_company"
+	// _sauserusecompany "property/framework/usecase/sa/sa_user_company"
+
+	_sauserbranch "property/framework/repository/sa/sa_user_branch"
+
 	_sarolecont "property/framework/controllers/sa/sa_role"
 	_sarolerepo "property/framework/repository/sa/sa_role"
 	_saroleuse "property/framework/usecase/sa/sa_role"
@@ -36,9 +41,15 @@ type Echo struct {
 func (e *Echo) InitialRouter() {
 	timeoutContext := time.Duration(setting.FileConfigSetting.Server.ReadTimeout) * time.Second
 
+	/*sa user branch*/
+	repoSaUserBranch := _sauserbranch.NewRepoSaUserBranch(connection.Conn)
+	/*sa user company*/
+	repoSaUserCompany := _sausercompany.NewRepoSaUserCompany(connection.Conn)
+	// useSaUserCompany := _sauserusecompany.NewUseSaUserCompany(repoSaUserCompany, timeoutContext)
+
 	/*sa user*/
 	repoSaUser := _sauserrepo.NewRepoSaUser(connection.Conn)
-	useSaUser := _sauseruse.NewUseSaUser(repoSaUser, timeoutContext)
+	useSaUser := _sauseruse.NewUseSaUser(repoSaUser, repoSaUserCompany, repoSaUserBranch, timeoutContext)
 	_sausercont.NewContSaUser(e.E, useSaUser)
 
 	/*sa Role*/

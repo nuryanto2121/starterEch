@@ -132,7 +132,9 @@ func (db *repoSaUserBranch) DeleteSaUserBranch(ctx context.Context, userID uuid.
 	userbranchData := &sa_models.SaUserBranch{}
 	userbranchData.UserID = userID
 
-	query := db.Conn.Delete(&userbranchData)
+	// query := db.Conn.Delete(&userbranchData
+	query := db.Conn.Exec("Delete From sa_user_branch WHERE user_id = ?", userID)
+	// query := db.Conn.Delete(&userbranchData, "user_id = ?", userID)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 	// err = db.Conn.Where("userbranch_id = ?", userID).Delete(&userbranchData).Error

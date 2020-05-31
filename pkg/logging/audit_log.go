@@ -1,9 +1,7 @@
 package logging
 
 import (
-	"fmt"
 	"log"
-	"property/framework/pkg/setting"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -28,35 +26,35 @@ type auditLog struct {
 }
 
 func (a *auditLog) saveAudit() {
-	var err error
-	fmt.Print(setting.FileConfigSetting.Database)
-	connectionstring := fmt.Sprintf(
-		"user=%s password=%s dbname=%s sslmode=disable host=%s port=%s",
-		setting.FileConfigSetting.Database.User,
-		setting.FileConfigSetting.Database.Password,
-		setting.FileConfigSetting.Database.Name,
-		setting.FileConfigSetting.Database.Host,
-		setting.FileConfigSetting.Database.Port)
-	fmt.Printf("%s", connectionstring)
-	conn, err = gorm.Open(setting.FileConfigSetting.Database.Type, connectionstring)
+	// var err error
+	// fmt.Print(setting.FileConfigSetting.Database)
+	// connectionstring := fmt.Sprintf(
+	// 	"user=%s password=%s dbname=%s sslmode=disable host=%s port=%s",
+	// 	setting.FileConfigSetting.Database.User,
+	// 	setting.FileConfigSetting.Database.Password,
+	// 	setting.FileConfigSetting.Database.Name,
+	// 	setting.FileConfigSetting.Database.Host,
+	// 	setting.FileConfigSetting.Database.Port)
+	// fmt.Printf("%s", connectionstring)
+	// conn, err = gorm.Open(setting.FileConfigSetting.Database.Type, connectionstring)
 
-	if err != nil {
-		log.Printf("connection.setup err : %v", err)
-		panic(err)
-	}
-	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return setting.FileConfigSetting.Database.TablePrefix + defaultTableName
-	}
-	conn.SingularTable(true)
-	conn.DB().SetMaxIdleConns(10)
-	conn.DB().SetMaxOpenConns(100)
+	// if err != nil {
+	// 	log.Printf("connection.setup err : %v", err)
+	// 	panic(err)
+	// }
+	// gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
+	// 	return setting.FileConfigSetting.Database.TablePrefix + defaultTableName
+	// }
+	// conn.SingularTable(true)
+	// conn.DB().SetMaxIdleConns(10)
+	// conn.DB().SetMaxOpenConns(100)
 
-	go autoMigrate()
+	// go autoMigrate()
 
-	err = conn.Create(&a).Error
-	if err != nil {
-		log.Printf("%s", err)
-	}
+	// err = conn.Create(&a).Error
+	// if err != nil {
+	// 	log.Printf("%s", err)
+	// }
 	// defer conn.Close()
 }
 

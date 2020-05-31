@@ -2,8 +2,12 @@ package usesauser
 
 import (
 	"context"
+	"encoding/json"
+	"log"
 	"math"
 	isauser "property/framework/interface/sa/sa_user"
+	isauserbranch "property/framework/interface/sa/sa_user_branch"
+	isausercompany "property/framework/interface/sa/sa_user_company"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
 	util "property/framework/pkg/utils"
@@ -14,15 +18,19 @@ import (
 )
 
 type useSaUser struct {
-	repoSaUser     isauser.Repository
-	contextTimeOut time.Duration
+	repoSaUser        isauser.Repository
+	repoSaUserCompany isausercompany.Repository
+	repoSaUserBranch  isauserbranch.Repository
+	contextTimeOut    time.Duration
 }
 
 // NewUseSaUser :
-func NewUseSaUser(a isauser.Repository, timeout time.Duration) isauser.Usercase {
+func NewUseSaUser(a isauser.Repository, b isausercompany.Repository, c isauserbranch.Repository, timeout time.Duration) isauser.Usercase {
 	return &useSaUser{
-		repoSaUser:     a,
-		contextTimeOut: timeout,
+		repoSaUser:        a,
+		repoSaUserCompany: b,
+		repoSaUserBranch:  c,
+		contextTimeOut:    timeout,
 	}
 }
 
@@ -35,6 +43,7 @@ func (u *useSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result s
 	if err != nil {
 		return a, err
 	}
+	result.Passwd = ""
 	return result, nil
 }
 
@@ -47,6 +56,22 @@ func (u *useSaUser) GetByEmailSaUser(ctx context.Context, email string) (result 
 	if err != nil {
 		return a, err
 	}
+	return result, nil
+}
+
+func (u *useSaUser) GetJsonPermission(ctx context.Context, userID uuid.UUID, clientID uuid.UUID) (result []map[string]interface{}, err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
+	defer cancel()
+
+	_result, err := u.repoSaUser.GetJsonPermission(ctx, userID, clientID)
+	if err != nil {
+		return result, err
+	}
+	// var data []map[string]interface{}
+
+	json.Unmarshal([]byte(_result), &result)
+	log.Printf("Unmarshaled: %v", result)
+
 	return result, nil
 }
 
@@ -77,11 +102,11 @@ func (u *useSaUser) GetList(ctx context.Context, queryparam models.ParamList) (r
 	return result, nil
 }
 
-func (u *useSaUser) CreateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error) {
+func (u *useSaUser) CreateSaUser(ctx context.Context, userData *sa_models.SaUser, dataPermission *[]models.Permission) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
-	userData.Passwd, _ = util.HashAndSalt(util.GetPassword(userData.Passwd))
+	userData.Passwd = "" //util.HashAndSalt(util.GetPassword(userData.Passwd))
 	userData.UpdatedBy = userData.CreatedBy
 	userData.CreatedAt = util.GetTimeNow()
 	userData.UpdatedAt = util.GetTimeNow()
@@ -89,10 +114,44 @@ func (u *useSaUser) CreateSaUser(ctx context.Context, userData *sa_models.SaUser
 	if err != nil {
 		return err
 	}
+
+	// insert sa user company
+	for _, dataUserCompany := range *dataPermission {
+		var userCompany = sa_models.SaUserCompany{}
+		userCompany.CompanyID = dataUserCompany.CompanyID
+		userCompany.UserID = userData.UserID
+		userCompany.CreatedAt = util.GetTimeNow()
+		userCompany.CreatedBy = userData.CreatedBy
+		userCompany.UpdatedAt = util.GetTimeNow()
+		userCompany.UpdatedBy = userData.CreatedBy
+		err = u.repoSaUserCompany.CreateSaUserCompany(ctx, &userCompany)
+		if err != nil {
+			return err
+		}
+
+		// insert sa user branch
+		for _, dataBranch := range dataUserCompany.DataBranch {
+			var datauserBranch = sa_models.SaUserBranch{}
+			datauserBranch.BranchID = dataBranch.BranchID
+			datauserBranch.CompanyID = dataUserCompany.CompanyID
+			datauserBranch.UserID = userData.UserID
+			datauserBranch.CreatedAt = util.GetTimeNow()
+			datauserBranch.CreatedBy = userData.CreatedBy
+			datauserBranch.UpdatedAt = util.GetTimeNow()
+			datauserBranch.UpdatedBy = userData.CreatedBy
+			err = u.repoSaUserBranch.CreateSaUserBranch(ctx, &datauserBranch)
+			if err != nil {
+				return err
+			}
+		}
+
+	}
+	// u.repoSaUserCompany.CreateSaUserCompany(ctx,)
+
 	return nil
 }
 
-func (u *useSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser) (err error) {
+func (u *useSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser, dataPermission *[]models.Permission) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
@@ -100,6 +159,49 @@ func (u *useSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser
 	err = u.repoSaUser.UpdateSaUser(ctx, userData)
 	if err != nil {
 		return err
+	}
+
+	//delete sa user company by user
+	err = u.repoSaUserCompany.DeleteSaUserCompany(ctx, userData.UserID)
+	if err != nil {
+		return err
+	}
+	// delete sa user branch by user
+	err = u.repoSaUserBranch.DeleteSaUserBranch(ctx, userData.UserID)
+	if err != nil {
+		return err
+	}
+
+	// insert sa user company
+	for _, dataUserCompany := range *dataPermission {
+		var userCompany = sa_models.SaUserCompany{}
+		userCompany.CompanyID = dataUserCompany.CompanyID
+		userCompany.UserID = userData.UserID
+		userCompany.CreatedAt = util.GetTimeNow()
+		userCompany.CreatedBy = userData.UpdatedBy
+		userCompany.UpdatedAt = util.GetTimeNow()
+		userCompany.UpdatedBy = userData.UpdatedBy
+		err = u.repoSaUserCompany.CreateSaUserCompany(ctx, &userCompany)
+		if err != nil {
+			return err
+		}
+
+		// insert sa user branch
+		for _, dataBranch := range dataUserCompany.DataBranch {
+			var datauserBranch = sa_models.SaUserBranch{}
+			datauserBranch.BranchID = dataBranch.BranchID
+			datauserBranch.CompanyID = dataUserCompany.CompanyID
+			datauserBranch.UserID = userData.UserID
+			datauserBranch.CreatedAt = util.GetTimeNow()
+			datauserBranch.CreatedBy = userData.UpdatedBy
+			datauserBranch.UpdatedAt = util.GetTimeNow()
+			datauserBranch.UpdatedBy = userData.UpdatedBy
+			err = u.repoSaUserBranch.CreateSaUserBranch(ctx, &datauserBranch)
+			if err != nil {
+				return err
+			}
+		}
+
 	}
 
 	return nil

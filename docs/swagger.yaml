@@ -55,13 +55,13 @@ definitions:
       descs:
         type: string
     type: object
-  contsauser.AddUserForm:
+  models.AddUserForm:
     properties:
       company_id:
         type: integer
-      confirm_passwd:
-        type: string
       created_by:
+        type: string
+      data_permission:
         type: string
       email_addr:
         type: string
@@ -70,8 +70,6 @@ definitions:
       level_no:
         type: integer
       name:
-        type: string
-      passwd:
         type: string
       picture_url:
         type: string
@@ -84,26 +82,28 @@ definitions:
       user_status:
         type: integer
     type: object
-  contsauser.EditUserForm:
+  models.EditUserForm:
     properties:
-      Updated_by:
-        type: string
       company_id:
         type: integer
+      data_permission:
+        type: string
       email_addr:
         type: string
-      group_id:
-        type: integer
       handphone_no:
         type: string
       level_no:
         type: integer
-      passwd:
+      name:
         type: string
       picture_url:
         type: string
       project_id:
         type: integer
+      role_id:
+        type: string
+      updated_by:
+        type: string
       user_name:
         type: string
       user_status:
@@ -349,7 +349,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/contsauser.AddUserForm'
+          $ref: '#/definitions/models.AddUserForm'
           type: object
       produces:
       - application/json
@@ -392,7 +392,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/contsauser.EditUserForm'
+          $ref: '#/definitions/models.EditUserForm'
           type: object
       produces:
       - application/json
@@ -402,6 +402,28 @@ paths:
           schema:
             $ref: '#/definitions/app.ResponseModel'
       summary: Update User
+      tags:
+      - User
+  /api/user/permission:
+    get:
+      parameters:
+      - description: ClientID
+        in: query
+        name: client_id
+        required: true
+        type: string
+      - description: UserID
+        in: query
+        name: user_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: Get string Array Permission User
       tags:
       - User
 swagger: "2.0"

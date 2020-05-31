@@ -34,6 +34,7 @@ func NewContSaUser(e *echo.Echo, useSaUser isauser.Usercase) {
 	*/
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	e.GET("/api/user/:id", controller.GetBySaUser)
+	e.GET("/api/user/permission", controller.GetListPermission)
 	e.GET("/api/user", controller.GetList)
 	e.POST("/api/user", controller.CreateSaUser)
 	e.PUT("/api/user/:id", controller.UpdateSaUser)
@@ -124,28 +125,61 @@ func (u *ContSaUser) GetList(e echo.Context) error {
 	return appE.ResponseList(http.StatusOK, "", responseList)
 }
 
-// AddUserForm : param from frond end
-type AddUserForm struct {
-	UserName     string    `json:"user_name" valid:"Required"`
-	Name         string    `json:"name" valid:"Required"`
-	EmailAddr    string    `json:"email_addr" valid:"Required"`
-	LevelNo      int       `json:"level_no"`
-	UserStatus   int       `json:"user_status"`
-	RoleID       uuid.UUID `json:"role_id" valid:"Required"`
-	HandphoneNo  string    `json:"handphone_no"`
-	Passwd       string    `json:"passwd" valid:"Required"`
-	ConfimPasswd string    `json:"confirm_passwd" valid:"Required"`
-	CompanyID    int       `json:"company_id" valid:"Required"`
-	ProjectID    int       `json:"project_id" valid:"Required"`
-	PictureURL   string    `json:"picture_url"`
-	CreatedBy    string    `json:"created_by" valid:"Required"`
+type GetPermission struct {
+	ClinetID uuid.UUID `json:"client_id" valid:"Required"`
+	UserID   uuid.UUID `json:"user_id"`
+}
+
+// GetList :
+// @Summary Get string Array Permission User
+// @Tags User
+// @Produce  json
+// @Param client_id query string true "ClientID"
+// @Param user_id query string false "UserID"
+// @Success 200 {object} app.ResponseModel
+// @Router /api/user/permission [get]
+func (u *ContSaUser) GetListPermission(e echo.Context) error {
+	ctx := e.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	var (
+		logger = logging.Logger{}
+		appE   = app.Res{R: e} // wajib
+		//valid      validation.Validation // wajib
+		form GetPermission // ini untuk list
+		err  error
+	)
+
+	userID := e.QueryParam("user_id")
+	clientID := e.QueryParam("client_id")
+
+	form.ClinetID, _ = uuid.FromString(clientID)
+	form.UserID, _ = uuid.FromString(userID)
+	// httpCode, errMsg := app.BindAndValid(e, &form)
+
+	logger.Info(util.Stringify(form))
+	// // if httpCode != 200 {
+	// // 	return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
+	// // }
+
+	dd, err := u.useSaUser.GetJsonPermission(ctx, form.UserID, form.ClinetID)
+	if err != nil {
+		// return e.JSON(http.StatusBadRequest, err.Error())
+		// return appE.ResponseErrorList(util.GetStatusCode(err), fmt.Sprintf("%v", err), responseList)
+		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
+	}
+
+	// return e.JSON(http.StatusOK, ListDataUser)
+	return appE.Response(http.StatusCreated, "Ok", dd)
 }
 
 // CreateSaUser :
 // @Summary Add User
 // @Tags User
 // @Produce json
-// @Param req body contsauser.AddUserForm true "req param #changes are possible to adjust the form of the registration form from frontend"
+// @Param req body models.AddUserForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/user [post]
 func (u *ContSaUser) CreateSaUser(e echo.Context) error {
@@ -155,10 +189,11 @@ func (u *ContSaUser) CreateSaUser(e echo.Context) error {
 	}
 
 	var (
-		logger = logging.Logger{} // wajib
-		appE   = app.Res{R: e}    // wajib
-		user   sa_models.SaUser
-		form   AddUserForm
+		logger     = logging.Logger{} // wajib
+		appE       = app.Res{R: e}    // wajib
+		user       sa_models.SaUser
+		form       sa_models.AddUserForm
+		permission []models.Permission
 	)
 
 	// validasi and bind to struct
@@ -168,9 +203,9 @@ func (u *ContSaUser) CreateSaUser(e echo.Context) error {
 		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
 	}
 
-	if form.Passwd != form.ConfimPasswd {
-		return appE.ResponseError(http.StatusBadRequest, "Password and Password Confirmation doesn't match", nil)
-	}
+	// if form.Passwd != form.ConfimPasswd {
+	// 	return appE.ResponseError(http.StatusBadRequest, "Password and Password Confirmation doesn't match", nil)
+	// }
 
 	// mapping to struct model saSuser
 	err := mapstructure.Decode(form, &user)
@@ -178,29 +213,19 @@ func (u *ContSaUser) CreateSaUser(e echo.Context) error {
 		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
 
 	}
-	err = u.useSaUser.CreateSaUser(ctx, &user)
+
+	err = mapstructure.Decode(form.DataPermission, &permission)
+	if err != nil {
+		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
+
+	}
+
+	err = u.useSaUser.CreateSaUser(ctx, &user, &permission)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
 	}
 
-	user.Passwd = ""
-
-	return appE.Response(http.StatusCreated, "Ok", user)
-}
-
-// EditUserForm : param from frond end
-type EditUserForm struct {
-	Passwd      string `json:"passwd" valid:"Required"`
-	GroupID     int    `json:"group_id" valid:"Required"`
-	LevelNo     int    `json:"level_no" valid:"Required"`
-	UserName    string `json:"user_name" valid:"Required"`
-	EmailAddr   string `json:"email_addr"`
-	HandphoneNo string `json:"handphone_no"`
-	CompanyID   int    `json:"company_id" valid:"Required"`
-	ProjectID   int    `json:"project_id" valid:"Required"`
-	PictureURL  string `json:"picture_url"`
-	UserStatus  int    `json:"user_status"`
-	UpdatedBy   string `json:"Updated_by" valid:"Required"`
+	return appE.Response(http.StatusCreated, "Ok", form)
 }
 
 // UpdateSaUser :
@@ -208,7 +233,7 @@ type EditUserForm struct {
 // @Tags User
 // @Produce json
 // @Param id path string true "ID"
-// @Param req body contsauser.EditUserForm true "req param #changes are possible to adjust the form of the registration form from frontend"
+// @Param req body models.EditUserForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/user/{id} [put]
 func (u *ContSaUser) UpdateSaUser(e echo.Context) error {
@@ -222,8 +247,9 @@ func (u *ContSaUser) UpdateSaUser(e echo.Context) error {
 		appE   = app.Res{R: e}    // wajib
 		user   sa_models.SaUser
 		// valid  validation.Validation // wajib
-		id   = e.Param("id") //util.StrTo(e.Param("id")).MustInt() //kalo bukan int => 0
-		form = EditUserForm{}
+		id         = e.Param("id") //util.StrTo(e.Param("id")).MustInt() //kalo bukan int => 0
+		form       = sa_models.EditUserForm{}
+		permission []models.Permission
 	)
 
 	userID, err := uuid.FromString(id)
@@ -247,12 +273,18 @@ func (u *ContSaUser) UpdateSaUser(e echo.Context) error {
 		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
 
 	}
+	err = mapstructure.Decode(form.DataPermission, &permission)
+	if err != nil {
+		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
+
+	}
+
 	user.UserID = userID
-	err = u.useSaUser.UpdateSaUser(ctx, &user)
+	err = u.useSaUser.UpdateSaUser(ctx, &user, &permission)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
 	}
-	return appE.ResponseError(http.StatusCreated, fmt.Sprintf("%v", user), nil)
+	return appE.Response(http.StatusCreated, "Ok", form)
 }
 
 // DeleteSaUser :

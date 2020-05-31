@@ -67,6 +67,7 @@ func autoMigrate() {
 		sa_models.SaCompany{},
 		sa_models.SaUserBranch{},
 		sa_models.SaUserCompany{},
+		sa_models.SaRoleMenu{},
 	)
 
 	log.Println("FINISHING AUTO MIGRATE ")

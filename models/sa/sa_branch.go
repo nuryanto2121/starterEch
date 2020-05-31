@@ -5,7 +5,7 @@ import "time"
 // SaBranch :
 type SaBranch struct {
 	CompanyID      int       `json:"company_id" gorm:"primary_key;type:integer;not null"`
-	BranchID       int       `json:"branch_id" gorm:"primary_key;type:integer;not null"`
+	BranchID       int       `json:"branch_id" gorm:"PRIMARY_KEY"`
 	BranchName     string    `json:"branch_name" gorm:"type:varchar(60);not null"`
 	Address        string    `json:"address" gorm:"type:varchar(150)"`
 	PostCd         string    `json:"post_cd" gorm:"type:varchar(60)"`

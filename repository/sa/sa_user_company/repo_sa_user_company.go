@@ -125,14 +125,16 @@ func (db *repoSaUserCompany) UpdateSaUserCompany(ctx context.Context, usercompan
 	return nil
 }
 
-func (db *repoSaUserCompany) DeleteSaUserCompany(ctx context.Context, userID uuid.UUID) (err error) {
+func (db *repoSaUserCompany) DeleteSaUserCompany(ctx context.Context, userIDx uuid.UUID) (err error) {
 	var (
 		logger = logging.Logger{}
 	)
 	usercompanyData := &sa_models.SaUserCompany{}
-	usercompanyData.UserID = userID
+	usercompanyData.UserID = userIDx
 
-	query := db.Conn.Delete(&usercompanyData)
+	// query := db.Conn.Delete(&usercompanyData)
+	// query := db.Conn.Delete(&usercompanyData, "user_id = ?", userID)
+	query := db.Conn.Exec("Delete From sa_user_company WHERE user_id = ?", userIDx)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 	// err = db.Conn.Where("usercompany_id = ?", userID).Delete(&usercompanyData).Error
