@@ -37,7 +37,6 @@ type AddUserForm struct {
 	RoleID         uuid.UUID      `json:"role_id" valid:"Required"`
 	HandphoneNo    string         `json:"handphone_no"`
 	CompanyID      int            `json:"company_id" valid:"Required"`
-	ProjectID      int            `json:"project_id" valid:"Required"`
 	PictureURL     string         `json:"picture_url"`
 	CreatedBy      string         `json:"created_by" valid:"Required"`
 	DataPermission []m.Permission `json:"data_permission"`
@@ -55,7 +54,6 @@ type EditUserForm struct {
 	RoleID         uuid.UUID      `json:"role_id" valid:"Required"`
 	HandphoneNo    string         `json:"handphone_no"`
 	CompanyID      int            `json:"company_id" valid:"Required"`
-	ProjectID      int            `json:"project_id" valid:"Required"`
 	PictureURL     string         `json:"picture_url"`
 	UpdatedBy      string         `json:"updated_by" valid:"Required"`
 	DataPermission []m.Permission `json:"data_permission"`
