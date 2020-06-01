@@ -14,14 +14,14 @@ import (
 
 // Claims :
 type Claims struct {
-	UserID    string `json:"user_id,omitempty"`
-	RoleID    string `json:"role_id,omitempty"`
-	CompanyID int    `json:"company_id,omitempty"`
+	UserID   string `json:"user_id,omitempty"`
+	UserName string `json:"user_name,omitempty"`
+	// CompanyID int    `json:"company_id,omitempty"`
 	jwt.StandardClaims
 }
 
 // GenerateToken :
-func GenerateToken(id string, role_id string, company_id int) (string, error) {
+func GenerateToken(id string, user_name string) (string, error) {
 	viper.SetConfigFile(`config.json`)
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -32,9 +32,8 @@ func GenerateToken(id string, role_id string, company_id int) (string, error) {
 	var jwtSecret = []byte(screet)
 	// Set custom claims
 	claims := &Claims{
-		UserID:    id,
-		RoleID:    role_id,
-		CompanyID: company_id,
+		UserID:   id,
+		UserName: user_name,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 		},

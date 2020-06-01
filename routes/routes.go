@@ -27,6 +27,10 @@ import (
 	_saclientrepo "property/framework/repository/sa/sa_client"
 	_saclientuse "property/framework/usecase/sa/sa_client"
 
+	_safilecont "property/framework/controllers/fileupload"
+	_safilerepo "property/framework/repository/sa/sa_file_upload"
+	_safilieuse "property/framework/usecase/sa/sa_file_upload"
+
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -71,7 +75,11 @@ func (e *Echo) InitialRouter() {
 	repoSaClient := _saclientrepo.NewRepoSaClient(connection.Conn)
 	useSaClient := _saclientuse.NewUseClient(repoSaClient, repoSaCompany, repoSaUser, repoSaBranch, timeoutContext)
 
-	//_saauthcont
+	//file upload
+	repoSaFileUpload := _safilerepo.NewRepoSaFileUpload(connection.Conn)
+	useSaFileUpload := _safilieuse.NewUseSaFileUpload(repoSaFileUpload, timeoutContext)
+	_safilecont.NewContFileUpload(e.E, useSaFileUpload)
 
+	//_saauthcont
 	_saauthcont.NewContAuth(e.E, useSaClient, useSaUser)
 }

@@ -29,7 +29,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/contauth.LoginForm"
+                            "$ref": "#/definitions/models.LoginForm"
                         }
                     }
                 ],
@@ -60,8 +60,52 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/contauth.RegisterForm"
+                            "$ref": "#/definitions/models.RegisterForm"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/fileupload": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Upload file",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "FileUpload"
+                ],
+                "summary": "File Upload",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "account image",
+                        "name": "upload_file",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "path images",
+                        "name": "path",
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -496,55 +540,6 @@
                 }
             }
         },
-        "contauth.LoginForm": {
-            "type": "object",
-            "properties": {
-                "p": {
-                    "type": "string"
-                },
-                "u": {
-                    "type": "string"
-                }
-            }
-        },
-        "contauth.RegisterForm": {
-            "type": "object",
-            "properties": {
-                "address": {
-                    "type": "string"
-                },
-                "client_name": {
-                    "type": "string"
-                },
-                "client_type": {
-                    "type": "string"
-                },
-                "contact_person": {
-                    "type": "string"
-                },
-                "created_by": {
-                    "type": "string"
-                },
-                "email_addr": {
-                    "type": "string"
-                },
-                "expiry_date": {
-                    "type": "string"
-                },
-                "joining_date": {
-                    "type": "string"
-                },
-                "post_cd": {
-                    "type": "string"
-                },
-                "start_billing_date": {
-                    "type": "string"
-                },
-                "telephone_no": {
-                    "type": "string"
-                }
-            }
-        },
         "contsarole.AddRoleForm": {
             "type": "object",
             "properties": {
@@ -597,9 +592,6 @@
                 "picture_url": {
                     "type": "string"
                 },
-                "project_id": {
-                    "type": "integer"
-                },
                 "role_id": {
                     "type": "string"
                 },
@@ -635,9 +627,6 @@
                 "picture_url": {
                     "type": "string"
                 },
-                "project_id": {
-                    "type": "integer"
-                },
                 "role_id": {
                     "type": "string"
                 },
@@ -649,6 +638,55 @@
                 },
                 "user_status": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.LoginForm": {
+            "type": "object",
+            "properties": {
+                "p": {
+                    "type": "string"
+                },
+                "u": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.RegisterForm": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "client_name": {
+                    "type": "string"
+                },
+                "client_type": {
+                    "type": "string"
+                },
+                "contact_person": {
+                    "type": "string"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "email_addr": {
+                    "type": "string"
+                },
+                "expiry_date": {
+                    "type": "string"
+                },
+                "joining_date": {
+                    "type": "string"
+                },
+                "post_cd": {
+                    "type": "string"
+                },
+                "start_billing_date": {
+                    "type": "string"
+                },
+                "telephone_no": {
+                    "type": "string"
                 }
             }
         },

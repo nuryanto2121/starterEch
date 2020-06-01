@@ -122,14 +122,14 @@ func (u *ContAuth) Login(e echo.Context) error {
 		return appE.ResponseError(http.StatusUnauthorized, "Invalid Password.", nil)
 	}
 
-	token, err := util.GenerateToken(DataUser.UserID.String(), DataUser.RoleID.String(), DataUser.CompanyID)
+	token, err := util.GenerateToken(DataUser.UserID.String(), DataUser.UserName)
 	if err != nil {
 		return appE.ResponseError(http.StatusInternalServerError, "Status Internal Server Error", nil)
 	}
 
 	restUser := map[string]interface{}{
 		"user_id":      DataUser.UserID,
-		"clinet_id":    DataUser.ClientID,
+		"client_id":    DataUser.ClientID,
 		"user_name":    DataUser.UserName,
 		"level_no":     DataUser.LevelNo,
 		"role_id":      DataUser.RoleID,

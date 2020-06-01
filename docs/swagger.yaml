@@ -7,38 +7,6 @@ definitions:
         description: Code int         `json:"code"`
         type: string
     type: object
-  contauth.LoginForm:
-    properties:
-      p:
-        type: string
-      u:
-        type: string
-    type: object
-  contauth.RegisterForm:
-    properties:
-      address:
-        type: string
-      client_name:
-        type: string
-      client_type:
-        type: string
-      contact_person:
-        type: string
-      created_by:
-        type: string
-      email_addr:
-        type: string
-      expiry_date:
-        type: string
-      joining_date:
-        type: string
-      post_cd:
-        type: string
-      start_billing_date:
-        type: string
-      telephone_no:
-        type: string
-    type: object
   contsarole.AddRoleForm:
     properties:
       created_by:
@@ -73,8 +41,6 @@ definitions:
         type: string
       picture_url:
         type: string
-      project_id:
-        type: integer
       role_id:
         type: string
       user_name:
@@ -98,8 +64,6 @@ definitions:
         type: string
       picture_url:
         type: string
-      project_id:
-        type: integer
       role_id:
         type: string
       updated_by:
@@ -108,6 +72,38 @@ definitions:
         type: string
       user_status:
         type: integer
+    type: object
+  models.LoginForm:
+    properties:
+      p:
+        type: string
+      u:
+        type: string
+    type: object
+  models.RegisterForm:
+    properties:
+      address:
+        type: string
+      client_name:
+        type: string
+      client_type:
+        type: string
+      contact_person:
+        type: string
+      created_by:
+        type: string
+      email_addr:
+        type: string
+      expiry_date:
+        type: string
+      joining_date:
+        type: string
+      post_cd:
+        type: string
+      start_billing_date:
+        type: string
+      telephone_no:
+        type: string
     type: object
   models.ResponseModelList:
     properties:
@@ -141,7 +137,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/contauth.LoginForm'
+          $ref: '#/definitions/models.LoginForm'
           type: object
       produces:
       - application/json
@@ -162,7 +158,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/contauth.RegisterForm'
+          $ref: '#/definitions/models.RegisterForm'
           type: object
       produces:
       - application/json
@@ -174,6 +170,34 @@ paths:
       summary: Add Client
       tags:
       - Auth
+  /api/fileupload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload file
+      parameters:
+      - description: account image
+        in: formData
+        name: upload_file
+        required: true
+        type: file
+      - description: path images
+        in: formData
+        name: path
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: File Upload
+      tags:
+      - FileUpload
   /api/role:
     get:
       parameters:

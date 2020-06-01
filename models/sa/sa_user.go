@@ -20,6 +20,7 @@ type SaUser struct {
 	HandphoneNo string    `json:"handphone_no" gorm:"type:varchar(20)"`
 	CompanyID   int       `json:"company_id" gorm:"type:integer;not null"`
 	PictureURL  string    `json:"picture_url" gorm:"type:varchar(100)"`
+	FileID      uuid.UUID `json:"file_id" gorm:"type:uuid"`
 	UserStatus  int       `json:"user_status" gorm:"type:integer;default:1"`
 	CreatedBy   string    `json:"created_by" gorm:"type:varchar(20);not null"`
 	CreatedAt   time.Time `json:"created_at" gorm:"type:timestamp(0) without time zone;default:now()"`
