@@ -6,6 +6,7 @@ require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/astaxie/beego v1.12.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/fsetiawan29/healthy_food v0.0.0-20190730235009-cdde166ff4d7
 	github.com/go-openapi/spec v0.19.6 // indirect
 	github.com/go-openapi/swag v0.19.7 // indirect
 	github.com/google/uuid v1.1.1
@@ -18,6 +19,7 @@ require (
 	github.com/mattn/go-isatty v0.0.12 // indirect
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/satori/go.uuid v1.2.0
+	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.6.2
 	github.com/stretchr/testify v1.5.1 // indirect

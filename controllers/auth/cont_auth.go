@@ -6,11 +6,11 @@ import (
 	"net/http"
 	isaclient "property/framework/interface/sa/sa_client"
 	isauser "property/framework/interface/sa/sa_user"
+	"property/framework/models"
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/app"
 	"property/framework/pkg/logging"
 	util "property/framework/pkg/utils"
-	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/mitchellh/mapstructure"
@@ -32,26 +32,11 @@ func NewContAuth(e *echo.Echo, useSaClient isaclient.Usecase, useSaUser isauser.
 	e.POST("/api/auth/login", cont.Login)
 }
 
-// RegisterForm :
-type RegisterForm struct {
-	ClientName       string    `json:"client_name" valid:"Required"`
-	Address          string    `json:"address,omitempty"`
-	PostCd           string    `json:"post_cd,omitempty"`
-	TelephoneNo      string    `json:"telephone_no,omitempty"`
-	EmailAddr        string    `json:"email_addr,omitempty"`
-	ContactPerson    string    `json:"contact_person,omitempty"`
-	ClientType       string    `json:"client_type,omitempty"`
-	JoiningDate      time.Time `json:"joining_date,omitempty"`
-	StartBillingDate time.Time `json:"start_billing_date,omitempty"`
-	ExpiryDate       time.Time `json:"expiry_date,omitempty"`
-	CreatedBy        string    `json:"created_by" valid:"Required"`
-}
-
 // Register :
 // @Summary Add Client
 // @Tags Auth
 // @Produce json
-// @Param req body contauth.RegisterForm true "req param #changes are possible to adjust the form of the registration form from frontend"
+// @Param req body models.RegisterForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/auth/register [post]
 func (u *ContAuth) Register(e echo.Context) error {
@@ -65,7 +50,7 @@ func (u *ContAuth) Register(e echo.Context) error {
 		appE   = app.Res{R: e}    // wajib
 		client sa_models.SaClient
 
-		form = RegisterForm{}
+		form = models.RegisterForm{}
 	)
 	// validasi and bind to struct
 	httpCode, errMsg := app.BindAndValid(e, &form)
@@ -87,17 +72,11 @@ func (u *ContAuth) Register(e echo.Context) error {
 	return appE.Response(http.StatusCreated, "Ok", client)
 }
 
-//LoginForm :
-type LoginForm struct {
-	UserName string `json:"u" valid:"Required"`
-	Password string `json:"p" valid:"Required"`
-}
-
 // Register :
 // @Summary Login
 // @Tags Auth
 // @Produce json
-// @Param req body contauth.LoginForm true "req param #changes are possible to adjust the form of the registration form from frontend"
+// @Param req body models.LoginForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/auth/login [post]
 func (u *ContAuth) Login(e echo.Context) error {
@@ -111,7 +90,7 @@ func (u *ContAuth) Login(e echo.Context) error {
 		appE   = app.Res{R: e}    // wajib
 		// client sa_models.SaClient
 
-		form = LoginForm{}
+		form = models.LoginForm{}
 	)
 
 	// validasi and bind to struct

@@ -30,6 +30,8 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+
+	_midd "property/framework/middleware"
 )
 
 // Echo :
@@ -39,6 +41,8 @@ type Echo struct {
 
 // InitialRouter :
 func (e *Echo) InitialRouter() {
+	middL := _midd.InitMiddleware()
+	e.E.Use(middL.CORS)
 	timeoutContext := time.Duration(setting.FileConfigSetting.Server.ReadTimeout) * time.Second
 
 	/*sa user branch*/

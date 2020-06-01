@@ -4,11 +4,16 @@ import (
 	"fmt"
 	"log"
 
-	_midd "property/framework/middleware"
 	"property/framework/pkg/connection"
 	"property/framework/pkg/logging"
 	"property/framework/pkg/setting"
+
 	"property/framework/routes"
+
+	// _midd "property/framework/middleware"
+	//format nama table + package
+
+	// _sauserusecompany "property/framework/usecase/sa/sa_user_company"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -34,15 +39,18 @@ func init() {
 
 func main() {
 	e := echo.New()
-	middL := _midd.InitMiddleware()
+	// middL := _midd.InitMiddleware()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Static("/static", "wwwroot")
-	e.Use(middL.CORS)
-
+	// e.Static("/static", "wwwroot")
+	// e.Use(middL.CORS)
+	e.Use(middleware.CORS())
 	app := routes.Echo{E: e}
 
 	app.InitialRouter()
+
+	// middL := _midd.InitMiddleware()
+	// e.Use(middL.CORS)
 
 	sPort := fmt.Sprintf(":%d", setting.FileConfigSetting.Server.HTTPPort)
 
