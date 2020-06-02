@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	isaclient "property/framework/interface/sa/sa_client"
+	isafileupload "property/framework/interface/sa/sa_file_upload"
 	isauser "property/framework/interface/sa/sa_user"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
@@ -18,14 +19,16 @@ import (
 
 // ContAuth :
 type ContAuth struct {
-	useSaClient isaclient.Usecase
-	useSaUser   isauser.Usercase
+	useSaClient     isaclient.Usecase
+	useSaUser       isauser.Usercase
+	useSaFileUpload isafileupload.UseCase
 }
 
-func NewContAuth(e *echo.Echo, useSaClient isaclient.Usecase, useSaUser isauser.Usercase) {
+func NewContAuth(e *echo.Echo, useSaClient isaclient.Usecase, useSaUser isauser.Usercase, useSaFileUpload isafileupload.UseCase) {
 	cont := &ContAuth{
-		useSaClient: useSaClient,
-		useSaUser:   useSaUser,
+		useSaClient:     useSaClient,
+		useSaUser:       useSaUser,
+		useSaFileUpload: useSaFileUpload,
 	}
 
 	e.POST("/api/auth/register", cont.Register)
@@ -90,7 +93,8 @@ func (u *ContAuth) Login(e echo.Context) error {
 		appE   = app.Res{R: e}    // wajib
 		// client sa_models.SaClient
 
-		form = models.LoginForm{}
+		form      = models.LoginForm{}
+		dataFiles = sa_models.SaFileOutput{}
 	)
 
 	// validasi and bind to struct
@@ -127,6 +131,17 @@ func (u *ContAuth) Login(e echo.Context) error {
 		return appE.ResponseError(http.StatusInternalServerError, "Status Internal Server Error", nil)
 	}
 
+	dataFile, err := u.useSaFileUpload.GetBySaFileUpload(ctx, DataUser.FileID)
+
+	// dataFiles.FileName = dataFile.FileName
+	// dataFiles.FilePath = dataFile.FilePath
+	// dataFiles.FileType = dataFile.FileType
+	err = mapstructure.Decode(dataFile, &dataFiles)
+	if err != nil {
+		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
+
+	}
+
 	restUser := map[string]interface{}{
 		"user_id":      DataUser.UserID,
 		"client_id":    DataUser.ClientID,
@@ -136,7 +151,7 @@ func (u *ContAuth) Login(e echo.Context) error {
 		"email_addr":   DataUser.EmailAddr,
 		"handphone_no": DataUser.HandphoneNo,
 		"company_id":   DataUser.CompanyID,
-		"picture_url":  DataUser.PictureURL,
+		"picture_url":  dataFiles,
 	}
 	response := map[string]interface{}{
 		"token":     token,

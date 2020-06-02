@@ -580,6 +580,9 @@
                 "email_addr": {
                     "type": "string"
                 },
+                "file_id": {
+                    "type": "string"
+                },
                 "handphone_no": {
                     "type": "string"
                 },
@@ -587,9 +590,6 @@
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "picture_url": {
                     "type": "string"
                 },
                 "role_id": {
@@ -615,6 +615,9 @@
                 "email_addr": {
                     "type": "string"
                 },
+                "file_id": {
+                    "type": "string"
+                },
                 "handphone_no": {
                     "type": "string"
                 },
@@ -622,9 +625,6 @@
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "picture_url": {
                     "type": "string"
                 },
                 "role_id": {

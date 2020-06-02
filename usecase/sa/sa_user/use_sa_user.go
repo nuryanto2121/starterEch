@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"math"
+	isafileupload "property/framework/interface/sa/sa_file_upload"
 	isauser "property/framework/interface/sa/sa_user"
 	isauserbranch "property/framework/interface/sa/sa_user_branch"
 	isausercompany "property/framework/interface/sa/sa_user_company"
@@ -21,15 +22,17 @@ type useSaUser struct {
 	repoSaUser        isauser.Repository
 	repoSaUserCompany isausercompany.Repository
 	repoSaUserBranch  isauserbranch.Repository
+	repoSaFileUpload  isafileupload.Repository
 	contextTimeOut    time.Duration
 }
 
 // NewUseSaUser :
-func NewUseSaUser(a isauser.Repository, b isausercompany.Repository, c isauserbranch.Repository, timeout time.Duration) isauser.Usercase {
+func NewUseSaUser(a isauser.Repository, b isausercompany.Repository, c isauserbranch.Repository, d isafileupload.Repository, timeout time.Duration) isauser.Usercase {
 	return &useSaUser{
 		repoSaUser:        a,
 		repoSaUserCompany: b,
 		repoSaUserBranch:  c,
+		repoSaFileUpload:  d,
 		contextTimeOut:    timeout,
 	}
 }
@@ -43,6 +46,11 @@ func (u *useSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result s
 	if err != nil {
 		return a, err
 	}
+
+	dataFIle, _ := u.repoSaFileUpload.GetBySaFileUpload(ctx, result.FileID)
+	result.DataFile.FileName = dataFIle.FileName
+	result.DataFile.FilePath = dataFIle.FilePath
+	result.DataFile.FileType = dataFIle.FileType
 	result.Passwd = ""
 	return result, nil
 }

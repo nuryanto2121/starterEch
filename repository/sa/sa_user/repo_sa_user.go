@@ -131,7 +131,7 @@ func (db *repoSaUser) GetList(ctx context.Context, queryparam models.ParamList) 
 			sWhere += queryparam.Search
 		}
 	}
-	var sfield = `user_id,client_id, role_id, level_no, user_name, "name", email_addr, handphone_no, company_id, picture_url, user_status, created_by, created_at, updated_by, updated_at `
+	var sfield = `user_id,client_id, role_id, level_no, user_name, "name", email_addr, handphone_no, company_id, file_id, user_status, created_by, created_at, updated_by, updated_at `
 	// end where
 	if pageNum >= 0 && pageSize > 0 {
 		query := db.Conn.Select(sfield).Where(sWhere).Offset(pageNum).Limit(pageSize).Order(orderBy).Find(&result)

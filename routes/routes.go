@@ -49,6 +49,11 @@ func (e *Echo) InitialRouter() {
 	e.E.Use(middL.CORS)
 	timeoutContext := time.Duration(setting.FileConfigSetting.Server.ReadTimeout) * time.Second
 
+	//file upload
+	repoSaFileUpload := _safilerepo.NewRepoSaFileUpload(connection.Conn)
+	useSaFileUpload := _safilieuse.NewUseSaFileUpload(repoSaFileUpload, timeoutContext)
+	_safilecont.NewContFileUpload(e.E, useSaFileUpload)
+
 	/*sa user branch*/
 	repoSaUserBranch := _sauserbranch.NewRepoSaUserBranch(connection.Conn)
 	/*sa user company*/
@@ -57,7 +62,7 @@ func (e *Echo) InitialRouter() {
 
 	/*sa user*/
 	repoSaUser := _sauserrepo.NewRepoSaUser(connection.Conn)
-	useSaUser := _sauseruse.NewUseSaUser(repoSaUser, repoSaUserCompany, repoSaUserBranch, timeoutContext)
+	useSaUser := _sauseruse.NewUseSaUser(repoSaUser, repoSaUserCompany, repoSaUserBranch, repoSaFileUpload, timeoutContext)
 	_sausercont.NewContSaUser(e.E, useSaUser)
 
 	/*sa Role*/
@@ -75,11 +80,6 @@ func (e *Echo) InitialRouter() {
 	repoSaClient := _saclientrepo.NewRepoSaClient(connection.Conn)
 	useSaClient := _saclientuse.NewUseClient(repoSaClient, repoSaCompany, repoSaUser, repoSaBranch, timeoutContext)
 
-	//file upload
-	repoSaFileUpload := _safilerepo.NewRepoSaFileUpload(connection.Conn)
-	useSaFileUpload := _safilieuse.NewUseSaFileUpload(repoSaFileUpload, timeoutContext)
-	_safilecont.NewContFileUpload(e.E, useSaFileUpload)
-
 	//_saauthcont
-	_saauthcont.NewContAuth(e.E, useSaClient, useSaUser)
+	_saauthcont.NewContAuth(e.E, useSaClient, useSaUser, useSaFileUpload)
 }

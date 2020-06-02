@@ -16,3 +16,9 @@ type SaFileUpload struct {
 	UpdatedBy string    `json:"updated_by" gorm:"type:varchar(20);not null"`
 	UpdatedAt time.Time `json:"updated_at" gorm:"type:timestamp(0) without time zone;default:now()"`
 }
+
+type SaFileOutput struct {
+	FileName string `json:"file_name" gorm:"type:varchar(100);not null"`
+	FilePath string `json:"file_path" gorm:"type:varchar(150);not null"`
+	FileType string `json:"file_type" gorm:"type:varchar(10)"`
+}
