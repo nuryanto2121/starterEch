@@ -3,7 +3,7 @@ definitions:
     properties:
       data:
         type: object
-      msg:
+      message:
         description: Code int         `json:"code"`
         type: string
     type: object

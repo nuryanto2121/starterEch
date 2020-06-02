@@ -1,6 +1,7 @@
 {
     "debug": true,
     "jwt_secret": "don'tPanic",
+    "expire_jwt":72,
     "server": {
         "run_mode": "debug",
         "http_port": 8084,
