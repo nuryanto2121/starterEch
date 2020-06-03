@@ -104,24 +104,20 @@ func (u *ContAuth) Login(e echo.Context) error {
 		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
 	}
 
-	if form.UserName == "" {
-		return appE.ResponseError(http.StatusUnauthorized, "Email Or UserName can't be blank.", nil)
-	}
+	// if form.UserName == "" {
+	// 	return appE.ResponseError(http.StatusUnauthorized, "Email Or UserName can't be blank.", nil)
+	// }
 
-	if form.Password == "" {
-		return appE.ResponseError(http.StatusUnauthorized, "Password can't be blank.", nil)
-	}
+	// if form.Password == "" {
+	// 	return appE.ResponseError(http.StatusUnauthorized, "Password can't be blank.", nil)
+	// }
 
 	DataUser, err := u.useSaUser.GetByEmailSaUser(ctx, form.UserName)
 	if err != nil {
 		// return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
 		return appE.ResponseError(http.StatusUnauthorized, "Invalid User Or Email.", nil)
 	}
-	// form.Password, _ = util.Hash(form.Password)
 
-	// if ok, _ := util.Compare(form.Password, DataUser.Passwd); !ok {
-	// 	return appE.ResponseError(http.StatusUnauthorized, "Invalid Password.", nil)
-	// }
 	if !util.ComparePassword(DataUser.Passwd, util.GetPassword(form.Password)) {
 		return appE.ResponseError(http.StatusUnauthorized, "Invalid Password.", nil)
 	}
@@ -133,9 +129,6 @@ func (u *ContAuth) Login(e echo.Context) error {
 
 	dataFile, err := u.useSaFileUpload.GetBySaFileUpload(ctx, DataUser.FileID)
 
-	// dataFiles.FileName = dataFile.FileName
-	// dataFiles.FilePath = dataFile.FilePath
-	// dataFiles.FileType = dataFile.FileType
 	err = mapstructure.Decode(dataFile, &dataFiles)
 	if err != nil {
 		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
@@ -159,4 +152,40 @@ func (u *ContAuth) Login(e echo.Context) error {
 	}
 
 	return appE.Response(http.StatusOK, "Ok", response)
+}
+
+// Register :
+// @Summary Forgot Password
+// @Tags Auth
+// @Produce json
+// @Param req body models.ForgotForm true "req param #changes are possible to adjust the form of the registration form from frontend"
+// @Success 200 {object} app.ResponseModel
+// @Router /api/auth/login [post]
+func (u *ContAuth) ForgotPassword(e echo.Context) error {
+	ctx := e.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	var (
+		logger = logging.Logger{} // wajib
+		appE   = app.Res{R: e}    // wajib
+		// client sa_models.SaClient
+
+		form = models.ForgotForm{}
+	)
+
+	// validasi and bind to struct
+	httpCode, errMsg := app.BindAndValid(e, &form)
+	logger.Info(util.Stringify(form))
+	if httpCode != 200 {
+		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
+	}
+
+	dataUser, err := u.useSaUser.GetByEmailSaUser(ctx, form.EmailAddr)
+	if err != nil {
+		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
+	}
+	logger.Info(util.Stringify(dataUser))
+	return appE.Response(http.StatusOK, "Ok", "Please Check Your Email")
 }

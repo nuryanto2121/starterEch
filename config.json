@@ -9,6 +9,14 @@
         "write_timeout": 600,
         "_comment": "debug or release"
     },
+    "smtp":{
+        "server":"smtp.gmail.com",
+        "port":587,
+        "user":"adm.acc@gmail.com",
+        "passwd":"",
+        "Identity":"ACC+",
+        "sender":"nuryanto@gmail.com"
+    },
     "app": {
         "jwt_secret": "don'tPanic",
         "page_size": 10,

@@ -73,6 +73,11 @@ definitions:
       user_status:
         type: integer
     type: object
+  models.ForgotForm:
+    properties:
+      email:
+        type: string
+    type: object
   models.LoginForm:
     properties:
       p:
@@ -137,7 +142,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/models.LoginForm'
+          $ref: '#/definitions/models.ForgotForm'
           type: object
       produces:
       - application/json
@@ -146,7 +151,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
-      summary: Login
+      summary: Forgot Password
       tags:
       - Auth
   /api/auth/register:

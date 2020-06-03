@@ -14,11 +14,16 @@ type RegisterForm struct {
 	Address          string    `json:"address,omitempty"`
 	PostCd           string    `json:"post_cd,omitempty"`
 	TelephoneNo      string    `json:"telephone_no,omitempty"`
-	EmailAddr        string    `json:"email_addr,omitempty"`
+	EmailAddr        string    `json:"email_addr,omitempty" valid:"Email"`
 	ContactPerson    string    `json:"contact_person,omitempty"`
 	ClientType       string    `json:"client_type,omitempty"`
 	JoiningDate      time.Time `json:"joining_date,omitempty"`
 	StartBillingDate time.Time `json:"start_billing_date,omitempty"`
 	ExpiryDate       time.Time `json:"expiry_date,omitempty"`
 	CreatedBy        string    `json:"created_by" valid:"Required"`
+}
+
+// ForgotForm :
+type ForgotForm struct {
+	EmailAddr string `json:"email,omitempty" valid:"Required;Email"`
 }

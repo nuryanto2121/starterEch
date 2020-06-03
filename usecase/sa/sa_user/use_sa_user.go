@@ -13,6 +13,7 @@ import (
 	sa_models "property/framework/models/sa"
 	util "property/framework/pkg/utils"
 	"reflect"
+	"strings"
 	"time"
 
 	uuid "github.com/satori/go.uuid"
@@ -93,6 +94,10 @@ func (u *useSaUser) GetList(ctx context.Context, queryparam models.ParamList) (r
 		value := reflect.ValueOf(tuser)
 		types := reflect.TypeOf(&tuser)
 		queryparam.Search = util.GetWhereLikeStruct(value, types, queryparam.Search, "") // fmt.Sprintf("user_name LIKE '%s' OR email_addr LIKE '%s' OR handphone_no LIKE '%s'", search, search, search)
+	}
+
+	if queryparam.InitSearch != "" {
+		queryparam.InitSearch = strings.ReplaceAll(queryparam.InitSearch, "=", " iLIKE ")
 	}
 	result.Data, err = u.repoSaUser.GetList(ctx, queryparam)
 	if err != nil {

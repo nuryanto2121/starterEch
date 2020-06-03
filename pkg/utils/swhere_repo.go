@@ -25,7 +25,11 @@ func GetWhereLikeStruct(v reflect.Value, t reflect.Type, searchParam string, fie
 			str2 := str1[:i2]
 			varFieldtable := fmt.Sprintf(str2)
 			fmt.Printf("%v\n", varType)
-			// fmt.Printf("%v\n", varFieldtable)
+			sType := fmt.Sprintf("%v\n", varType)
+			fmt.Printf(sType)
+			if strings.Contains(sType, "models") {
+				continue
+			}
 			if strings.Index(varFieldtable, ",") > 0 {
 				varFieldtable = strings.Split(varFieldtable, ",")[0]
 			}

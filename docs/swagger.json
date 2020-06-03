@@ -20,7 +20,7 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Login",
+                "summary": "Forgot Password",
                 "parameters": [
                     {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
@@ -29,7 +29,7 @@
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/models.LoginForm"
+                            "$ref": "#/definitions/models.ForgotForm"
                         }
                     }
                 ],
@@ -638,6 +638,14 @@
                 },
                 "user_status": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.ForgotForm": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
                 }
             }
         },

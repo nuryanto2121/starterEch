@@ -19,6 +19,16 @@ type Server struct {
 // ServerSetting :
 // var ServerSetting = &Server{}
 
+// SMTP :
+type SMTP struct {
+	Server   string `mapstructure:"server"`
+	Port     int    `mapstructure:"port"`
+	User     string `mapstructure:"user"`
+	Passwd   string `mapstructure:"passwd"`
+	Identity string `mapstructure:"identity"`
+	Sender   string `mapstructure:"sender"`
+}
+
 // Database :
 type Database struct {
 	Type        string `mapstructure:"type"`
@@ -58,6 +68,7 @@ type App struct {
 type FileConfig struct {
 	Debug    bool      `mapstructure:"debug"`
 	Server   *Server   `mapstructure:"server"`
+	SMTP     *SMTP     `mapstructure:"smtp"`
 	App      *App      `mapstructure:"app"`
 	Database *Database `mapstructure:"database"`
 }
