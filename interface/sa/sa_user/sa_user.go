@@ -20,8 +20,8 @@ type Repository interface {
 	CountUserList(ctx context.Context, queryparam models.ParamList) (result int, err error)
 }
 
-// Usercase :
-type Usercase interface {
+// Usecase :
+type Usecase interface {
 	GetBySaUser(ctx context.Context, userID uuid.UUID) (result sa_models.SaUser, err error)
 	GetByEmailSaUser(ctx context.Context, email string) (result sa_models.SaUser, err error)
 	GetJsonPermission(ctx context.Context, userID uuid.UUID, clientID uuid.UUID) (result []map[string]interface{}, err error)

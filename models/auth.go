@@ -27,3 +27,10 @@ type RegisterForm struct {
 type ForgotForm struct {
 	EmailAddr string `json:"email,omitempty" valid:"Required;Email"`
 }
+
+// ResetPasswd :
+type ResetPasswd struct {
+	TokenEmail    string `json:"token_email" valid:"Required"`
+	Passwd        string `json:"p" valid:"Required"`
+	ConfirmPasswd string `json:"cp" valid:"Required"`
+}

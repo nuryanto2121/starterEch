@@ -13,4 +13,8 @@ var (
 	ErrConflict = errors.New("Your Item already exist")
 	// ErrBadParamInput : will throw if the given request-body or params is not valid
 	ErrBadParamInput = errors.New("Given Param is not valid")
+
+	Unauthorized = errors.New("UnAuthorized")
+
+	ErrInvalidLogin = errors.New("Invalid User Or Password")
 )

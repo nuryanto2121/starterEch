@@ -23,11 +23,11 @@ import (
 
 // ContSaUser :
 type ContSaUser struct {
-	useSaUser isauser.Usercase
+	useSaUser isauser.Usecase
 }
 
 // NewContSaUser :
-func NewContSaUser(e *echo.Echo, useSaUser isauser.Usercase) {
+func NewContSaUser(e *echo.Echo, useSaUser isauser.Usecase) {
 	controller := &ContSaUser{
 		useSaUser: useSaUser,
 	}

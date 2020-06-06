@@ -2,11 +2,12 @@ package contauth
 
 import (
 	"context"
-	"fmt"
 	"net/http"
-	isaclient "property/framework/interface/sa/sa_client"
-	isafileupload "property/framework/interface/sa/sa_file_upload"
-	isauser "property/framework/interface/sa/sa_user"
+	iauth "property/framework/interface/auth"
+
+	// isaclient "property/framework/interface/sa/sa_client"
+	// isafileupload "property/framework/interface/sa/sa_file_upload"
+	// isauser "property/framework/interface/sa/sa_user"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/app"
@@ -19,20 +20,24 @@ import (
 
 // ContAuth :
 type ContAuth struct {
-	useSaClient     isaclient.Usecase
-	useSaUser       isauser.Usercase
-	useSaFileUpload isafileupload.UseCase
+	useAuth iauth.Usecase
+	// useSaClient     isaclient.Usecase
+	// useSaUser       isauser.Usecase
+	// useSaFileUpload isafileupload.UseCase
 }
 
-func NewContAuth(e *echo.Echo, useSaClient isaclient.Usecase, useSaUser isauser.Usercase, useSaFileUpload isafileupload.UseCase) {
+func NewContAuth(e *echo.Echo, useAuth iauth.Usecase) {
 	cont := &ContAuth{
-		useSaClient:     useSaClient,
-		useSaUser:       useSaUser,
-		useSaFileUpload: useSaFileUpload,
+		useAuth: useAuth,
+		// useSaClient:     useSaClient,
+		// useSaUser:       useSaUser,
+		// useSaFileUpload: useSaFileUpload,
 	}
 
 	e.POST("/api/auth/register", cont.Register)
 	e.POST("/api/auth/login", cont.Login)
+	e.POST("/api/auth/forgot", cont.ForgotPassword)
+	e.POST("/api/auth/reset", cont.ResetPasswd)
 }
 
 // Register :
@@ -64,15 +69,17 @@ func (u *ContAuth) Register(e echo.Context) error {
 	// mapping to struct model saClient
 	err := mapstructure.Decode(form, &client)
 	if err != nil {
-		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
+		return appE.ResponseErr(util.GoutputErr(err)) //return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
 	}
 
-	err = u.useSaClient.RegisterClient(ctx, &client)
-	if err != nil {
-		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
+	out := u.useAuth.Register(ctx, &client)
+	// err = u.useSaClient.RegisterClient(ctx, &client)
+	if out.Err != nil {
+		// return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
+		return appE.ResponseErr(out)
 	}
 
-	return appE.Response(http.StatusCreated, "Ok", client)
+	return appE.Response(http.StatusCreated, "Ok", out.Data)
 }
 
 // Register :
@@ -93,8 +100,8 @@ func (u *ContAuth) Login(e echo.Context) error {
 		appE   = app.Res{R: e}    // wajib
 		// client sa_models.SaClient
 
-		form      = models.LoginForm{}
-		dataFiles = sa_models.SaFileOutput{}
+		form = models.LoginForm{}
+		// dataFiles = sa_models.SaFileOutput{}
 	)
 
 	// validasi and bind to struct
@@ -104,54 +111,14 @@ func (u *ContAuth) Login(e echo.Context) error {
 		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
 	}
 
-	// if form.UserName == "" {
-	// 	return appE.ResponseError(http.StatusUnauthorized, "Email Or UserName can't be blank.", nil)
-	// }
-
-	// if form.Password == "" {
-	// 	return appE.ResponseError(http.StatusUnauthorized, "Password can't be blank.", nil)
-	// }
-
-	DataUser, err := u.useSaUser.GetByEmailSaUser(ctx, form.UserName)
-	if err != nil {
-		// return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
-		return appE.ResponseError(http.StatusUnauthorized, "Invalid User Or Email.", nil)
+	out := u.useAuth.Login(ctx, &form) //u.useSaUser.GetByEmailSaUser(ctx, form.UserName)
+	if out.Err != nil {
+		return appE.ResponseErr(out)
+		//return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
+		// return appE.ResponseError(http.StatusUnauthorized, err, nil)
 	}
 
-	if !util.ComparePassword(DataUser.Passwd, util.GetPassword(form.Password)) {
-		return appE.ResponseError(http.StatusUnauthorized, "Invalid Password.", nil)
-	}
-
-	token, err := util.GenerateToken(DataUser.UserID.String(), DataUser.UserName)
-	if err != nil {
-		return appE.ResponseError(http.StatusInternalServerError, "Status Internal Server Error", nil)
-	}
-
-	dataFile, err := u.useSaFileUpload.GetBySaFileUpload(ctx, DataUser.FileID)
-
-	err = mapstructure.Decode(dataFile, &dataFiles)
-	if err != nil {
-		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
-
-	}
-
-	restUser := map[string]interface{}{
-		"user_id":      DataUser.UserID,
-		"client_id":    DataUser.ClientID,
-		"user_name":    DataUser.UserName,
-		"level_no":     DataUser.LevelNo,
-		"role_id":      DataUser.RoleID,
-		"email_addr":   DataUser.EmailAddr,
-		"handphone_no": DataUser.HandphoneNo,
-		"company_id":   DataUser.CompanyID,
-		"picture_url":  dataFiles,
-	}
-	response := map[string]interface{}{
-		"token":     token,
-		"data_user": restUser,
-	}
-
-	return appE.Response(http.StatusOK, "Ok", response)
+	return appE.Response(http.StatusOK, "Ok", out.Data)
 }
 
 // Register :
@@ -160,7 +127,7 @@ func (u *ContAuth) Login(e echo.Context) error {
 // @Produce json
 // @Param req body models.ForgotForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
-// @Router /api/auth/login [post]
+// @Router /api/auth/forgot [post]
 func (u *ContAuth) ForgotPassword(e echo.Context) error {
 	ctx := e.Request().Context()
 	if ctx == nil {
@@ -181,11 +148,43 @@ func (u *ContAuth) ForgotPassword(e echo.Context) error {
 	if httpCode != 200 {
 		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
 	}
-
-	dataUser, err := u.useSaUser.GetByEmailSaUser(ctx, form.EmailAddr)
-	if err != nil {
-		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
+	out := u.useAuth.ForgotPassword(ctx, &form)
+	if out.Err != nil {
+		return appE.ResponseErr(out)
 	}
-	logger.Info(util.Stringify(dataUser))
+
 	return appE.Response(http.StatusOK, "Ok", "Please Check Your Email")
+}
+
+// Register :
+// @Summary Reset Password
+// @Tags Auth
+// @Produce json
+// @Param req body models.ResetPasswd true "req param #changes are possible to adjust the form of the registration form from frontend"
+// @Success 200 {object} app.ResponseModel
+// @Router /api/auth/reset [post]
+func (u *ContAuth) ResetPasswd(e echo.Context) error {
+	ctx := e.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	var (
+		logger = logging.Logger{} // wajib
+		appE   = app.Res{R: e}    // wajib
+		// client sa_models.SaClient
+
+		form = models.ResetPasswd{}
+	)
+	httpCode, errMsg := app.BindAndValid(e, &form)
+	logger.Info(util.Stringify(form))
+	if httpCode != 200 {
+		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
+	}
+	out := u.useAuth.ResetPassword(ctx, &form)
+	if out.Err != nil {
+		return appE.ResponseErr(out)
+	}
+
+	return appE.Response(http.StatusOK, "Ok", "Please Login")
 }

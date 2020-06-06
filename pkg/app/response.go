@@ -30,11 +30,7 @@ type ResponseModel struct {
 func (e Res) Response(httpCode int, errMsg string, data interface{}) error {
 	var logger = logging.Logger{}
 	response := ResponseModel{
-		// Status:  httpCode,
-		// Message: errMsg,
-		// Error:   err,
-		// Data:    data,
-		// Code: httpCode,
+
 		Msg:  errMsg,
 		Data: data,
 	}
@@ -47,16 +43,22 @@ func (e Res) Response(httpCode int, errMsg string, data interface{}) error {
 func (e Res) ResponseError(httpCode int, errMsg string, data interface{}) error {
 	var logger = logging.Logger{}
 	response := ResponseModel{
-		// Status:  httpCode,
-		// Message: errMsg,
-		// Error:   err,
-		// Data:    data,
-		// Code: httpCode,
+
 		Msg:  errMsg,
 		Data: data,
 	}
 	logger.Error(string(util.Stringify(response)))
 	return e.R.JSON(httpCode, response)
+	// return string(util.Stringify(response))
+}
+func (e Res) ResponseErr(data models.Output) error {
+	var logger = logging.Logger{}
+	response := ResponseModel{
+		Msg:  data.Msg,
+		Data: data.Data,
+	}
+	logger.Error(string(util.Stringify(response)))
+	return e.R.JSON(data.Code, response)
 	// return string(util.Stringify(response))
 }
 

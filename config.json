@@ -12,8 +12,8 @@
     "smtp":{
         "server":"smtp.gmail.com",
         "port":587,
-        "user":"adm.acc@gmail.com",
-        "passwd":"",
+        "user":"adm.accleog@gmail.com",
+        "passwd":"!@#$%12345",
         "Identity":"ACC+",
         "sender":"nuryanto@gmail.com"
     },
@@ -31,7 +31,8 @@
         "log_save_name": "log",
         "log_file_ext": "log",
         "time_format": 20060102,
-        "issuer": "PropertyFramework"
+        "issuer": "PropertyFramework",
+        "url_forgot_password":"http://localhost:8084"
     },
     "database": {
         "type": "postgres",

@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -44,12 +45,6 @@ func GenerateToken(id string, user_name string) (string, error) {
 	return tokenClaims.SignedString(jwtSecret)
 }
 
-// func(c *Claims) JWTConfig() jwtConf {
-
-// 	config := middleware.JWTConfig{}
-// 	return config
-// }
-
 // ParseToken :
 func ParseToken(token string) (*Claims, error) {
 	viper.SetConfigFile(`config.json`)
@@ -72,4 +67,37 @@ func ParseToken(token string) (*Claims, error) {
 	}
 
 	return nil, err
+}
+
+// GetEmailToken :
+func GetEmailToken(email string) string {
+	viper.SetConfigFile(`config.json`)
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Fatalf("setting.Setup, fail to parse 'config.json': %v", err)
+	}
+
+	var screet = viper.GetString(`jwt_secret`)
+	// expired_time := viper.GetInt(`expire_jwt`)
+	var jwtSecret = []byte(screet)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"email": email,
+	})
+	tokenString, _ := token.SignedString(jwtSecret)
+	return tokenString
+}
+
+// ParseEmailToken :
+func ParseEmailToken(token string) string {
+	tkn, _ := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		// tkn, _ := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			// if _, ok := token.Method.(*jwt.SigningMethodHS256); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte("secret"), nil
+	})
+
+	claims, _ := tkn.Claims.(jwt.MapClaims)
+	return fmt.Sprintf("%s", claims["email"])
 }

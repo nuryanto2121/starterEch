@@ -19,6 +19,7 @@ import (
 	_saroleuse "property/framework/usecase/sa/sa_role"
 
 	_saauthcont "property/framework/controllers/auth"
+	_authuse "property/framework/usecase/auth"
 
 	_sacompanyrepo "property/framework/repository/sa/sa_company"
 
@@ -81,5 +82,6 @@ func (e *Echo) InitialRouter() {
 	useSaClient := _saclientuse.NewUseClient(repoSaClient, repoSaCompany, repoSaUser, repoSaBranch, timeoutContext)
 
 	//_saauthcont
-	_saauthcont.NewContAuth(e.E, useSaClient, useSaUser, useSaFileUpload)
+	useAuth := _authuse.NewUserAuth(repoSaUser, useSaClient, useSaFileUpload, timeoutContext)
+	_saauthcont.NewContAuth(e.E, useAuth)
 }

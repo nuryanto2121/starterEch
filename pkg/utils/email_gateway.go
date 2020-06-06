@@ -7,8 +7,8 @@ import (
 	"github.com/go-gomail/gomail"
 )
 
-//SendEail :
-func SendEail(to string, subject string, htmlBody string, txtBody string) error {
+//SendEmail :
+func SendEmail(to string, subject string, htmlBody string) error {
 
 	smtp := setting.FileConfigSetting.SMTP
 
@@ -22,8 +22,8 @@ func SendEail(to string, subject string, htmlBody string, txtBody string) error 
 	m.SetHeader("To", to)
 	m.SetHeader("Subject", subject)
 
-	m.SetBody("text/plain", txtBody)
-	m.AddAlternative("text/html", htmlBody)
+	m.SetBody("text/html", htmlBody)
+	// m.AddAlternative("text/html", htmlBody)
 
 	d := gomail.NewDialer(smtp.Server, smtp.Port, smtp.User, smtp.Passwd)
 

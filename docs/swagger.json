@@ -12,7 +12,7 @@
         "version": "1.0"
     },
     "paths": {
-        "/api/auth/login": {
+        "/api/auth/forgot": {
             "post": {
                 "produces": [
                     "application/json"
@@ -30,6 +30,37 @@
                         "schema": {
                             "type": "object",
                             "$ref": "#/definitions/models.ForgotForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "req param #changes are possible to adjust the form of the registration form from frontend",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.LoginForm"
                         }
                     }
                 ],
@@ -61,6 +92,37 @@
                         "schema": {
                             "type": "object",
                             "$ref": "#/definitions/models.RegisterForm"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/reset": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Reset Password",
+                "parameters": [
+                    {
+                        "description": "req param #changes are possible to adjust the form of the registration form from frontend",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.ResetPasswd"
                         }
                     }
                 ],
@@ -694,6 +756,20 @@
                     "type": "string"
                 },
                 "telephone_no": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ResetPasswd": {
+            "type": "object",
+            "properties": {
+                "cp": {
+                    "type": "string"
+                },
+                "p": {
+                    "type": "string"
+                },
+                "token_email": {
                     "type": "string"
                 }
             }

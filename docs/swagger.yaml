@@ -110,6 +110,15 @@ definitions:
       telephone_no:
         type: string
     type: object
+  models.ResetPasswd:
+    properties:
+      cp:
+        type: string
+      p:
+        type: string
+      token_email:
+        type: string
+    type: object
   models.ResponseModelList:
     properties:
       data:
@@ -133,7 +142,7 @@ info:
   title: Starter
   version: "1.0"
 paths:
-  /api/auth/login:
+  /api/auth/forgot:
     post:
       parameters:
       - description: 'req param #changes are possible to adjust the form of the registration
@@ -152,6 +161,27 @@ paths:
           schema:
             $ref: '#/definitions/app.ResponseModel'
       summary: Forgot Password
+      tags:
+      - Auth
+  /api/auth/login:
+    post:
+      parameters:
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginForm'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: Login
       tags:
       - Auth
   /api/auth/register:
@@ -173,6 +203,27 @@ paths:
           schema:
             $ref: '#/definitions/app.ResponseModel'
       summary: Add Client
+      tags:
+      - Auth
+  /api/auth/reset:
+    post:
+      parameters:
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.ResetPasswd'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: Reset Password
       tags:
       - Auth
   /api/fileupload:

@@ -28,7 +28,7 @@ type useSaUser struct {
 }
 
 // NewUseSaUser :
-func NewUseSaUser(a isauser.Repository, b isausercompany.Repository, c isauserbranch.Repository, d isafileupload.Repository, timeout time.Duration) isauser.Usercase {
+func NewUseSaUser(a isauser.Repository, b isausercompany.Repository, c isauserbranch.Repository, d isafileupload.Repository, timeout time.Duration) isauser.Usecase {
 	return &useSaUser{
 		repoSaUser:        a,
 		repoSaUserCompany: b,
@@ -93,17 +93,26 @@ func (u *useSaUser) GetList(ctx context.Context, queryparam models.ParamList) (r
 	if queryparam.Search != "" {
 		value := reflect.ValueOf(tuser)
 		types := reflect.TypeOf(&tuser)
-		queryparam.Search = util.GetWhereLikeStruct(value, types, queryparam.Search, "") // fmt.Sprintf("user_name LIKE '%s' OR email_addr LIKE '%s' OR handphone_no LIKE '%s'", search, search, search)
+		queryparam.Search = util.GetWhereLikeStruct(value, types, queryparam.Search, "user_name,name,email_addr,handphone_no") // fmt.Sprintf("user_name LIKE '%s' OR email_addr LIKE '%s' OR handphone_no LIKE '%s'", search, search, search)
 	}
 
 	if queryparam.InitSearch != "" {
 		queryparam.InitSearch = strings.ReplaceAll(queryparam.InitSearch, "=", " iLIKE ")
 	}
-	result.Data, err = u.repoSaUser.GetList(ctx, queryparam)
+	dataList, err := u.repoSaUser.GetList(ctx, queryparam)
 	if err != nil {
 		return result, err
 	}
 
+	for _, data := range dataList {
+
+		dt, _ := u.repoSaFileUpload.GetBySaFileUpload(ctx, data.FileID)
+		data.DataFile.FileName = dt.FileName
+		data.DataFile.FilePath = dt.FilePath
+		data.DataFile.FileType = dt.FileType
+
+	}
+	result.Data = dataList
 	result.Total, err = u.repoSaUser.CountUserList(ctx, queryparam)
 	if err != nil {
 		return result, err

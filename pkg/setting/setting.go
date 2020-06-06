@@ -45,20 +45,21 @@ type Database struct {
 
 // App :
 type App struct {
-	JwtSecret       string   `mapstructure:"jwt_secret"`
-	PageSize        int      `mapstructure:"page_size"`
-	PrefixURL       string   `mapstructure:"prefix_url"`
-	RuntimeRootPath string   `mapstructure:"runtime_root_path"`
-	ImageSavePath   string   `mapstructure:"image_save_path"`
-	ImageMaxSize    int      `mapstructure:"image_size"`
-	ImageAllowExts  []string `mapstructure:"image_allow_ext"`
-	ExportSavePath  string   `mapstructure:"export_save_path"`
-	QrCodeSavePath  string   `mapstructure:"qr_code"`
-	LogSavePath     string   `mapstructure:"log_save_path"`
-	LogSaveName     string   `mapstructure:"log_save_name"`
-	LogFileExt      string   `mapstructure:"log_file_ext"`
-	TimeFormat      string   `mapstructure:"time_format"`
-	Issuer          string   `mapstructure:"issuer"`
+	JwtSecret         string   `mapstructure:"jwt_secret"`
+	PageSize          int      `mapstructure:"page_size"`
+	PrefixURL         string   `mapstructure:"prefix_url"`
+	RuntimeRootPath   string   `mapstructure:"runtime_root_path"`
+	ImageSavePath     string   `mapstructure:"image_save_path"`
+	ImageMaxSize      int      `mapstructure:"image_size"`
+	ImageAllowExts    []string `mapstructure:"image_allow_ext"`
+	ExportSavePath    string   `mapstructure:"export_save_path"`
+	QrCodeSavePath    string   `mapstructure:"qr_code"`
+	LogSavePath       string   `mapstructure:"log_save_path"`
+	LogSaveName       string   `mapstructure:"log_save_name"`
+	LogFileExt        string   `mapstructure:"log_file_ext"`
+	TimeFormat        string   `mapstructure:"time_format"`
+	Issuer            string   `mapstructure:"issuer"`
+	UrlForgotPassword string   `mapstructure:"url_forgot_password"`
 }
 
 // AppSetting interface pointer
