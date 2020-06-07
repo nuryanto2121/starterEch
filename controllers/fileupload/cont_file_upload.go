@@ -85,13 +85,6 @@ func (u *ContFileUpload) CreateImage(c echo.Context) (err error) {
 		return err
 	}
 
-	var dir_file = dir + "/wwwroot/uploads"
-	var path_file = "/wwwroot/uploads"
-	err = file.IsNotExistMkDir(dir_file)
-	if err != nil {
-		return err
-	}
-
 	for i, image := range images {
 		// Source
 		src, err := image.Open()
@@ -99,6 +92,13 @@ func (u *ContFileUpload) CreateImage(c echo.Context) (err error) {
 			return err
 		}
 		defer src.Close()
+
+		var dir_file = dir + "/wwwroot/uploads"
+		var path_file = "/wwwroot/uploads"
+		err = file.IsNotExistMkDir(dir_file)
+		if err != nil {
+			return err
+		}
 
 		// create folder directory if not exist from param
 		if pt[i] != "" {

@@ -17,6 +17,7 @@
 *.log
 .vscode
 # docs/*
+wwwroot/*
 runtime/mail/*
 tmp
 runner.conf

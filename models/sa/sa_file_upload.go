@@ -18,7 +18,8 @@ type SaFileUpload struct {
 }
 
 type SaFileOutput struct {
-	FileName string `json:"file_name" gorm:"type:varchar(100);not null"`
-	FilePath string `json:"file_path" gorm:"type:varchar(150);not null"`
-	FileType string `json:"file_type" gorm:"type:varchar(10)"`
+	FileID   uuid.UUID `json:"file_id"`
+	FileName string    `json:"file_name"`
+	FilePath string    `json:"file_path"`
+	FileType string    `json:"file_type"`
 }

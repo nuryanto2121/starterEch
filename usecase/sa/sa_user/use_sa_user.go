@@ -3,6 +3,8 @@ package usesauser
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"log"
 	"math"
 	isafileupload "property/framework/interface/sa/sa_file_upload"
@@ -23,12 +25,12 @@ type useSaUser struct {
 	repoSaUser        isauser.Repository
 	repoSaUserCompany isausercompany.Repository
 	repoSaUserBranch  isauserbranch.Repository
-	repoSaFileUpload  isafileupload.Repository
+	repoSaFileUpload  isafileupload.UseCase
 	contextTimeOut    time.Duration
 }
 
 // NewUseSaUser :
-func NewUseSaUser(a isauser.Repository, b isausercompany.Repository, c isauserbranch.Repository, d isafileupload.Repository, timeout time.Duration) isauser.Usecase {
+func NewUseSaUser(a isauser.Repository, b isausercompany.Repository, c isauserbranch.Repository, d isafileupload.UseCase, timeout time.Duration) isauser.Usecase {
 	return &useSaUser{
 		repoSaUser:        a,
 		repoSaUserCompany: b,
@@ -49,6 +51,7 @@ func (u *useSaUser) GetBySaUser(ctx context.Context, userID uuid.UUID) (result s
 	}
 
 	dataFIle, _ := u.repoSaFileUpload.GetBySaFileUpload(ctx, result.FileID)
+	result.DataFile.FileID = dataFIle.FileID
 	result.DataFile.FileName = dataFIle.FileName
 	result.DataFile.FilePath = dataFIle.FilePath
 	result.DataFile.FileType = dataFIle.FileType
@@ -107,6 +110,7 @@ func (u *useSaUser) GetList(ctx context.Context, queryparam models.ParamList) (r
 	for _, data := range dataList {
 
 		dt, _ := u.repoSaFileUpload.GetBySaFileUpload(ctx, data.FileID)
+		data.DataFile.FileID = dt.FileID
 		data.DataFile.FileName = dt.FileName
 		data.DataFile.FilePath = dt.FilePath
 		data.DataFile.FileType = dt.FileType
@@ -195,6 +199,21 @@ func (u *useSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser
 	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
 	defer cancel()
 
+	dataUserBefor, ers := u.repoSaUser.GetBySaUser(ctx, userData.UserID)
+	fmt.Printf("%v", ers)
+	if ers != nil {
+		return errors.New("Item is not found : id " + fmt.Sprintf("%s", userData.UserID))
+	}
+	// dataUserBefor, _ := u.repoSaUser.GetBySaUser(ctx, userData.UserID)
+	UID, _ := uuid.FromString("00000000-0000-0000-0000-000000000000")
+
+	if UID != userData.FileID {
+
+		if UID != dataUserBefor.FileID {
+			err = u.repoSaFileUpload.DeleteSaFileUpload(ctx, dataUserBefor.FileID)
+		}
+
+	}
 	userData.UpdatedAt = util.GetTimeNow()
 	err = u.repoSaUser.UpdateSaUser(ctx, userData)
 	if err != nil {

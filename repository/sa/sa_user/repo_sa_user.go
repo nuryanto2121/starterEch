@@ -2,6 +2,7 @@ package reposauser
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	isauser "property/framework/interface/sa/sa_user"
 	"property/framework/models"
@@ -10,6 +11,7 @@ import (
 	"property/framework/pkg/setting"
 
 	"github.com/jinzhu/gorm"
+	"github.com/lib/pq"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -161,7 +163,9 @@ func (db *repoSaUser) CreateSaUser(ctx context.Context, userData *sa_models.SaUs
 	err = query.Error
 	// err = db.Conn.Create(userData).Error
 	if err != nil {
-		return err
+		err := err.(*pq.Error)
+		return errors.New(err.Detail)
+
 	}
 	return nil
 }
@@ -175,7 +179,8 @@ func (db *repoSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUs
 	err = query.Error
 	// err = db.Conn.Save(userData).Error
 	if err != nil {
-		return err
+		err := err.(*pq.Error)
+		return errors.New(err.Detail)
 	}
 	return nil
 }
@@ -193,7 +198,8 @@ func (db *repoSaUser) DeleteSaUser(ctx context.Context, userID uuid.UUID) (err e
 	// err = db.Conn.Where("user_id = ?", userID).Delete(&userData).Error
 	// err = db.Conn.Delete(&userData).Error
 	if err != nil {
-		return err
+		err := err.(*pq.Error)
+		return errors.New(err.Detail)
 	}
 	return nil
 }

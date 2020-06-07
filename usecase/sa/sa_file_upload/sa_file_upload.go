@@ -2,10 +2,13 @@ package usesafileupload
 
 import (
 	"context"
+	"log"
 	"math"
+	"os"
 	isafileupload "property/framework/interface/sa/sa_file_upload"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
+	"property/framework/pkg/file"
 	util "property/framework/pkg/utils"
 	"reflect"
 	"time"
@@ -110,8 +113,25 @@ func (u *useSaFileUpload) UpdateSaFileUpload(ctx context.Context, fileuploadData
 func (u *useSaFileUpload) DeleteSaFileUpload(ctx context.Context, fileuploadID uuid.UUID) error {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
+	//Delete File in Folder
+	dataFile, _ := u.repoSaFileUpload.GetBySaFileUpload(ctx, fileuploadID)
+	//directory api
+	dir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	dir_file := dir + dataFile.FilePath
+	log.Printf(dir_file)
+	//check file klo ada delete
+	if notExist := file.CheckNotExist(dir_file); notExist != true {
+		err = os.Remove(dir_file)
+		if err != nil {
+			return err
+		}
+	}
 
-	err := u.repoSaFileUpload.DeleteSaFileUpload(ctx, fileuploadID)
+	// delete data db
+	err = u.repoSaFileUpload.DeleteSaFileUpload(ctx, fileuploadID)
 	if err != nil {
 		return err
 	}

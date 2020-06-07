@@ -63,7 +63,7 @@ func (e *Echo) InitialRouter() {
 
 	/*sa user*/
 	repoSaUser := _sauserrepo.NewRepoSaUser(connection.Conn)
-	useSaUser := _sauseruse.NewUseSaUser(repoSaUser, repoSaUserCompany, repoSaUserBranch, repoSaFileUpload, timeoutContext)
+	useSaUser := _sauseruse.NewUseSaUser(repoSaUser, repoSaUserCompany, repoSaUserBranch, useSaFileUpload, timeoutContext)
 	_sausercont.NewContSaUser(e.E, useSaUser)
 
 	/*sa Role*/
