@@ -38,6 +38,7 @@ func NewContAuth(e *echo.Echo, useAuth iauth.Usecase) {
 	e.POST("/api/auth/login", cont.Login)
 	e.POST("/api/auth/forgot", cont.ForgotPassword)
 	e.POST("/api/auth/reset", cont.ResetPasswd)
+	e.POST("/api/auth/verify", cont.Verify)
 }
 
 // Register :
@@ -187,4 +188,37 @@ func (u *ContAuth) ResetPasswd(e echo.Context) error {
 	}
 
 	return appE.Response(http.StatusOK, "Ok", "Please Login")
+}
+
+// Register :
+// @Summary Verify / Aktivasi User
+// @Tags Auth
+// @Produce json
+// @Param req body models.ResetPasswd true "req param #changes are possible to adjust the form of the registration form from frontend"
+// @Success 200 {object} app.ResponseModel
+// @Router /api/auth/verify [post]
+func (u *ContAuth) Verify(e echo.Context) error {
+	ctx := e.Request().Context()
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
+	var (
+		logger = logging.Logger{} // wajib
+		appE   = app.Res{R: e}    // wajib
+		// client sa_models.SaClient
+
+		form = models.ResetPasswd{}
+	)
+	httpCode, errMsg := app.BindAndValid(e, &form)
+	logger.Info(util.Stringify(form))
+	if httpCode != 200 {
+		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
+	}
+	out := u.useAuth.Verify(ctx, &form)
+	if out.Err != nil {
+		return appE.ResponseErr(out)
+	}
+
+	return appE.Response(http.StatusOK, "Ok", "Account Anda telah aktiv, Silahkan Login")
 }

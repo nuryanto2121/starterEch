@@ -13,9 +13,8 @@ import (
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/setting"
 	util "property/framework/pkg/utils"
+	"property/framework/usecase/usemail"
 	"time"
-
-	useforgot "property/framework/usecase/usemail"
 
 	"github.com/mitchellh/mapstructure"
 )
@@ -51,14 +50,14 @@ func (u *useAuth) ForgotPassword(ctx context.Context, dataForgot *models.ForgotF
 	// Gen Token Email
 	TokenEmail := util.GetEmailToken(dataForgot.EmailAddr)
 
-	utlButton := setting.FileConfigSetting.App.UrlForgotPassword + "/" + TokenEmail
-	mailService := useforgot.Forgot{
+	urlButton := setting.FileConfigSetting.App.UrlForgotPassword + "/" + TokenEmail
+	mailService := usemail.Forgot{
 		Email:      dataForgot.EmailAddr,
 		Name:       dataUser.Name,
-		ButtonLink: utlButton,
+		ButtonLink: urlButton,
 	}
 
-	err = mailService.Send()
+	err = mailService.SendForgot()
 	if err != nil {
 		return util.GoutputErr(err)
 	}
@@ -146,6 +145,32 @@ func (u *useAuth) ResetPassword(ctx context.Context, dataReset *models.ResetPass
 	}
 
 	dataUser.Passwd, _ = util.Hash(dataReset.Passwd)
+
+	err = u.repoSaUser.UpdateSaUser(ctx, &dataUser)
+	if err != nil {
+		return util.GoutputErr(err)
+	}
+
+	return util.Goutput(nil, 200)
+}
+
+func (u *useAuth) Verify(ctx context.Context, dataReset *models.ResetPasswd) (output models.Output) { //(result map[string]interface{}, err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
+	defer cancel()
+
+	if dataReset.Passwd != dataReset.ConfirmPasswd {
+		return util.GoutputErr(errors.New("Password and Confirm Password not same."))
+	}
+
+	email := util.ParseEmailToken(dataReset.TokenEmail)
+
+	dataUser, err := u.repoSaUser.GetByEmailSaUser(ctx, email)
+	if err != nil {
+		return util.GoutputErr(err)
+	}
+
+	dataUser.Passwd, _ = util.Hash(dataReset.Passwd)
+	dataUser.UserStatus = 1
 
 	err = u.repoSaUser.UpdateSaUser(ctx, &dataUser)
 	if err != nil {

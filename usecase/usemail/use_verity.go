@@ -6,21 +6,16 @@ import (
 	"strings"
 )
 
-type Forgot struct {
+type Verify struct {
 	Email      string `json:"email"`
 	Name       string `json:"name"`
 	ButtonLink string `json:"button_link"`
 }
 
-// // Store :
-// func (f *Forgot) Store() error {
-// 	return redisdb.StoreForgot(f)
-// }
+func (f *Verify) SendVerify() error {
+	subjectEmail := "Aktivasi Account"
 
-func (f *Forgot) SendForgot() error {
-	subjectEmail := "Permintaan Pergantian Password"
-
-	err := util.SendEmail(f.Email, subjectEmail, getForgotBody(f))
+	err := util.SendEmail(f.Email, subjectEmail, getVerifybody(f))
 	if err != nil {
 		return err
 	}
@@ -28,8 +23,8 @@ func (f *Forgot) SendForgot() error {
 
 }
 
-func getForgotBody(f *Forgot) string {
-	forgotMail := templateemail.ForgotEmail
+func getVerifybody(f *Verify) string {
+	forgotMail := templateemail.VerifyEmail
 
 	forgotMail = strings.ReplaceAll(forgotMail, `{Name}`, f.Name)
 	forgotMail = strings.ReplaceAll(forgotMail, `{ButtonLink}`, f.ButtonLink)

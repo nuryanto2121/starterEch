@@ -10,7 +10,7 @@ import (
 // SaUser :
 type SaUser struct {
 	UserID      uuid.UUID    `json:"user_id" gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
-	ClientID    uuid.UUID    `json:"client_id" gorm:"type:uuid"`
+	ClientID    uuid.UUID    `json:"client_id" gorm:"type:uuid; not null"`
 	RoleID      uuid.UUID    `json:"role_id" gorm:"type:uuid;not null"`
 	LevelNo     int          `json:"level_no" gorm:"type:integer;default:0;not null"`
 	UserName    string       `json:"user_name" gorm:"type:varchar(60);not null"`
@@ -30,6 +30,7 @@ type SaUser struct {
 
 // AddUserForm : param from frond end
 type AddUserForm struct {
+	ClientID       uuid.UUID      `json:"client_id" valid:"Required"`
 	UserName       string         `json:"user_name" valid:"Required"`
 	Name           string         `json:"name" valid:"Required"`
 	EmailAddr      string         `json:"email_addr" valid:"Required"`
@@ -38,7 +39,7 @@ type AddUserForm struct {
 	RoleID         uuid.UUID      `json:"role_id" valid:"Required"`
 	HandphoneNo    string         `json:"handphone_no"`
 	CompanyID      int            `json:"company_id" valid:"Required"`
-	FileID         uuid.UUID      `json:"file_id" gorm:"type:uuid"`
+	FileID         uuid.UUID      `json:"file_id"`
 	CreatedBy      string         `json:"created_by" valid:"Required"`
 	DataPermission []m.Permission `json:"data_permission"`
 	// Passwd         string         `json:"passwd" valid:"Required"`
@@ -47,6 +48,7 @@ type AddUserForm struct {
 
 // EditUserForm : param from frond end
 type EditUserForm struct {
+	ClientID       uuid.UUID      `json:"client_id" valid:"Required"`
 	UserName       string         `json:"user_name" valid:"Required"`
 	Name           string         `json:"name" valid:"Required"`
 	EmailAddr      string         `json:"email_addr" valid:"Required"`
@@ -55,7 +57,7 @@ type EditUserForm struct {
 	RoleID         uuid.UUID      `json:"role_id" valid:"Required"`
 	HandphoneNo    string         `json:"handphone_no"`
 	CompanyID      int            `json:"company_id" valid:"Required"`
-	FileID         uuid.UUID      `json:"file_id" gorm:"type:uuid"`
+	FileID         uuid.UUID      `json:"file_id"`
 	UpdatedBy      string         `json:"updated_by" valid:"Required"`
 	DataPermission []m.Permission `json:"data_permission"`
 }

@@ -60,6 +60,7 @@ type App struct {
 	TimeFormat        string   `mapstructure:"time_format"`
 	Issuer            string   `mapstructure:"issuer"`
 	UrlForgotPassword string   `mapstructure:"url_forgot_password"`
+	UrlVerityUser     string   `mapstructure:"url_verity_user"`
 }
 
 // AppSetting interface pointer

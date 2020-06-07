@@ -216,6 +216,7 @@ func (u *ContSaUser) CreateSaUser(e echo.Context) error {
 		user       sa_models.SaUser
 		form       sa_models.AddUserForm
 		permission []models.Permission
+		err        error
 	)
 
 	// validasi and bind to struct
@@ -228,9 +229,12 @@ func (u *ContSaUser) CreateSaUser(e echo.Context) error {
 	// if form.Passwd != form.ConfimPasswd {
 	// 	return appE.ResponseError(http.StatusBadRequest, "Password and Password Confirmation doesn't match", nil)
 	// }
-
+	// if form.FileID == nil {
+	// 	// ddd, err = uuid.FromString("")
+	// 	form.FileID, _ = uuid.FromString("00000000-0000-0000-0000-000000000000") //fmt.Sprintf("%s", ddd)
+	// }
 	// mapping to struct model saSuser
-	err := mapstructure.Decode(form, &user)
+	err = mapstructure.Decode(form, &user)
 	if err != nil {
 		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
 

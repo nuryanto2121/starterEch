@@ -136,6 +136,37 @@
                 }
             }
         },
+        "/api/auth/verify": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Verify / Aktivasi User",
+                "parameters": [
+                    {
+                        "description": "req param #changes are possible to adjust the form of the registration form from frontend",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.ResetPasswd"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
         "/api/fileupload": {
             "post": {
                 "security": [
@@ -630,6 +661,9 @@
         "models.AddUserForm": {
             "type": "object",
             "properties": {
+                "client_id": {
+                    "type": "string"
+                },
                 "company_id": {
                     "type": "integer"
                 },
@@ -668,6 +702,9 @@
         "models.EditUserForm": {
             "type": "object",
             "properties": {
+                "client_id": {
+                    "type": "string"
+                },
                 "company_id": {
                     "type": "integer"
                 },

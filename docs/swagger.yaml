@@ -25,6 +25,8 @@ definitions:
     type: object
   models.AddUserForm:
     properties:
+      client_id:
+        type: string
       company_id:
         type: integer
       created_by:
@@ -50,6 +52,8 @@ definitions:
     type: object
   models.EditUserForm:
     properties:
+      client_id:
+        type: string
       company_id:
         type: integer
       data_permission:
@@ -224,6 +228,27 @@ paths:
           schema:
             $ref: '#/definitions/app.ResponseModel'
       summary: Reset Password
+      tags:
+      - Auth
+  /api/auth/verify:
+    post:
+      parameters:
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.ResetPasswd'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      summary: Verify / Aktivasi User
       tags:
       - Auth
   /api/fileupload:

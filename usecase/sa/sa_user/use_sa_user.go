@@ -3,6 +3,7 @@ package usesauser
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"math"
 	isafileupload "property/framework/interface/sa/sa_file_upload"
@@ -11,7 +12,9 @@ import (
 	isausercompany "property/framework/interface/sa/sa_user_company"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
+	"property/framework/pkg/setting"
 	util "property/framework/pkg/utils"
+	"property/framework/usecase/usemail"
 	"reflect"
 	"strings"
 	"time"
@@ -168,6 +171,24 @@ func (u *useSaUser) CreateSaUser(ctx context.Context, userData *sa_models.SaUser
 		}
 
 	}
+	//Send email verity
+	// Gen Token Email
+	TokenEmail := util.GetEmailToken(userData.EmailAddr)
+
+	urlButton := setting.FileConfigSetting.App.UrlVerityUser + "/" + TokenEmail
+
+	fmt.Printf(urlButton)
+	mailService := usemail.Verify{
+		Email:      userData.EmailAddr,
+		Name:       userData.Name,
+		ButtonLink: urlButton,
+	}
+
+	err = mailService.SendVerify()
+	if err != nil {
+		return err //util.GoutputErr(err)
+	}
+
 	// u.repoSaUserCompany.CreateSaUserCompany(ctx,)
 
 	return nil
