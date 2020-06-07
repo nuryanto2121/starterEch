@@ -214,6 +214,7 @@ func (u *useSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser
 		}
 
 	}
+	userData.Passwd = dataUserBefor.Passwd
 	userData.UpdatedAt = util.GetTimeNow()
 	err = u.repoSaUser.UpdateSaUser(ctx, userData)
 	if err != nil {
