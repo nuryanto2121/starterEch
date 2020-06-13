@@ -61,6 +61,7 @@ func (db *repoSaUser) GetJsonPermission(ctx context.Context, userID uuid.UUID, c
 	}
 
 	var _result Result
+	// var values ...interface{}
 	query := db.Conn.Raw("SELECT get_permission_json_company_branch as name From public.get_permission_json_company_branch( ?, ?)", user, client).Scan(&_result)
 
 	// query := db.Conn.Raw().Scan(&dd)

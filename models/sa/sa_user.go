@@ -61,3 +61,8 @@ type EditUserForm struct {
 	UpdatedBy      string         `json:"updated_by" valid:"Required"`
 	DataPermission []m.Permission `json:"data_permission"`
 }
+
+type GetPermissionForm struct {
+	ClinetID uuid.UUID `json:"client_id" valid:"Required"`
+	UserID   uuid.UUID `json:"user_id"`
+}

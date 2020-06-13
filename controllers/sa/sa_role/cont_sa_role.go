@@ -9,9 +9,11 @@ import (
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/app"
 	"property/framework/pkg/logging"
+	"property/framework/pkg/setting"
 	util "property/framework/pkg/utils"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/mitchellh/mapstructure"
 
 	uuid "github.com/satori/go.uuid"
@@ -28,15 +30,25 @@ func NewContSaRole(e *echo.Echo, a isarole.UseCase) {
 		useSaRole: a,
 	}
 
-	e.GET("/api/role/:id", controller.GetBySaRole)
-	e.GET("/api/role", controller.GetList)
-	e.POST("/api/role", controller.CreateSaRole)
-	e.PUT("/api/role/:id", controller.UpdateSaRole)
-	e.DELETE("/api/role/:id", controller.DeleteSaRole)
+	r := e.Group("/api/role")
+	// Configure middleware with custom claims
+	var screet = setting.FileConfigSetting.App.JwtSecret
+	config := middleware.JWTConfig{
+		Claims:     &util.Claims{},
+		SigningKey: []byte(screet),
+	}
+	r.Use(middleware.JWTWithConfig(config))
+
+	r.GET("/:id", controller.GetBySaRole)
+	r.GET("", controller.GetList)
+	r.POST("", controller.CreateSaRole)
+	r.PUT("/:id", controller.UpdateSaRole)
+	r.DELETE("/:id", controller.DeleteSaRole)
 }
 
 // GetBySaRole :
 // @Summary GetById SaRole
+// @Security ApiKeyAuth
 // @Tags Role
 // @Produce  json
 // @Param id path string true "ID"
@@ -70,6 +82,7 @@ func (u *ContSaRole) GetBySaRole(e echo.Context) error {
 
 // GetList :
 // @Summary GetList SaRole
+// @Security ApiKeyAuth
 // @Tags Role
 // @Produce  json
 // @Param page query int true "Page"
@@ -110,18 +123,12 @@ func (u *ContSaRole) GetList(e echo.Context) error {
 	return appE.ResponseList(http.StatusOK, "", responseList)
 }
 
-// AddRoleForm :
-type AddRoleForm struct {
-	Descs     string  `json:"descs" valid:"MaxSize(60)"`
-	Num       float32 `json:"num"`
-	CreatedBy string  `json:"created_by" valid:"Required"`
-}
-
 // CreateSaRole :
 // @Summary Add Role
+// @Security ApiKeyAuth
 // @Tags Role
 // @Produce json
-// @Param req body contsarole.AddRoleForm true "req param #changes are possible to adjust the form of the registration form from frontend"
+// @Param req body models.AddRoleForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/role [post]
 func (u *ContSaRole) CreateSaRole(e echo.Context) error {
@@ -134,7 +141,7 @@ func (u *ContSaRole) CreateSaRole(e echo.Context) error {
 		logger = logging.Logger{} // wajib
 		appE   = app.Res{R: e}    // wajib
 		role   sa_models.SaRole
-		form   AddRoleForm
+		form   sa_models.AddRoleForm
 	)
 	// validasi and bind to struct
 	httpCode, errMsg := app.BindAndValid(e, &form)
@@ -157,18 +164,13 @@ func (u *ContSaRole) CreateSaRole(e echo.Context) error {
 	return appE.Response(http.StatusCreated, "Ok", role)
 }
 
-// EditRoleForm :
-type EditRoleForm struct {
-	Descs     string `json:"descs" valid:"MaxSize(5)"`
-	UpdatedBy string `json:"Updated_by" valid:"Required"`
-}
-
 // UpdateSaRole :
 // @Summary Update Role
+// @Security ApiKeyAuth
 // @Tags Role
 // @Produce json
 // @Param id path string true "ID"
-// @Param req body contsarole.EditRoleForm true "req param #changes are possible to adjust the form of the registration form from frontend"
+// @Param req body models.EditRoleForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/role/{id} [put]
 func (u *ContSaRole) UpdateSaRole(e echo.Context) error {
@@ -184,7 +186,7 @@ func (u *ContSaRole) UpdateSaRole(e echo.Context) error {
 		err    error
 		// valid  validation.Validation                 // wajib
 		id   = e.Param("id") //kalo bukan int => 0
-		form = EditRoleForm{}
+		form = sa_models.EditRoleForm{}
 	)
 
 	RoleID, err := uuid.FromString(id)
@@ -216,6 +218,7 @@ func (u *ContSaRole) UpdateSaRole(e echo.Context) error {
 
 // DeleteSaRole :
 // @Summary Delete role
+// @Security ApiKeyAuth
 // @Tags Role
 // @Produce  json
 // @Param id path string true "ID"

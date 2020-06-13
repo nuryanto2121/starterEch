@@ -137,7 +137,10 @@ func (u *useAuth) ResetPassword(ctx context.Context, dataReset *models.ResetPass
 		return util.GoutputErr(errors.New("Password and Confirm Password not same."))
 	}
 
-	email := util.ParseEmailToken(dataReset.TokenEmail)
+	email, err := util.ParseEmailToken(dataReset.TokenEmail)
+	if err != nil {
+		email = dataReset.TokenEmail
+	}
 
 	dataUser, err := u.repoSaUser.GetByEmailSaUser(ctx, email)
 	if err != nil {
@@ -162,7 +165,10 @@ func (u *useAuth) Verify(ctx context.Context, dataReset *models.ResetPasswd) (ou
 		return util.GoutputErr(errors.New("Password and Confirm Password not same."))
 	}
 
-	email := util.ParseEmailToken(dataReset.TokenEmail)
+	email, err := util.ParseEmailToken(dataReset.TokenEmail)
+	if err != nil {
+		return util.GoutputErr(err)
+	}
 
 	dataUser, err := u.repoSaUser.GetByEmailSaUser(ctx, email)
 	if err != nil {

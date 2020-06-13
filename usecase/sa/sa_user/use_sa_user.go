@@ -144,31 +144,36 @@ func (u *useSaUser) CreateSaUser(ctx context.Context, userData *sa_models.SaUser
 	// insert sa user company
 	for _, dataUserCompany := range *dataPermission {
 		var userCompany = sa_models.SaUserCompany{}
-		userCompany.CompanyID = dataUserCompany.CompanyID
-		userCompany.UserID = userData.UserID
-		userCompany.CreatedAt = util.GetTimeNow()
-		userCompany.CreatedBy = userData.CreatedBy
-		userCompany.UpdatedAt = util.GetTimeNow()
-		userCompany.UpdatedBy = userData.CreatedBy
-		err = u.repoSaUserCompany.CreateSaUserCompany(ctx, &userCompany)
-		if err != nil {
-			return err
+		if dataUserCompany.IsAccess == true {
+			userCompany.CompanyID = dataUserCompany.CompanyID
+			userCompany.UserID = userData.UserID
+			userCompany.CreatedAt = util.GetTimeNow()
+			userCompany.CreatedBy = userData.CreatedBy
+			userCompany.UpdatedAt = util.GetTimeNow()
+			userCompany.UpdatedBy = userData.CreatedBy
+			err = u.repoSaUserCompany.CreateSaUserCompany(ctx, &userCompany)
+			if err != nil {
+				return err
+			}
 		}
 
 		// insert sa user branch
 		for _, dataBranch := range dataUserCompany.DataBranch {
 			var datauserBranch = sa_models.SaUserBranch{}
-			datauserBranch.BranchID = dataBranch.BranchID
-			datauserBranch.CompanyID = dataUserCompany.CompanyID
-			datauserBranch.UserID = userData.UserID
-			datauserBranch.CreatedAt = util.GetTimeNow()
-			datauserBranch.CreatedBy = userData.CreatedBy
-			datauserBranch.UpdatedAt = util.GetTimeNow()
-			datauserBranch.UpdatedBy = userData.CreatedBy
-			err = u.repoSaUserBranch.CreateSaUserBranch(ctx, &datauserBranch)
-			if err != nil {
-				return err
+			if dataBranch.IsAccess == true {
+				datauserBranch.BranchID = dataBranch.BranchID
+				datauserBranch.CompanyID = dataUserCompany.CompanyID
+				datauserBranch.UserID = userData.UserID
+				datauserBranch.CreatedAt = util.GetTimeNow()
+				datauserBranch.CreatedBy = userData.CreatedBy
+				datauserBranch.UpdatedAt = util.GetTimeNow()
+				datauserBranch.UpdatedBy = userData.CreatedBy
+				err = u.repoSaUserBranch.CreateSaUserBranch(ctx, &datauserBranch)
+				if err != nil {
+					return err
+				}
 			}
+
 		}
 
 	}
@@ -209,7 +214,7 @@ func (u *useSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser
 
 	if UID != userData.FileID {
 
-		if UID != dataUserBefor.FileID {
+		if userData.FileID != dataUserBefor.FileID {
 			err = u.repoSaFileUpload.DeleteSaFileUpload(ctx, dataUserBefor.FileID)
 		}
 
@@ -235,31 +240,37 @@ func (u *useSaUser) UpdateSaUser(ctx context.Context, userData *sa_models.SaUser
 	// insert sa user company
 	for _, dataUserCompany := range *dataPermission {
 		var userCompany = sa_models.SaUserCompany{}
-		userCompany.CompanyID = dataUserCompany.CompanyID
-		userCompany.UserID = userData.UserID
-		userCompany.CreatedAt = util.GetTimeNow()
-		userCompany.CreatedBy = userData.UpdatedBy
-		userCompany.UpdatedAt = util.GetTimeNow()
-		userCompany.UpdatedBy = userData.UpdatedBy
-		err = u.repoSaUserCompany.CreateSaUserCompany(ctx, &userCompany)
-		if err != nil {
-			return err
+		if dataUserCompany.IsAccess == true {
+			userCompany.CompanyID = dataUserCompany.CompanyID
+			userCompany.UserID = userData.UserID
+			userCompany.CreatedAt = util.GetTimeNow()
+			userCompany.CreatedBy = userData.UpdatedBy
+			userCompany.UpdatedAt = util.GetTimeNow()
+			userCompany.UpdatedBy = userData.UpdatedBy
+			err = u.repoSaUserCompany.CreateSaUserCompany(ctx, &userCompany)
+			if err != nil {
+				return err
+			}
+
 		}
 
 		// insert sa user branch
 		for _, dataBranch := range dataUserCompany.DataBranch {
 			var datauserBranch = sa_models.SaUserBranch{}
-			datauserBranch.BranchID = dataBranch.BranchID
-			datauserBranch.CompanyID = dataUserCompany.CompanyID
-			datauserBranch.UserID = userData.UserID
-			datauserBranch.CreatedAt = util.GetTimeNow()
-			datauserBranch.CreatedBy = userData.UpdatedBy
-			datauserBranch.UpdatedAt = util.GetTimeNow()
-			datauserBranch.UpdatedBy = userData.UpdatedBy
-			err = u.repoSaUserBranch.CreateSaUserBranch(ctx, &datauserBranch)
-			if err != nil {
-				return err
+			if dataBranch.IsAccess == true {
+				datauserBranch.BranchID = dataBranch.BranchID
+				datauserBranch.CompanyID = dataUserCompany.CompanyID
+				datauserBranch.UserID = userData.UserID
+				datauserBranch.CreatedAt = util.GetTimeNow()
+				datauserBranch.CreatedBy = userData.UpdatedBy
+				datauserBranch.UpdatedAt = util.GetTimeNow()
+				datauserBranch.UpdatedBy = userData.UpdatedBy
+				err = u.repoSaUserBranch.CreateSaUserBranch(ctx, &datauserBranch)
+				if err != nil {
+					return err
+				}
 			}
+
 		}
 
 	}

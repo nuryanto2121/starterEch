@@ -88,16 +88,18 @@ func GetEmailToken(email string) string {
 }
 
 // ParseEmailToken :
-func ParseEmailToken(token string) string {
-	tkn, _ := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+func ParseEmailToken(token string) (string, error) {
+	tkn, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		// tkn, _ := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+		if err, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			// if _, ok := token.Method.(*jwt.SigningMethodHS256); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			return err, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte("secret"), nil
 	})
-
+	if err != nil {
+		return "", err
+	}
 	claims, _ := tkn.Claims.(jwt.MapClaims)
-	return fmt.Sprintf("%s", claims["email"])
+	return fmt.Sprintf("%s", claims["email"]), nil
 }

@@ -17,3 +17,16 @@ type SaRole struct {
 	UpdatedBy  string    `json:"updated_by" gorm:"type:varchar(20);not null"`
 	UpdatedAt  time.Time `json:"updated_at" gorm:"type:timestamp(0) without time zone;default:now()"`
 }
+
+// AddRoleForm :
+type AddRoleForm struct {
+	Descs     string  `json:"descs" valid:"MaxSize(60)"`
+	Num       float32 `json:"num"`
+	CreatedBy string  `json:"created_by" valid:"Required"`
+}
+
+// EditRoleForm :
+type EditRoleForm struct {
+	Descs     string `json:"descs" valid:"MaxSize(5)"`
+	UpdatedBy string `json:"Updated_by" valid:"Required"`
+}

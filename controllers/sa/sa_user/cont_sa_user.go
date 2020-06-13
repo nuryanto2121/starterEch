@@ -145,11 +145,6 @@ func (u *ContSaUser) GetList(e echo.Context) error {
 	return appE.ResponseList(http.StatusOK, "", responseList)
 }
 
-type GetPermission struct {
-	ClinetID uuid.UUID `json:"client_id" valid:"Required"`
-	UserID   uuid.UUID `json:"user_id"`
-}
-
 // GetList :
 // @Summary Get string Array Permission User
 // @Security ApiKeyAuth
@@ -169,7 +164,7 @@ func (u *ContSaUser) GetListPermission(e echo.Context) error {
 		logger = logging.Logger{}
 		appE   = app.Res{R: e} // wajib
 		//valid      validation.Validation // wajib
-		form GetPermission // ini untuk list
+		form sa_models.GetPermissionForm // ini untuk list
 		err  error
 	)
 
