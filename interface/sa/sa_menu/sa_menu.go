@@ -13,7 +13,7 @@ type Repository interface {
 	CreateSaMenu(ctx context.Context, menuData *sa_models.SaMenu) error
 	UpdateSaMenu(ctx context.Context, menuData *sa_models.SaMenu) error
 	DeleteSaMenu(ctx context.Context, ID int) error
-	CountRoleList(ctx context.Context, queryparam models.ParamList) (int, error)
+	CountMenuList(ctx context.Context, queryparam models.ParamList) (int, error)
 }
 
 // UseCase :

@@ -15,3 +15,23 @@ type SaMenu struct {
 	UpdatedBy    string    `json:"updated_by" gorm:"type:varchar(20);not null"`
 	UpdatedAt    time.Time `json:"updated_at" gorm:"type:timestamp(0) without time zone;default:now()"`
 }
+
+// AddMenuForm :
+type AddMenuForm struct {
+	Title        string `json:"title" valid:"Required"`
+	MenuUrl      string `json:"menu_url" valid:"Required"`
+	ParentMenuID int    `json:"parent_menu_id"`
+	IconClass    string `json:"icon_class" `
+	OrderSeq     int    `json:"order_seq" valid:"Required"`
+	Level        int    `json:"level" valid:"Required"`
+}
+
+// EditMenuForm :
+type EditMenuForm struct {
+	Title        string `json:"title" valid:"Required"`
+	MenuUrl      string `json:"menu_url" valid:"Required"`
+	ParentMenuID int    `json:"parent_menu_id"`
+	IconClass    string `json:"icon_class" `
+	OrderSeq     int    `json:"order_seq" valid:"Required"`
+	Level        int    `json:"level" valid:"Required"`
+}

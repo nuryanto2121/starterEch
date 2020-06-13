@@ -7,7 +7,22 @@ definitions:
         description: Code int         `json:"code"`
         type: string
     type: object
-  contsarole.AddRoleForm:
+  models.AddMenuForm:
+    properties:
+      icon_class:
+        type: string
+      level:
+        type: integer
+      menu_url:
+        type: string
+      order_seq:
+        type: integer
+      parent_menu_id:
+        type: integer
+      title:
+        type: string
+    type: object
+  models.AddRoleForm:
     properties:
       created_by:
         type: string
@@ -15,13 +30,6 @@ definitions:
         type: string
       num:
         type: number
-    type: object
-  contsarole.EditRoleForm:
-    properties:
-      Updated_by:
-        type: string
-      descs:
-        type: string
     type: object
   models.AddUserForm:
     properties:
@@ -49,6 +57,28 @@ definitions:
         type: string
       user_status:
         type: integer
+    type: object
+  models.EditMenuForm:
+    properties:
+      icon_class:
+        type: string
+      level:
+        type: integer
+      menu_url:
+        type: string
+      order_seq:
+        type: integer
+      parent_menu_id:
+        type: integer
+      title:
+        type: string
+    type: object
+  models.EditRoleForm:
+    properties:
+      Updated_by:
+        type: string
+      descs:
+        type: string
     type: object
   models.EditUserForm:
     properties:
@@ -279,6 +309,131 @@ paths:
       summary: File Upload
       tags:
       - FileUpload
+  /api/menu:
+    get:
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: PerPage
+        in: query
+        name: perpage
+        required: true
+        type: integer
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: InitSearch
+        in: query
+        name: initsearch
+        type: string
+      - description: SortField
+        in: query
+        name: sortfield
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseModelList'
+      security:
+      - ApiKeyAuth: []
+      summary: GetList SaMenu
+      tags:
+      - Menu
+    post:
+      parameters:
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.AddMenuForm'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: Add Menu
+      tags:
+      - Menu
+  /api/menu/{id}:
+    delete:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete menu
+      tags:
+      - Menu
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: GetById SaMenu
+      tags:
+      - Menu
+    put:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.EditMenuForm'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: Update Menu
+      tags:
+      - Menu
   /api/role:
     get:
       parameters:
@@ -311,6 +466,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.ResponseModelList'
+      security:
+      - ApiKeyAuth: []
       summary: GetList SaRole
       tags:
       - Role
@@ -322,7 +479,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/contsarole.AddRoleForm'
+          $ref: '#/definitions/models.AddRoleForm'
           type: object
       produces:
       - application/json
@@ -331,6 +488,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
       summary: Add Role
       tags:
       - Role
@@ -349,6 +508,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
       summary: Delete role
       tags:
       - Role
@@ -366,6 +527,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
       summary: GetById SaRole
       tags:
       - Role
@@ -382,7 +545,7 @@ paths:
         name: req
         required: true
         schema:
-          $ref: '#/definitions/contsarole.EditRoleForm'
+          $ref: '#/definitions/models.EditRoleForm'
           type: object
       produces:
       - application/json
@@ -391,6 +554,8 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
       summary: Update Role
       tags:
       - Role
