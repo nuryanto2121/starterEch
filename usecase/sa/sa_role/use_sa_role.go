@@ -2,6 +2,8 @@ package usesarole
 
 import (
 	"context"
+	"encoding/json"
+	"log"
 	"math"
 	isarole "property/framework/interface/sa/sa_role"
 	"property/framework/models"
@@ -26,6 +28,18 @@ func NewUseSaRole(a isarole.Repository, timeout time.Duration) isarole.UseCase {
 	}
 }
 
+func (u *useSaRole) GetJsonMenuAccess(ctx context.Context, roleID uuid.UUID) (result []map[string]interface{}, err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
+	defer cancel()
+
+	_result, err := u.repoSaRole.GetJsonMenuAccess(ctx, roleID)
+	if err != nil {
+		return result, err
+	}
+	json.Unmarshal([]byte(_result), &result)
+	log.Printf("Unmarshaled: %v", result)
+	return result, nil
+}
 func (u *useSaRole) GetBySaRole(ctx context.Context, roleID uuid.UUID) (sa_models.SaRole, error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()

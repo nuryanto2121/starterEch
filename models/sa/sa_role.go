@@ -20,13 +20,19 @@ type SaRole struct {
 
 // AddRoleForm :
 type AddRoleForm struct {
-	Descs     string  `json:"descs" valid:"MaxSize(60)"`
-	Num       float32 `json:"num"`
-	CreatedBy string  `json:"created_by" valid:"Required"`
+	Descs      string `json:"descs" valid:"MaxSize(60)"`
+	RoleStatus int    `json:"role_status"`
+	Remarks    string `json:"notes"`
 }
 
 // EditRoleForm :
 type EditRoleForm struct {
-	Descs     string `json:"descs" valid:"MaxSize(5)"`
-	UpdatedBy string `json:"Updated_by" valid:"Required"`
+	Descs      string `json:"descs" valid:"MaxSize(60)"`
+	RoleStatus int    `json:"role_status"`
+	Remarks    string `json:"notes"`
+}
+
+// GetMenuAccess :
+type GetMenuAccess struct {
+	RoleID uuid.UUID `json:"role_id" `
 }

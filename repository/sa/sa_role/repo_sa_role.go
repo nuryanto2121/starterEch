@@ -42,7 +42,38 @@ func (db *repoSaRole) GetBySaRole(ctx context.Context, roleID uuid.UUID) (sa_mod
 
 	return dataRole, err
 }
+func (db *repoSaRole) GetJsonMenuAccess(ctx context.Context, roleID uuid.UUID) (result string, err error) {
+	var (
+		logger = logging.Logger{}
+	)
+	// type Result struct {
+	// 	get_permission_json_company_branch string
+	// }
+	// var dd Result
 
+	// Scan
+	type Result struct {
+		Name string
+	}
+
+	var _result Result
+	// var values ...interface{}
+	query := db.Conn.Raw("SELECT get_menu_access_json as name From public.get_menu_access_json( ?)", roleID).Scan(&_result)
+
+	// query := db.Conn.Raw().Scan(&dd)
+	logger.Query(fmt.Sprintf("%v", query.QueryExpr()))
+	err = query.Error
+
+	if err != nil {
+		//
+		if err == gorm.ErrRecordNotFound {
+			return result, models.ErrNotFound
+		}
+		return result, err
+	}
+	result = _result.Name //dd.get_permission_json_company_branch
+	return result, err
+}
 func (db *repoSaRole) GetList(ctx context.Context, queryparam models.ParamList) ([]*sa_models.SaRole, error) {
 	var (
 		pageNum  = 0

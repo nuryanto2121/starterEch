@@ -500,6 +500,38 @@
                 }
             }
         },
+        "/api/role/menu_access": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "Get string Array Menu Access Role",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "RoleID",
+                        "name": "role_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
         "/api/role/{id}": {
             "get": {
                 "security": [
@@ -881,14 +913,14 @@
         "models.AddRoleForm": {
             "type": "object",
             "properties": {
-                "created_by": {
-                    "type": "string"
-                },
                 "descs": {
                     "type": "string"
                 },
-                "num": {
-                    "type": "number"
+                "notes": {
+                    "type": "string"
+                },
+                "role_status": {
+                    "type": "integer"
                 }
             }
         },
@@ -959,11 +991,14 @@
         "models.EditRoleForm": {
             "type": "object",
             "properties": {
-                "Updated_by": {
-                    "type": "string"
-                },
                 "descs": {
                     "type": "string"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "role_status": {
+                    "type": "integer"
                 }
             }
         },
@@ -1088,7 +1123,7 @@
                 "last_page": {
                     "type": "integer"
                 },
-                "msg": {
+                "message": {
                     "type": "string"
                 },
                 "page": {

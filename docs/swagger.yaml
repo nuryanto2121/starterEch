@@ -24,12 +24,12 @@ definitions:
     type: object
   models.AddRoleForm:
     properties:
-      created_by:
-        type: string
       descs:
         type: string
-      num:
-        type: number
+      notes:
+        type: string
+      role_status:
+        type: integer
     type: object
   models.AddUserForm:
     properties:
@@ -75,10 +75,12 @@ definitions:
     type: object
   models.EditRoleForm:
     properties:
-      Updated_by:
-        type: string
       descs:
         type: string
+      notes:
+        type: string
+      role_status:
+        type: integer
     type: object
   models.EditUserForm:
     properties:
@@ -159,7 +161,7 @@ definitions:
         type: object
       last_page:
         type: integer
-      msg:
+      message:
         type: string
       page:
         type: integer
@@ -557,6 +559,25 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update Role
+      tags:
+      - Role
+  /api/role/menu_access:
+    get:
+      parameters:
+      - description: RoleID
+        in: query
+        name: role_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: Get string Array Menu Access Role
       tags:
       - Role
   /api/user:
