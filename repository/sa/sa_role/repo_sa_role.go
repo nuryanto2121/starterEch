@@ -149,12 +149,13 @@ func (db *repoSaRole) CreateSaRole(ctx context.Context, roleData *sa_models.SaRo
 	return nil
 }
 
-func (db *repoSaRole) UpdateSaRole(ctx context.Context, roleData *sa_models.SaRole) error {
+func (db *repoSaRole) UpdateSaRole(ctx context.Context, roleID uuid.UUID, dataRole interface{}) error {
 	var (
 		logger = logging.Logger{}
 		err    error
 	)
-	query := db.Conn.Save(roleData)
+
+	query := db.Conn.Model(sa_models.SaRole{}).Where("role_id = ?", roleID).Updates(dataRole)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 	// err = db.Conn.Save(userData).Error
@@ -202,7 +203,7 @@ func (db *repoSaRole) CountRoleList(ctx context.Context, queryparam models.Param
 	}
 	// end where
 
-	query := db.Conn.Model(&sa_models.SaUser{}).Where(sWhere).Count(&result)
+	query := db.Conn.Model(&sa_models.SaRole{}).Where(sWhere).Count(&result)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 

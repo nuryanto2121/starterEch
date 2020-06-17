@@ -228,34 +228,15 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Page",
-                        "name": "page",
+                        "description": "LevelNo",
+                        "name": "level_no",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "PerPage",
-                        "name": "perpage",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Search",
-                        "name": "search",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "InitSearch",
-                        "name": "initsearch",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "SortField",
-                        "name": "sortfield",
+                        "description": "ParentMenuID",
+                        "name": "parent_menu_id",
                         "in": "query"
                     }
                 ],
@@ -263,7 +244,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ResponseModelList"
+                            "$ref": "#/definitions/app.ResponseModel"
                         }
                     }
                 }
@@ -916,6 +897,12 @@
                 "descs": {
                     "type": "string"
                 },
+                "menu_access": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MenuAccessLevel1"
+                    }
+                },
                 "notes": {
                     "type": "string"
                 },
@@ -985,6 +972,12 @@
                 },
                 "title": {
                     "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
                 }
             }
         },
@@ -994,11 +987,23 @@
                 "descs": {
                     "type": "string"
                 },
+                "menu_access": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MenuAccessLevel1"
+                    }
+                },
                 "notes": {
                     "type": "string"
                 },
                 "role_status": {
                     "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "updated_by": {
+                    "type": "string"
                 }
             }
         },
@@ -1058,6 +1063,96 @@
                     "type": "string"
                 },
                 "u": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MenuAccess": {
+            "type": "object",
+            "properties": {
+                "is_read": {
+                    "type": "boolean"
+                },
+                "is_write": {
+                    "type": "boolean"
+                },
+                "level_no": {
+                    "type": "integer"
+                },
+                "menu_id": {
+                    "type": "integer"
+                },
+                "order_seq": {
+                    "type": "integer"
+                },
+                "parent_menu_id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MenuAccessLevel1": {
+            "type": "object",
+            "properties": {
+                "is_read": {
+                    "type": "boolean"
+                },
+                "is_write": {
+                    "type": "boolean"
+                },
+                "level_2": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MenuAccessLevel2"
+                    }
+                },
+                "level_no": {
+                    "type": "integer"
+                },
+                "menu_id": {
+                    "type": "integer"
+                },
+                "order_seq": {
+                    "type": "integer"
+                },
+                "parent_menu_id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.MenuAccessLevel2": {
+            "type": "object",
+            "properties": {
+                "is_read": {
+                    "type": "boolean"
+                },
+                "is_write": {
+                    "type": "boolean"
+                },
+                "level_3": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.MenuAccess"
+                    }
+                },
+                "level_no": {
+                    "type": "integer"
+                },
+                "menu_id": {
+                    "type": "integer"
+                },
+                "order_seq": {
+                    "type": "integer"
+                },
+                "parent_menu_id": {
+                    "type": "integer"
+                },
+                "title": {
                     "type": "string"
                 }
             }

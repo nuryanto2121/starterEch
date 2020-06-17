@@ -26,6 +26,10 @@ definitions:
     properties:
       descs:
         type: string
+      menu_access:
+        items:
+          $ref: '#/definitions/models.MenuAccessLevel1'
+        type: array
       notes:
         type: string
       role_status:
@@ -72,15 +76,27 @@ definitions:
         type: integer
       title:
         type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
     type: object
   models.EditRoleForm:
     properties:
       descs:
         type: string
+      menu_access:
+        items:
+          $ref: '#/definitions/models.MenuAccessLevel1'
+        type: array
       notes:
         type: string
       role_status:
         type: integer
+      updated_at:
+        type: string
+      updated_by:
+        type: string
     type: object
   models.EditUserForm:
     properties:
@@ -119,6 +135,65 @@ definitions:
       p:
         type: string
       u:
+        type: string
+    type: object
+  models.MenuAccess:
+    properties:
+      is_read:
+        type: boolean
+      is_write:
+        type: boolean
+      level_no:
+        type: integer
+      menu_id:
+        type: integer
+      order_seq:
+        type: integer
+      parent_menu_id:
+        type: integer
+      title:
+        type: string
+    type: object
+  models.MenuAccessLevel1:
+    properties:
+      is_read:
+        type: boolean
+      is_write:
+        type: boolean
+      level_2:
+        items:
+          $ref: '#/definitions/models.MenuAccessLevel2'
+        type: array
+      level_no:
+        type: integer
+      menu_id:
+        type: integer
+      order_seq:
+        type: integer
+      parent_menu_id:
+        type: integer
+      title:
+        type: string
+    type: object
+  models.MenuAccessLevel2:
+    properties:
+      is_read:
+        type: boolean
+      is_write:
+        type: boolean
+      level_3:
+        items:
+          $ref: '#/definitions/models.MenuAccess'
+        type: array
+      level_no:
+        type: integer
+      menu_id:
+        type: integer
+      order_seq:
+        type: integer
+      parent_menu_id:
+        type: integer
+      title:
         type: string
     type: object
   models.RegisterForm:
@@ -314,35 +389,22 @@ paths:
   /api/menu:
     get:
       parameters:
-      - description: Page
+      - description: LevelNo
         in: query
-        name: page
+        name: level_no
         required: true
         type: integer
-      - description: PerPage
+      - description: ParentMenuID
         in: query
-        name: perpage
-        required: true
+        name: parent_menu_id
         type: integer
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: InitSearch
-        in: query
-        name: initsearch
-        type: string
-      - description: SortField
-        in: query
-        name: sortfield
-        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ResponseModelList'
+            $ref: '#/definitions/app.ResponseModel'
       security:
       - ApiKeyAuth: []
       summary: GetList SaMenu

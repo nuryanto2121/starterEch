@@ -100,15 +100,15 @@ func (u *ContSaRole) GetMenuAccess(e echo.Context) error {
 		logger = logging.Logger{}
 		appE   = app.Res{R: e} // wajib
 		//valid      validation.Validation // wajib
-		form sa_models.GetMenuAccess // ini untuk list
-		err  error
+
+		err error
 	)
 
-	roleID := e.QueryParam("role_id")
-	form.RoleID, _ = uuid.FromString(roleID)
-	logger.Info(util.Stringify(form))
+	// roleID := e.QueryParam("role_id")
+	roleID, _ := uuid.FromString(e.QueryParam("role_id"))
+	logger.Info(util.Stringify(roleID))
 
-	dd, err := u.useSaRole.GetJsonMenuAccess(ctx, form.RoleID)
+	dd, err := u.useSaRole.GetJsonMenuAccess(ctx, roleID)
 	if err != nil {
 		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
 	}
@@ -173,10 +173,11 @@ func (u *ContSaRole) CreateSaRole(e echo.Context) error {
 	}
 
 	var (
-		logger = logging.Logger{} // wajib
-		appE   = app.Res{R: e}    // wajib
-		role   sa_models.SaRole
-		form   sa_models.AddRoleForm
+		logger     = logging.Logger{} // wajib
+		appE       = app.Res{R: e}    // wajib
+		role       sa_models.SaRole
+		form       sa_models.AddRoleForm
+		menuAccess []sa_models.MenuAccessLevel1
 	)
 
 	user := e.Get("user").(*jwt.Token)
@@ -194,9 +195,16 @@ func (u *ContSaRole) CreateSaRole(e echo.Context) error {
 		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
 
 	}
+
+	err = mapstructure.Decode(form.MenuAccess, &menuAccess)
+	if err != nil {
+		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
+
+	}
+
 	role.CreatedBy = claims.UserName
 	role.UpdatedBy = claims.UserName
-	err = u.useSaRole.CreateSaRole(ctx, &role)
+	err = u.useSaRole.CreateSaRole(ctx, &role, &menuAccess)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
 	}
@@ -222,15 +230,17 @@ func (u *ContSaRole) UpdateSaRole(e echo.Context) error {
 	var (
 		logger = logging.Logger{} // wajib
 		appE   = app.Res{R: e}    // wajib
-		role   sa_models.SaRole
-		err    error
+		// role   sa_models.SaRole
+		err error
 		// valid  validation.Validation                 // wajib
 		id   = e.Param("id") //kalo bukan int => 0
 		form = sa_models.EditRoleForm{}
+		// menuAccess []sa_models.MenuAccessLevel1
 	)
 	user := e.Get("user").(*jwt.Token)
 	claims := user.Claims.(*util.Claims)
 
+	form.UpdatedBy = claims.UserName
 	RoleID, err := uuid.FromString(id)
 	logger.Info(id)
 	if err != nil {
@@ -243,20 +253,12 @@ func (u *ContSaRole) UpdateSaRole(e echo.Context) error {
 	if httpCode != 200 {
 		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
 	}
-	role.UpdatedBy = claims.UserName
 
-	// mapping to struct model saSuser
-	err = mapstructure.Decode(form, &role)
-	if err != nil {
-		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
-
-	}
-	role.RoleID = RoleID
-	err = u.useSaRole.UpdateSaRole(ctx, &role)
+	err = u.useSaRole.UpdateSaRole(ctx, RoleID, &form)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)
 	}
-	return appE.ResponseError(http.StatusCreated, fmt.Sprintf("%v", role), nil)
+	return appE.Response(http.StatusCreated, "Ok", nil)
 }
 
 // DeleteSaRole :

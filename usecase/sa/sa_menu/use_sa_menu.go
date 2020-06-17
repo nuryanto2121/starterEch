@@ -2,13 +2,12 @@ package usesamenu
 
 import (
 	"context"
-	"math"
 	isamenu "property/framework/interface/sa/sa_menu"
-	"property/framework/models"
 	sa_models "property/framework/models/sa"
 	util "property/framework/pkg/utils"
-	"reflect"
 	"time"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 type useSaMenu struct {
@@ -40,38 +39,54 @@ func (u *useSaMenu) GetBySaMenu(ctx context.Context, menuID int) (sa_models.SaMe
 
 	return result, nil
 }
-
-func (u *useSaMenu) GetList(ctx context.Context, queryparam models.ParamList) (models.ResponseModelList, error) {
+func (u *useSaMenu) GetList(ctx context.Context, LevelNo int, ParentMenuID int) ([]*sa_models.SaMenu, error) {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
+
 	var (
-		result = models.ResponseModelList{}
-		tmenu  = sa_models.SaMenu{}
+		result = []*sa_models.SaMenu{}
 		err    error
 	)
 
-	/*membuat Where like dari struct*/
-	if queryparam.Search != "" {
-		value := reflect.ValueOf(tmenu)
-		types := reflect.TypeOf(&tmenu)
-		queryparam.Search = util.GetWhereLikeStruct(value, types, queryparam.Search, "")
-	}
-	result.Data, err = u.menuSaMenu.GetList(ctx, queryparam)
+	result, err = u.menuSaMenu.GetList(ctx, LevelNo, ParentMenuID)
 	if err != nil {
-		return result, err
+		return nil, err
 	}
-
-	result.Total, err = u.menuSaMenu.CountMenuList(ctx, queryparam)
-	if err != nil {
-		return result, err
-	}
-
-	// d := float64(result.Total) / float64(queryparam.PerPage)
-	result.LastPage = int(math.Ceil(float64(result.Total) / float64(queryparam.PerPage)))
-	result.Page = queryparam.Page
 
 	return result, nil
 }
+
+// func (u *useSaMenu) GetList2(ctx context.Context, queryparam models.ParamList) (models.ResponseModelList, error) {
+// 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
+// 	defer cancel()
+// 	var (
+// 		result = models.ResponseModelList{}
+// 		tmenu  = sa_models.SaMenu{}
+// 		err    error
+// 	)
+
+// 	/*membuat Where like dari struct*/
+// 	if queryparam.Search != "" {
+// 		value := reflect.ValueOf(tmenu)
+// 		types := reflect.TypeOf(&tmenu)
+// 		queryparam.Search = util.GetWhereLikeStruct(value, types, queryparam.Search, "")
+// 	}
+// 	result.Data, err = u.menuSaMenu.GetList(ctx, queryparam)
+// 	if err != nil {
+// 		return result, err
+// 	}
+
+// 	result.Total, err = u.menuSaMenu.CountMenuList(ctx, queryparam)
+// 	if err != nil {
+// 		return result, err
+// 	}
+
+// 	// d := float64(result.Total) / float64(queryparam.PerPage)
+// 	result.LastPage = int(math.Ceil(float64(result.Total) / float64(queryparam.PerPage)))
+// 	result.Page = queryparam.Page
+
+// 	return result, nil
+// }
 
 func (u *useSaMenu) CreateSaMenu(ctx context.Context, menuData *sa_models.SaMenu) error {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
@@ -90,14 +105,22 @@ func (u *useSaMenu) CreateSaMenu(ctx context.Context, menuData *sa_models.SaMenu
 	return nil
 }
 
-func (u *useSaMenu) UpdateSaMenu(ctx context.Context, menuData *sa_models.SaMenu) error {
+func (u *useSaMenu) UpdateSaMenu(ctx context.Context, menuID int, data interface{}) error {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 	var (
-		err error
+		err  error
+		form = sa_models.EditMenuForm{}
 	)
-	menuData.UpdatedAt = util.GetTimeNow()
-	err = u.menuSaMenu.UpdateSaMenu(ctx, menuData)
+
+	err = mapstructure.Decode(data, &form)
+	if err != nil {
+		return err
+		// return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
+
+	}
+	form.UpdatedAt = util.GetTimeNow()
+	err = u.menuSaMenu.UpdateSaMenu(ctx, menuID, form)
 	if err != nil {
 		return err
 	}

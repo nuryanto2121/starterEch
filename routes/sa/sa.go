@@ -15,6 +15,8 @@ import (
 
 	_sauserbranch "property/framework/repository/sa/sa_user_branch"
 
+	_sarolemenu "property/framework/repository/sa/sa_role_menu"
+
 	_sarolecont "property/framework/controllers/sa/sa_role"
 	_sarolerepo "property/framework/repository/sa/sa_role"
 	_saroleuse "property/framework/usecase/sa/sa_role"
@@ -55,9 +57,11 @@ func Router(e *echo.Echo, timeoutContext time.Duration) {
 	useSaUser := _sauseruse.NewUseSaUser(repoSaUser, repoSaUserCompany, repoSaUserBranch, useSaFileUpload, timeoutContext)
 	_sausercont.NewContSaUser(e, useSaUser)
 
+	/*sa role menu*/
+	repoRoleMenu := _sarolemenu.NewRepoSaRoleMenu(connection.Conn)
 	/*sa Role*/
 	repoSaRole := _sarolerepo.NewRepoSaRole(connection.Conn)
-	useSaRole := _saroleuse.NewUseSaRole(repoSaRole, timeoutContext)
+	useSaRole := _saroleuse.NewUseSaRole(repoSaRole, repoRoleMenu, timeoutContext)
 	_sarolecont.NewContSaRole(e, useSaRole)
 
 	/*sa Menu*/

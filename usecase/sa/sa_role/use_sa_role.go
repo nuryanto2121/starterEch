@@ -6,25 +6,30 @@ import (
 	"log"
 	"math"
 	isarole "property/framework/interface/sa/sa_role"
+
+	isarolemenu "property/framework/interface/sa/sa_role_menu"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
 	util "property/framework/pkg/utils"
 	"reflect"
 	"time"
 
+	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
 type useSaRole struct {
-	repoSaRole    isarole.Repository
-	contexTimeOut time.Duration
+	repoSaRole     isarole.Repository
+	repoSaRoleMenu isarolemenu.Repository
+	contexTimeOut  time.Duration
 }
 
 // NewUseSaRole :
-func NewUseSaRole(a isarole.Repository, timeout time.Duration) isarole.UseCase {
+func NewUseSaRole(a isarole.Repository, b isarolemenu.Repository, timeout time.Duration) isarole.UseCase {
 	return &useSaRole{
-		repoSaRole:    a,
-		contexTimeOut: timeout,
+		repoSaRole:     a,
+		repoSaRoleMenu: b,
+		contexTimeOut:  timeout,
 	}
 }
 
@@ -89,7 +94,7 @@ func (u *useSaRole) GetList(ctx context.Context, queryparam models.ParamList) (m
 	return result, nil
 }
 
-func (u *useSaRole) CreateSaRole(ctx context.Context, roleData *sa_models.SaRole) error {
+func (u *useSaRole) CreateSaRole(ctx context.Context, roleData *sa_models.SaRole, menuAccess *[]sa_models.MenuAccessLevel1) error {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 	var (
@@ -103,20 +108,146 @@ func (u *useSaRole) CreateSaRole(ctx context.Context, roleData *sa_models.SaRole
 	if err != nil {
 		return err
 	}
+
+	// insert role_menu level 1
+	for _, dataLevel1 := range *menuAccess {
+		var roleMenu = sa_models.SaRoleMenu{}
+		if dataLevel1.IsRead == true || dataLevel1.IsWrite == true {
+			roleMenu.IsRead = dataLevel1.IsRead
+			roleMenu.IsWrite = dataLevel1.IsWrite
+			roleMenu.MenuID = dataLevel1.MenuID
+			roleMenu.RoleID = roleData.RoleID
+			roleMenu.CreatedBy = roleData.CreatedBy
+			roleMenu.UpdatedBy = roleData.CreatedBy
+			err = u.repoSaRoleMenu.CreateSaRoleMenu(ctx, &roleMenu)
+			if err != nil {
+				return err
+			}
+		}
+
+		// insert from level 2
+		for _, dataLevel2 := range dataLevel1.Level2 {
+			var roleMenu = sa_models.SaRoleMenu{}
+			if dataLevel2.IsRead == true || dataLevel2.IsWrite == true {
+				roleMenu.IsRead = dataLevel2.IsRead
+				roleMenu.IsWrite = dataLevel2.IsWrite
+				roleMenu.MenuID = dataLevel2.MenuID
+				roleMenu.RoleID = roleData.RoleID
+				roleMenu.CreatedBy = roleData.CreatedBy
+				roleMenu.UpdatedBy = roleData.CreatedBy
+				err = u.repoSaRoleMenu.CreateSaRoleMenu(ctx, &roleMenu)
+				if err != nil {
+					return err
+				}
+			}
+			// insert from level 2
+			for _, dataLevel3 := range dataLevel2.Level3 {
+				var roleMenu = sa_models.SaRoleMenu{}
+				if dataLevel3.IsRead == true || dataLevel3.IsWrite == true {
+					roleMenu.IsRead = dataLevel3.IsRead
+					roleMenu.IsWrite = dataLevel3.IsWrite
+					roleMenu.MenuID = dataLevel3.MenuID
+					roleMenu.RoleID = roleData.RoleID
+					roleMenu.CreatedBy = roleData.CreatedBy
+					roleMenu.UpdatedBy = roleData.CreatedBy
+					err = u.repoSaRoleMenu.CreateSaRoleMenu(ctx, &roleMenu)
+					if err != nil {
+						return err
+					}
+				}
+			}
+		}
+
+	}
+
 	return nil
 }
 
-func (u *useSaRole) UpdateSaRole(ctx context.Context, roleData *sa_models.SaRole) error {
+func (u *useSaRole) UpdateSaRole(ctx context.Context, roleID uuid.UUID, data interface{}) error {
 	ctx, cancel := context.WithTimeout(ctx, u.contexTimeOut)
 	defer cancel()
 	var (
-		err error
+		err        error
+		form       = sa_models.EditRoleForm{}
+		menuAccess []sa_models.MenuAccessLevel1
 	)
-	roleData.UpdatedAt = util.GetTimeNow()
-	err = u.repoSaRole.UpdateSaRole(ctx, roleData)
+
+	// mapping to struct model saSuser
+	err = mapstructure.Decode(data, &form)
+	if err != nil {
+		return err
+		// return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
+
+	}
+	err = mapstructure.Decode(form.MenuAccess, &menuAccess)
+	if err != nil {
+		return err
+		// return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
+
+	}
+
+	form.UpdatedAt = util.GetTimeNow()
+	err = u.repoSaRole.UpdateSaRole(ctx, roleID, form)
 	if err != nil {
 		return err
 	}
+
+	err = u.repoSaRoleMenu.DeleteSaRoleMenu(ctx, roleID)
+	if err != nil {
+		return err
+	}
+
+	// insert role_menu level 1
+	for _, dataLevel1 := range menuAccess {
+		var roleMenu = sa_models.SaRoleMenu{}
+		if dataLevel1.IsRead == true || dataLevel1.IsWrite == true {
+			roleMenu.IsRead = dataLevel1.IsRead
+			roleMenu.IsWrite = dataLevel1.IsWrite
+			roleMenu.MenuID = dataLevel1.MenuID
+			roleMenu.RoleID = roleID
+			roleMenu.CreatedBy = form.UpdatedBy
+			roleMenu.UpdatedBy = form.UpdatedBy
+			err = u.repoSaRoleMenu.CreateSaRoleMenu(ctx, &roleMenu)
+			if err != nil {
+				return err
+			}
+		}
+
+		// insert from level 2
+		for _, dataLevel2 := range dataLevel1.Level2 {
+			var roleMenu = sa_models.SaRoleMenu{}
+			if dataLevel2.IsRead == true || dataLevel2.IsWrite == true {
+				roleMenu.IsRead = dataLevel2.IsRead
+				roleMenu.IsWrite = dataLevel2.IsWrite
+				roleMenu.MenuID = dataLevel2.MenuID
+				roleMenu.RoleID = roleID
+				roleMenu.CreatedBy = form.UpdatedBy
+				roleMenu.UpdatedBy = form.UpdatedBy
+				err = u.repoSaRoleMenu.CreateSaRoleMenu(ctx, &roleMenu)
+				if err != nil {
+					return err
+				}
+			}
+			// insert from level 2
+			for _, dataLevel3 := range dataLevel2.Level3 {
+				var roleMenu = sa_models.SaRoleMenu{}
+				if dataLevel3.IsRead == true || dataLevel3.IsWrite == true {
+					roleMenu.IsRead = dataLevel3.IsRead
+					roleMenu.IsWrite = dataLevel3.IsWrite
+					roleMenu.MenuID = dataLevel3.MenuID
+					roleMenu.RoleID = roleID
+					roleMenu.CreatedBy = form.UpdatedBy
+					roleMenu.UpdatedBy = form.UpdatedBy
+					err = u.repoSaRoleMenu.CreateSaRoleMenu(ctx, &roleMenu)
+					if err != nil {
+						return err
+					}
+				}
+			}
+		}
+
+	}
+
 	return nil
 
 }

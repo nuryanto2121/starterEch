@@ -7,7 +7,6 @@ import (
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/logging"
-	"property/framework/pkg/setting"
 
 	"github.com/jinzhu/gorm"
 )
@@ -26,7 +25,7 @@ func (db *repoSaMenu) GetBySaMenu(ctx context.Context, ID int) (sa_models.SaMenu
 		logger   = logging.Logger{}
 		err      error
 	)
-	query := db.Conn.Where("role_id = ?", ID).First(&dataMenu)
+	query := db.Conn.Where("menu_id = ?", ID).First(&dataMenu)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr()))
 	err = query.Error
 
@@ -40,73 +39,94 @@ func (db *repoSaMenu) GetBySaMenu(ctx context.Context, ID int) (sa_models.SaMenu
 
 	return dataMenu, err
 }
+func (db *repoSaMenu) GetList(ctx context.Context, LevelNo int, ParentMenuID int) ([]*sa_models.SaMenu, error) {
 
-func (db *repoSaMenu) GetList(ctx context.Context, queryparam models.ParamList) ([]*sa_models.SaMenu, error) {
 	var (
-		pageNum  = 0
-		pageSize = setting.FileConfigSetting.App.PageSize
-		sWhere   = ""
+		dataMenu = []*sa_models.SaMenu{}
 		logger   = logging.Logger{}
-		orderBy  = "created_at desc"
 		err      error
-		result   = []*sa_models.SaMenu{}
 	)
-
-	// pagination
-	if queryparam.Page > 0 {
-		pageNum = (queryparam.Page - 1) * queryparam.PerPage
-	}
-	if queryparam.PerPage > 0 {
-		pageSize = queryparam.PerPage
-	}
-	//end pagination
-
-	// Order
-	if queryparam.SortField != "" {
-		orderBy = queryparam.SortField
-	}
-	//end Order by
-
-	// WHERE
-	if queryparam.InitSearch != "" {
-		sWhere = queryparam.InitSearch
-	}
-
-	if queryparam.Search != "" {
-		if sWhere != "" {
-			sWhere += " and " + queryparam.Search
-		} else {
-			sWhere += queryparam.Search
-		}
-	}
-	// end where
-
-	if pageNum >= 0 && pageSize > 0 {
-		query := db.Conn.Where(sWhere).Offset(pageNum).Limit(pageSize).Order(orderBy).Find(&result)
-		logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
-		err = query.Error
-	} else {
-		query := db.Conn.Where(sWhere).Order(orderBy).Find(&result)
-		logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
-		err = query.Error
-	}
+	query := db.Conn.Where("level = ? AND parent_menu_id = ?", LevelNo, ParentMenuID).Order("level asc,order_seq asc").Find(&dataMenu)
+	logger.Query(fmt.Sprintf("%v", query.QueryExpr()))
+	err = query.Error
 
 	if err != nil {
+		//
 		if err == gorm.ErrRecordNotFound {
-			return nil, models.ErrNotFound
+			return dataMenu, models.ErrNotFound
 		}
 		return nil, err
 	}
-	return result, nil
 
+	return dataMenu, err
 }
 
-func (db *repoSaMenu) CreateSaMenu(ctx context.Context, roleData *sa_models.SaMenu) error {
+// func (db *repoSaMenu) GetList(ctx context.Context, queryparam models.ParamList) ([]*sa_models.SaMenu, error) {
+// 	var (
+// 		pageNum  = 0
+// 		pageSize = setting.FileConfigSetting.App.PageSize
+// 		sWhere   = ""
+// 		logger   = logging.Logger{}
+// 		orderBy  = "created_at desc"
+// 		err      error
+// 		result   = []*sa_models.SaMenu{}
+// 	)
+
+// 	// pagination
+// 	if queryparam.Page > 0 {
+// 		pageNum = (queryparam.Page - 1) * queryparam.PerPage
+// 	}
+// 	if queryparam.PerPage > 0 {
+// 		pageSize = queryparam.PerPage
+// 	}
+// 	//end pagination
+
+// 	// Order
+// 	if queryparam.SortField != "" {
+// 		orderBy = queryparam.SortField
+// 	}
+// 	//end Order by
+
+// 	// WHERE
+// 	if queryparam.InitSearch != "" {
+// 		sWhere = queryparam.InitSearch
+// 	}
+
+// 	if queryparam.Search != "" {
+// 		if sWhere != "" {
+// 			sWhere += " and " + queryparam.Search
+// 		} else {
+// 			sWhere += queryparam.Search
+// 		}
+// 	}
+// 	// end where
+
+// 	if pageNum >= 0 && pageSize > 0 {
+// 		query := db.Conn.Where(sWhere).Offset(pageNum).Limit(pageSize).Order(orderBy).Find(&result)
+// 		logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
+// 		err = query.Error
+// 	} else {
+// 		query := db.Conn.Where(sWhere).Order(orderBy).Find(&result)
+// 		logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
+// 		err = query.Error
+// 	}
+
+// 	if err != nil {
+// 		if err == gorm.ErrRecordNotFound {
+// 			return nil, models.ErrNotFound
+// 		}
+// 		return nil, err
+// 	}
+// 	return result, nil
+
+// }
+
+func (db *repoSaMenu) CreateSaMenu(ctx context.Context, menuData *sa_models.SaMenu) error {
 	var (
 		logger = logging.Logger{}
 		err    error
 	)
-	query := db.Conn.Create(roleData)
+	query := db.Conn.Create(menuData)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 	// err = db.Conn.Create(userData).Error
@@ -116,12 +136,13 @@ func (db *repoSaMenu) CreateSaMenu(ctx context.Context, roleData *sa_models.SaMe
 	return nil
 }
 
-func (db *repoSaMenu) UpdateSaMenu(ctx context.Context, roleData *sa_models.SaMenu) error {
+func (db *repoSaMenu) UpdateSaMenu(ctx context.Context, menuID int, data interface{}) error {
 	var (
 		logger = logging.Logger{}
 		err    error
 	)
-	query := db.Conn.Save(roleData)
+	// query := db.Conn.Save(menuData)
+	query := db.Conn.Model(sa_models.SaMenu{}).Where("menu_id = ?", menuID).Updates(data)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 	// err = db.Conn.Save(userData).Error
@@ -169,7 +190,7 @@ func (db *repoSaMenu) CountMenuList(ctx context.Context, queryparam models.Param
 	}
 	// end where
 
-	query := db.Conn.Model(&sa_models.SaUser{}).Where(sWhere).Count(&result)
+	query := db.Conn.Model(&sa_models.SaMenu{}).Where(sWhere).Count(&result)
 	logger.Query(fmt.Sprintf("%v", query.QueryExpr())) //cath to log query string
 	err = query.Error
 

@@ -28,10 +28,12 @@ type AddMenuForm struct {
 
 // EditMenuForm :
 type EditMenuForm struct {
-	Title        string `json:"title" valid:"Required"`
-	MenuUrl      string `json:"menu_url" valid:"Required"`
-	ParentMenuID int    `json:"parent_menu_id"`
-	IconClass    string `json:"icon_class" `
-	OrderSeq     int    `json:"order_seq" valid:"Required"`
-	Level        int    `json:"level" valid:"Required"`
+	Title        string    `json:"title" valid:"Required"`
+	MenuUrl      string    `json:"menu_url" valid:"Required"`
+	ParentMenuID int       `json:"parent_menu_id"`
+	IconClass    string    `json:"icon_class" `
+	OrderSeq     int       `json:"order_seq" valid:"Required"`
+	Level        int       `json:"level" valid:"Required"`
+	UpdatedBy    string    `json:"updated_by"`
+	UpdatedAt    time.Time `json:"updated_at"`
 }
