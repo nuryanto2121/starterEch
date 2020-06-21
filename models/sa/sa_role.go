@@ -10,7 +10,7 @@ import (
 type SaRole struct {
 	RoleID     uuid.UUID `json:"role_id" gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
 	Descs      string    `json:"descs" gorm:"type:varchar(60);not null;unique_index"`
-	Remarks    string    `json:"remarks" gorm:"type:varchar(255)"`
+	Notes      string    `json:"notes" gorm:"type:varchar(255)"`
 	RoleStatus int       `json:"role_status" gorm:"type:integer"`
 	CreatedBy  string    `json:"created_by" gorm:"type:varchar(20);not null"`
 	CreatedAt  time.Time `json:"created_at" gorm:"type:timestamp(0) without time zone;default:now()"`
@@ -22,7 +22,7 @@ type SaRole struct {
 type AddRoleForm struct {
 	Descs      string             `json:"descs" valid:"Required;MaxSize(60)"`
 	RoleStatus int                `json:"role_status"`
-	Remarks    string             `json:"notes"`
+	Notes      string             `json:"notes"`
 	MenuAccess []MenuAccessLevel1 `json:"menu_access"`
 }
 
@@ -30,7 +30,7 @@ type AddRoleForm struct {
 type EditRoleForm struct {
 	Descs      string             `json:"descs" valid:"Required;MaxSize(60)"`
 	RoleStatus int                `json:"role_status"`
-	Remarks    string             `json:"notes"`
+	Notes      string             `json:"notes"`
 	MenuAccess []MenuAccessLevel1 `json:"menu_access"`
 	UpdatedBy  string             `json:"updated_by"`
 	UpdatedAt  time.Time          `json:"updated_at"`
