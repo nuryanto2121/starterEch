@@ -188,7 +188,7 @@ func (u *ContSaUser) GetListPermission(e echo.Context) error {
 	}
 
 	// return e.JSON(http.StatusOK, ListDataUser)
-	return appE.Response(http.StatusCreated, "Ok", dd)
+	return appE.Response(http.StatusOK, "Ok", dd)
 }
 
 // CreateSaUser :

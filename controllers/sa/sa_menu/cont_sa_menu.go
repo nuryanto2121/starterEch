@@ -109,7 +109,7 @@ func (u *ContSaMenu) GetList(e echo.Context) error {
 	if err != nil {
 		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
 	}
-	return appE.Response(http.StatusCreated, "Ok", dd)
+	return appE.Response(http.StatusOK, "Ok", dd)
 }
 
 // CreateSaMenu :
