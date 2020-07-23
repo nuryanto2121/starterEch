@@ -196,6 +196,34 @@ definitions:
       title:
         type: string
     type: object
+  models.ParamDynamicList:
+    properties:
+      init_search:
+        type: string
+      line_no:
+        type: integer
+      menu_url:
+        type: string
+      page:
+        type: integer
+      param_view:
+        type: string
+      per_page:
+        type: integer
+      search:
+        type: string
+      sort_field:
+        type: string
+    type: object
+  models.PostMulti:
+    properties:
+      in_data:
+        type: object
+      line_no:
+        type: integer
+      menu_url:
+        type: string
+    type: object
   models.RegisterForm:
     properties:
       address:
@@ -232,8 +260,14 @@ definitions:
     type: object
   models.ResponseModelList:
     properties:
+      all_column:
+        type: string
       data:
         type: object
+      define_column:
+        type: string
+      define_size:
+        type: string
       last_page:
         type: integer
       message:
@@ -242,6 +276,14 @@ definitions:
         type: integer
       total:
         type: integer
+    type: object
+  tool.ResponseModel:
+    properties:
+      data:
+        type: object
+      message:
+        description: Code int         `json:"code"`
+        type: string
     type: object
 info:
   contact:
@@ -256,6 +298,16 @@ paths:
   /api/auth/forgot:
     post:
       parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -277,6 +329,16 @@ paths:
   /api/auth/login:
     post:
       parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -298,6 +360,16 @@ paths:
   /api/auth/register:
     post:
       parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -319,6 +391,16 @@ paths:
   /api/auth/reset:
     post:
       parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -340,6 +422,16 @@ paths:
   /api/auth/verify:
     post:
       parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -358,6 +450,258 @@ paths:
       summary: Verify / Aktivasi User
       tags:
       - Auth
+  /api/dynamic:
+    delete:
+      parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Lastupdatestamp
+        in: query
+        name: lastupdatestamp
+        required: true
+        type: integer
+      - description: MenuUrl
+        in: query
+        name: menu_url
+        required: true
+        type: string
+      - description: LineNo
+        in: query
+        name: line_no
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tool.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete Dynamic
+      tags:
+      - Dynamic
+    post:
+      parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/interface%7B%7D'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tool.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: Add Dynamic
+      tags:
+      - Dynamic
+    put:
+      parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/interface%7B%7D'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tool.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: Edit Dynamic
+      tags:
+      - Dynamic
+  /api/dynamic/{id}:
+    get:
+      parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Lastupdatestamp
+        in: query
+        name: lastupdatestamp
+        required: true
+        type: integer
+      - description: MenuUrl
+        in: query
+        name: menu_url
+        required: true
+        type: string
+      - description: LineNo
+        in: query
+        name: line_no
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tool.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: GetById Dynamic
+      tags:
+      - Dynamic
+  /api/dynamic/list:
+    post:
+      parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamDynamicList'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseModelList'
+      security:
+      - ApiKeyAuth: []
+      summary: GetList Dynamic
+      tags:
+      - Dynamic
+  /api/dynamicmulti:
+    post:
+      parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.PostMulti'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tool.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: Post Dynamic Multi
+      tags:
+      - DynamicMulti
+    put:
+      parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.PostMulti'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tool.ResponseModel'
+      security:
+      - ApiKeyAuth: []
+      summary: Put Dynamic Multi
+      tags:
+      - DynamicMulti
   /api/fileupload:
     post:
       consumes:

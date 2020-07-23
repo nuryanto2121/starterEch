@@ -6,7 +6,9 @@ import (
 
 	"property/framework/pkg/connection"
 	"property/framework/pkg/logging"
+	sqlxposgresdb "property/framework/pkg/postgresqlxdb"
 	"property/framework/pkg/setting"
+	"property/framework/redisdb"
 
 	"property/framework/routes"
 
@@ -23,6 +25,8 @@ func init() {
 	setting.Setup()
 	logging.Setup()
 	connection.Setup()
+	sqlxposgresdb.Setup()
+	redisdb.Setup()
 }
 
 // @title Starter

@@ -13,6 +13,7 @@ import (
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/setting"
 	util "property/framework/pkg/utils"
+	"property/framework/redisdb"
 	"property/framework/usecase/usemail"
 	"time"
 
@@ -97,6 +98,8 @@ func (u *useAuth) Login(ctx context.Context, dataLogin *models.LoginForm) (outpu
 		return util.GoutputErr(err) //return result, models.ErrInternalServerError
 
 	}
+
+	redisdb.AddSession(token, DataUser.UserID, 0)
 
 	restUser := map[string]interface{}{
 		"user_id":      DataUser.UserID,

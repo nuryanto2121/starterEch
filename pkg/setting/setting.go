@@ -65,14 +65,32 @@ type App struct {
 
 // AppSetting interface pointer
 // var AppSetting = &App{}
+// RedisDB :
+type RedisDB struct {
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	DB       int    `mapstructure:"mapstructure"`
+	Key      string `mapstructure:"key"`
+	Password string `mapstructure:"password"`
+}
+
+type MongoDB struct {
+	Host     string `mapstructure:"host"`
+	Port     string `mapstructure:"port"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	Name     string `mapstructure:"name"`
+}
 
 // FileConfig :
 type FileConfig struct {
-	Debug    bool      `mapstructure:"debug"`
-	Server   *Server   `mapstructure:"server"`
-	SMTP     *SMTP     `mapstructure:"smtp"`
-	App      *App      `mapstructure:"app"`
-	Database *Database `mapstructure:"database"`
+	Debug          bool      `mapstructure:"debug"`
+	Server         *Server   `mapstructure:"server"`
+	SMTP           *SMTP     `mapstructure:"smtp"`
+	App            *App      `mapstructure:"app"`
+	Database       *Database `mapstructure:"database"`
+	RedisDBSetting *RedisDB  `mapstructure:"redisdb"`
+	MongoDBSetting *MongoDB  `mapstructure:"mongodb"`
 }
 
 // FileConfigSetting :

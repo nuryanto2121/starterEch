@@ -31,12 +31,14 @@ func GenerateToken(id string, user_name string) (string, error) {
 
 	var screet = viper.GetString(`jwt_secret`)
 	expired_time := viper.GetInt(`expire_jwt`)
+	issuer := viper.GetString(`app.issuer`)
 	var jwtSecret = []byte(screet)
 	// Set custom claims
 	claims := &Claims{
 		UserID:   id,
 		UserName: user_name,
 		StandardClaims: jwt.StandardClaims{
+			Issuer:    issuer,
 			ExpiresAt: time.Now().Add(time.Hour * time.Duration(expired_time)).Unix(),
 		},
 	}
