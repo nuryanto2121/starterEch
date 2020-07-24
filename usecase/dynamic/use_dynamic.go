@@ -3,6 +3,7 @@ package usedynamic
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	idynamic "property/framework/interface/dynamic"
@@ -258,9 +259,13 @@ func (u *useOptionTemplate) GetList(ctx context.Context, claims util.Claims, que
 		InitialWhere = "WHERE " + InitialWhere
 	}
 	sWhere := strings.Replace(InitialWhere, "claims.user_id", claims.UserID, -1)
-	sWhereLike := tool.SetWhereLikeList(FieldWhere, ParamWhere)
+	// sWhereLike := ""
+	// if ParamWhere != "" {
+	// 	sWhereLike = tool.SetWhereLikeList(FieldWhere, ParamWhere)
+	// }
 
 	if ParamWhere != "" {
+		sWhereLike := tool.SetWhereLikeList(FieldWhere, ParamWhere)
 		if sWhere != "" {
 			sWhere += " AND " + sWhereLike
 		} else {
@@ -292,4 +297,55 @@ func (u *useOptionTemplate) GetList(ctx context.Context, claims util.Claims, que
 	result.DefineColumn = DefineColumns
 	result.AllColumn = AllColumn
 	return result, err
+}
+
+func (u *useOptionTemplate) GetDataLookUp(ctx context.Context, claims util.Claims, ParamGet models.ParamLookup) (result interface{}, err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
+	defer cancel()
+
+	var (
+		OptionLookup = models.OptionLookup{}
+		SpName       string
+		InitialWHere = ParamGet.InitSearch
+		ParamWhere   = ParamGet.Search
+	)
+	isViewFunction := ParamGet.ParamView != ""
+	fmt.Println(isViewFunction)
+
+	OptionLookup, err = u.repoOption.GetOptionLookupBy(ctx, ParamGet.LookUpCd, ParamGet.ColumnDB)
+	if err != nil || OptionLookup.OptionLookUpCD == "" {
+		if OptionLookup.OptionLookUpCD == "" {
+			return nil, errors.New("Please Contact Your Administrator. (table setting Look up null)")
+		}
+		return nil, err
+	}
+	source_field := tool.SetFieldListLookup(OptionLookup.SourceField, OptionLookup.DisplayLookup)
+
+	if isViewFunction {
+		SpName = fmt.Sprintf("%s(%s)", OptionLookup.ViewName, ParamGet.ParamView)
+	} else {
+		SpName = OptionLookup.ViewName
+
+	}
+
+	//WHere
+	if InitialWHere != "" {
+		InitialWHere = "WHERE " + InitialWHere
+	}
+	sWhere := strings.Replace(InitialWHere, "claims.user_id", claims.UserID, -1)
+	// sWhereLike := tool.SetWhereLikeList(OptionLookup.SourceField, ParamWhere)
+	if ParamWhere != "" {
+		sWhereLike := tool.SetWhereLikeList(OptionLookup.SourceField, ParamWhere)
+		if sWhere != "" {
+			sWhere += " AND " + sWhereLike
+		} else {
+			sWhere += " WHERE " + sWhereLike
+		}
+	}
+	sQuery := tool.QueryFunctionLookUp(SpName, sWhere, source_field, "10000")
+	result, err = u.repoOption.GetDataQuery(ctx, sQuery)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }

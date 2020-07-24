@@ -215,6 +215,19 @@ definitions:
       sort_field:
         type: string
     type: object
+  models.ParamLookup:
+    properties:
+      column_db:
+        type: string
+      init_search:
+        type: string
+      lookup_cd:
+        type: string
+      param_view:
+        type: string
+      search:
+        type: string
+    type: object
   models.PostMulti:
     properties:
       in_data:
@@ -730,6 +743,39 @@ paths:
       summary: File Upload
       tags:
       - FileUpload
+  /api/lookup:
+    post:
+      parameters:
+      - description: OS Device
+        in: header
+        name: OS
+        required: true
+        type: string
+      - description: OS Device
+        in: header
+        name: Version
+        required: true
+        type: string
+      - description: 'req param #changes are possible to adjust the form of the registration
+          form from frontend'
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/models.ParamLookup'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseModelList'
+      security:
+      - ApiKeyAuth: []
+      summary: GetLookUp Dynamic
+      tags:
+      - Dynamic
   /api/menu:
     get:
       parameters:

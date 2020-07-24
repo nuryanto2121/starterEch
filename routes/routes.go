@@ -10,6 +10,8 @@ import (
 	sarouter "property/framework/routes/sa"
 	_useDynamic "property/framework/usecase/dynamic"
 
+	_contLookUp "property/framework/controllers/look_up"
+
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -31,6 +33,8 @@ func (e *Echo) InitialRouter() {
 	repoDynamic := _repoDynamic.NewRepoOptionDB(sqlxposgresdb.DbCon)
 	useDynamic := _useDynamic.NewUserSysUser(repoDynamic, timeoutContext)
 	_contDynamic.NewContDynamic(e.E, useDynamic)
+
+	_contLookUp.NewContLookUp(e.E, useDynamic)
 
 	sarouter.Router(e.E, timeoutContext)
 

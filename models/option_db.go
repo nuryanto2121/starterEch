@@ -18,3 +18,11 @@ type OptionDB struct {
 type DefineColumn struct {
 	ColumnField string `json:"column_field" db:"column_field"`
 }
+
+type OptionLookup struct {
+	OptionLookUpCD string `json:"option_lookup_cd" db:"option_lookup_cd"`
+	ColumnDB       string `json:"column_db" db:"column_db"`
+	ViewName       string `json:"view_name" db:"view_name"`
+	SourceField    string `json:"source_field" db:"source_field"`
+	DisplayLookup  string `json:"display_lookup" db:"display_lookup"`
+}

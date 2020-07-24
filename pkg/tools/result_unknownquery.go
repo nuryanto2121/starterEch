@@ -19,7 +19,8 @@ func ResultQuery(rows *sqlx.Rows) (result interface{}, err error) {
 	for rows.Next() {
 		colassoc := make(map[string]interface{}, len(cols))
 		// values we"ll be passing will be pointers, themselves to interfaces
-		for i, _ := range colvals {
+		for i, key := range colvals {
+			_ = key
 			colvals[i] = new(interface{})
 		}
 		if err := rows.Scan(colvals...); err != nil {

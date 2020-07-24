@@ -77,4 +77,19 @@ func QueryFunctionList(SourceFrom string, sSortField string, sField string, sWhe
 	return result
 }
 
+func QueryFunctionLookUp(SourceFrom string, Parameter string, Field string, Limit string) string {
+	var (
+		result string
+		// sparam string
+	)
+	if Field == "" {
+		Field = "*"
+	}
+	result = fmt.Sprintf("SELECT %s FROM %s %s", Field, SourceFrom, Parameter)
+	if Limit != "" {
+		result += fmt.Sprintf(" LIMIT %s; ", Limit)
+	}
+	return result
+}
+
 // func

@@ -82,4 +82,14 @@ const (
 			FROM ss_define_column
 			WHERE option_url iLIKE $1 AND line_no = $2;
 	`
+
+	QueryOptionLookup = `
+		SELECT option_lookup_cd, 
+				column_db, 
+				view_name, 
+				source_field, 
+				display_lookup
+		FROM public.ss_option_lookup
+		WHERE option_lookup_cd = $1 AND column_db =$2;
+	`
 )

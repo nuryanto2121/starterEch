@@ -32,6 +32,15 @@ func (m *repoOptionDB) GetOptionByUrl(ctx context.Context, Url string) (result [
 	}
 	return result, nil
 }
+func (m *repoOptionDB) GetOptionLookupBy(ctx context.Context, LookUpCd string, ColumnDB string) (result models.OptionLookup, err error) {
+	var logger = logging.Logger{}
+	logger.Query(queryoption.QueryOptionLookup, LookUpCd, ColumnDB)
+	errs := m.DB.GetContext(ctx, &result, queryoption.QueryOptionLookup, LookUpCd, ColumnDB)
+	if errs != nil {
+		return result, errs
+	}
+	return result, nil
+}
 func (m *repoOptionDB) GetParamFunction(ctx context.Context, SpName string) (result []models.ParamFunction, err error) {
 	var logger = logging.Logger{}
 	logger.Query(queryoption.QueryGetListParamFunction, SpName)
@@ -57,6 +66,17 @@ func (m *repoOptionDB) GetDataList(ctx context.Context, sQuery string, Limit int
 	var logger = logging.Logger{}
 	logger.Query(sQuery, Limit, Offset)
 	rows, err := m.DB.QueryxContext(ctx, sQuery, Limit, Offset)
+	if err != nil {
+		return nil, err
+	}
+	result, err = tool.ResultQuery(rows)
+	return result, nil
+}
+func (m *repoOptionDB) GetDataQuery(ctx context.Context, sQuery string) (result interface{}, err error) {
+	// fmt.Printf(queryoption.QueryGetListOption)
+	var logger = logging.Logger{}
+	logger.Query(sQuery)
+	rows, err := m.DB.QueryxContext(ctx, sQuery)
 	if err != nil {
 		return nil, err
 	}

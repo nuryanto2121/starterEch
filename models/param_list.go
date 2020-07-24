@@ -21,3 +21,11 @@ type PostMulti struct {
 	LineNo  int         `json:"line_no,omitempty"`
 	InData  interface{} `json:"in_data,omitempty"`
 }
+
+type ParamLookup struct {
+	LookUpCd   string `json:"lookup_cd" valid:"Required"`
+	ColumnDB   string `json:"column_db" valid:"Required"`
+	InitSearch string `json:"init_search,omitempty"`
+	Search     string `json:"search,omitempty"`
+	ParamView  string `json:"param_view,omitempty"`
+}
