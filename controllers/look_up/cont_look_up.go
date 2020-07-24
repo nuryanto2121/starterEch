@@ -23,7 +23,7 @@ func NewContLookUp(e *echo.Echo, a idynamic.Usecase) {
 	}
 
 	r := e.Group("api/lookup")
-	r.Use(midd.Versioning)
+
 	r.Use(midd.JWT)
 	r.POST("", cont.GetData)
 }
