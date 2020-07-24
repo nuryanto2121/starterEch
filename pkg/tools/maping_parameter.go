@@ -53,11 +53,16 @@ func SetWhereLikeList(FieldWhere string, ParamSearch string) string {
 			continue
 		}
 		sField[0] = strings.TrimSpace(sField[0])
-		if sField[1] == "T" {
-			result += fmt.Sprintf("OR lower(TO_CHAR(%s,'DD/MM/YYYY HH24:MI')) LIKE '%%%s%%' ", sField[0], strings.ToLower(ParamSearch))
+		if len(sField) > 1 {
+			if sField[1] == "T" {
+				result += fmt.Sprintf("OR lower(TO_CHAR(%s,'DD/MM/YYYY HH24:MI')) LIKE '%%%s%%' ", sField[0], strings.ToLower(ParamSearch))
+			} else {
+				result += fmt.Sprintf("OR lower(%s::varchar) LIKE '%%%s%%' ", sField[0], strings.ToLower(ParamSearch))
+			}
 		} else {
 			result += fmt.Sprintf("OR lower(%s::varchar) LIKE '%%%s%%' ", sField[0], strings.ToLower(ParamSearch))
 		}
+
 	}
 	i1 := strings.Index(result, `OR`)
 	result = result[i1+2:]

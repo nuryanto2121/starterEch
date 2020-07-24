@@ -31,7 +31,7 @@ func NewContLookUp(e *echo.Echo, a idynamic.Usecase) {
 // GetLookUp :
 // @Summary GetLookUp Dynamic
 // @Security ApiKeyAuth
-// @Tags Dynamic
+// @Tags LookUp
 // @Produce  json
 // @Param OS header string true "OS Device"
 // @Param Version header string true "OS Device"

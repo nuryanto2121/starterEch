@@ -19,7 +19,7 @@ func SetFieldListLookup(SourceField string, DisplayField string) string {
 		_ = key
 		fieldLookUp += fmt.Sprintf(",'|',%s::varchar", Display[i])
 	}
-	fieldLookUp = fieldLookUp[strings.Index(fieldLookUp, ",'|',")+1:]
+	fieldLookUp = fieldLookUp[strings.Index(fieldLookUp, ",'|',")+5:]
 	fmt.Printf(fieldLookUp)
 	DisplayLookUp += fieldLookUp + ")"
 

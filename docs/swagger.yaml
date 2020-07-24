@@ -775,7 +775,7 @@ paths:
       - ApiKeyAuth: []
       summary: GetLookUp Dynamic
       tags:
-      - Dynamic
+      - LookUp
   /api/menu:
     get:
       parameters:

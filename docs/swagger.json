@@ -672,7 +672,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Dynamic"
+                    "LookUp"
                 ],
                 "summary": "GetLookUp Dynamic",
                 "parameters": [

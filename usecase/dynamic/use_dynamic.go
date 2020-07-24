@@ -337,9 +337,9 @@ func (u *useOptionTemplate) GetDataLookUp(ctx context.Context, claims util.Claim
 	if ParamWhere != "" {
 		sWhereLike := tool.SetWhereLikeList(OptionLookup.SourceField, ParamWhere)
 		if sWhere != "" {
-			sWhere += " AND " + sWhereLike
+			sWhere += " AND (" + sWhereLike + ") "
 		} else {
-			sWhere += " WHERE " + sWhereLike
+			sWhere += " WHERE (" + sWhereLike + ") "
 		}
 	}
 	sQuery := tool.QueryFunctionLookUp(SpName, sWhere, source_field, "10000")
