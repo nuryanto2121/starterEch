@@ -23,20 +23,6 @@
                 "summary": "Forgot Password",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
                         "in": "body",
@@ -67,20 +53,6 @@
                 ],
                 "summary": "Login",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
@@ -113,20 +85,6 @@
                 "summary": "Add Client",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
                         "in": "body",
@@ -149,28 +107,7 @@
         },
         "/api/auth/reset": {
             "post": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Reset Password",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
@@ -202,20 +139,6 @@
                 ],
                 "summary": "Verify / Aktivasi User",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
@@ -253,20 +176,6 @@
                 "summary": "Edit Dynamic",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
                         "in": "body",
@@ -301,20 +210,6 @@
                 "summary": "Add Dynamic",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
                         "in": "body",
@@ -348,20 +243,6 @@
                 ],
                 "summary": "Delete Dynamic",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "description": "ID",
@@ -417,20 +298,6 @@
                 "summary": "GetList Dynamic",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
                         "in": "body",
@@ -466,20 +333,6 @@
                 ],
                 "summary": "GetById Dynamic",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "integer",
                         "description": "ID",
@@ -535,20 +388,6 @@
                 "summary": "Put Dynamic Multi",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
                         "in": "body",
@@ -582,20 +421,6 @@
                 ],
                 "summary": "Post Dynamic Multi",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",
@@ -676,20 +501,6 @@
                 ],
                 "summary": "GetLookUp Dynamic",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "OS",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "OS Device",
-                        "name": "Version",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
                         "name": "req",

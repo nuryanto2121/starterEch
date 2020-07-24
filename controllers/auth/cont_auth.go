@@ -45,8 +45,6 @@ func NewContAuth(e *echo.Echo, useAuth iauth.Usecase) {
 // @Summary Add Client
 // @Tags Auth
 // @Produce json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param req body models.RegisterForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/auth/register [post]
@@ -89,8 +87,6 @@ func (u *ContAuth) Register(e echo.Context) error {
 // @Summary Login
 // @Tags Auth
 // @Produce json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param req body models.LoginForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/auth/login [post]
@@ -130,8 +126,6 @@ func (u *ContAuth) Login(e echo.Context) error {
 // @Summary Forgot Password
 // @Tags Auth
 // @Produce json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param req body models.ForgotForm true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/auth/forgot [post]
@@ -167,8 +161,7 @@ func (u *ContAuth) ForgotPassword(e echo.Context) error {
 // @Summary Reset Password
 // @Tags Auth
 // @Produce json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
+
 // @Param req body models.ResetPasswd true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/auth/reset [post]
@@ -202,8 +195,6 @@ func (u *ContAuth) ResetPasswd(e echo.Context) error {
 // @Summary Verify / Aktivasi User
 // @Tags Auth
 // @Produce json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param req body models.ResetPasswd true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/auth/verify [post]

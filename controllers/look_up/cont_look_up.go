@@ -33,8 +33,6 @@ func NewContLookUp(e *echo.Echo, a idynamic.Usecase) {
 // @Security ApiKeyAuth
 // @Tags LookUp
 // @Produce  json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param req body models.ParamLookup true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} models.ResponseModelList
 // @Router /api/lookup [post]

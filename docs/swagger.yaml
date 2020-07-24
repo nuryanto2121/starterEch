@@ -311,16 +311,6 @@ paths:
   /api/auth/forgot:
     post:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -342,16 +332,6 @@ paths:
   /api/auth/login:
     post:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -373,16 +353,6 @@ paths:
   /api/auth/register:
     post:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -404,16 +374,6 @@ paths:
   /api/auth/reset:
     post:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -422,29 +382,14 @@ paths:
         schema:
           $ref: '#/definitions/models.ResetPasswd'
           type: object
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
-      summary: Reset Password
-      tags:
-      - Auth
   /api/auth/verify:
     post:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -466,16 +411,6 @@ paths:
   /api/dynamic:
     delete:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: ID
         in: path
         name: id
@@ -510,16 +445,6 @@ paths:
       - Dynamic
     post:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -542,16 +467,6 @@ paths:
       - Dynamic
     put:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -575,16 +490,6 @@ paths:
   /api/dynamic/{id}:
     get:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: ID
         in: path
         name: id
@@ -620,16 +525,6 @@ paths:
   /api/dynamic/list:
     post:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -653,16 +548,6 @@ paths:
   /api/dynamicmulti:
     post:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -685,16 +570,6 @@ paths:
       - DynamicMulti
     put:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body
@@ -746,16 +621,6 @@ paths:
   /api/lookup:
     post:
       parameters:
-      - description: OS Device
-        in: header
-        name: OS
-        required: true
-        type: string
-      - description: OS Device
-        in: header
-        name: Version
-        required: true
-        type: string
       - description: 'req param #changes are possible to adjust the form of the registration
           form from frontend'
         in: body

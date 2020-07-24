@@ -45,8 +45,6 @@ func NewContDynamic(e *echo.Echo, a idynamic.Usecase) {
 // @Security ApiKeyAuth
 // @Tags DynamicMulti
 // @Produce json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param req body models.PostMulti true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} tool.ResponseModel
 // @Router /api/dynamicmulti [post]
@@ -86,8 +84,6 @@ func (c *ContDynamic) PostMulti(e echo.Context) error {
 // @Security ApiKeyAuth
 // @Tags DynamicMulti
 // @Produce json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param req body models.PostMulti true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} tool.ResponseModel
 // @Router /api/dynamicmulti [put]
@@ -127,8 +123,6 @@ func (c *ContDynamic) PutMulti(e echo.Context) error {
 // @Security ApiKeyAuth
 // @Tags Dynamic
 // @Produce json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param req body interface{} true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} tool.ResponseModel
 // @Router /api/dynamic [post]
@@ -173,8 +167,6 @@ func (c *ContDynamic) Save(e echo.Context) error {
 // @Security ApiKeyAuth
 // @Tags Dynamic
 // @Produce json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param req body interface{} true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} tool.ResponseModel
 // @Router /api/dynamic [put]
@@ -219,8 +211,6 @@ func (c *ContDynamic) Update(e echo.Context) error {
 // @Security ApiKeyAuth
 // @Tags Dynamic
 // @Produce  json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param id path int true "ID"
 // @Param lastupdatestamp query int true "Lastupdatestamp"
 // @Param menu_url query string true "MenuUrl"
@@ -262,8 +252,6 @@ func (c *ContDynamic) GetById(e echo.Context) error {
 // @Security ApiKeyAuth
 // @Tags Dynamic
 // @Produce  json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param req body models.ParamDynamicList true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} models.ResponseModelList
 // @Router /api/dynamic/list [post]
@@ -310,8 +298,6 @@ func (u *ContDynamic) GetList(e echo.Context) error {
 // @Security ApiKeyAuth
 // @Tags Dynamic
 // @Produce  json
-// @Param OS header string true "OS Device"
-// @Param Version header string true "OS Device"
 // @Param id path int true "ID"
 // @Param lastupdatestamp query int true "Lastupdatestamp"
 // @Param menu_url query string true "MenuUrl"
