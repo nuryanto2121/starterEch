@@ -5,15 +5,13 @@ import (
 	"fmt"
 	"net/http"
 	isamenu "property/framework/interface/sa/sa_menu"
+	midd "property/framework/middleware"
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/app"
 	"property/framework/pkg/logging"
-	"property/framework/pkg/setting"
 	util "property/framework/pkg/utils"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -29,13 +27,7 @@ func NewContSaMenu(e *echo.Echo, a isamenu.UseCase) {
 	}
 
 	r := e.Group("/api/menu")
-	// Configure middleware with custom claims
-	var screet = setting.FileConfigSetting.App.JwtSecret
-	config := middleware.JWTConfig{
-		Claims:     &util.Claims{},
-		SigningKey: []byte(screet),
-	}
-	r.Use(middleware.JWTWithConfig(config))
+	r.Use(midd.JWT)
 
 	r.GET("/:id", controller.GetBySaMenu)
 	r.GET("", controller.GetList)
@@ -132,8 +124,7 @@ func (u *ContSaMenu) CreateSaMenu(e echo.Context) error {
 		menu   sa_models.SaMenu
 		form   sa_models.AddMenuForm
 	)
-	user := e.Get("user").(*jwt.Token)
-	claims := user.Claims.(*util.Claims)
+
 	// validasi and bind to struct
 	httpCode, errMsg := app.BindAndValid(e, &form)
 	logger.Info(util.Stringify(form))
@@ -146,6 +137,10 @@ func (u *ContSaMenu) CreateSaMenu(e echo.Context) error {
 	if err != nil {
 		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
 
+	}
+	claims, err := app.GetClaims(e)
+	if err != nil {
+		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
 	}
 	menu.CreatedBy = claims.UserName
 	err = u.useSaMenu.CreateSaMenu(ctx, &menu)
@@ -179,8 +174,6 @@ func (u *ContSaMenu) UpdateSaMenu(e echo.Context) error {
 		id   = e.Param("id") //kalo bukan int => 0
 		form = sa_models.EditMenuForm{}
 	)
-	user := e.Get("user").(*jwt.Token)
-	claims := user.Claims.(*util.Claims)
 
 	MenuID := util.StrTo(id).MustInt()
 	logger.Info(id)
@@ -194,7 +187,10 @@ func (u *ContSaMenu) UpdateSaMenu(e echo.Context) error {
 	if httpCode != 200 {
 		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
 	}
-
+	claims, err := app.GetClaims(e)
+	if err != nil {
+		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
+	}
 	form.UpdatedBy = claims.UserName
 	err = u.useSaMenu.UpdateSaMenu(ctx, MenuID, &form)
 	if err != nil {

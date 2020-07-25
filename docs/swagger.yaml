@@ -382,11 +382,16 @@ paths:
         schema:
           $ref: '#/definitions/models.ResetPasswd'
           type: object
+      produces:
+      - application/json
       responses:
         "200":
           description: OK
           schema:
             $ref: '#/definitions/app.ResponseModel'
+      summary: Reset Password
+      tags:
+      - Auth
   /api/auth/verify:
     post:
       parameters:
@@ -635,7 +640,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.ResponseModelList'
+            $ref: '#/definitions/app.ResponseModel'
       security:
       - ApiKeyAuth: []
       summary: GetLookUp Dynamic

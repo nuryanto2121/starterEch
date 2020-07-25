@@ -26,7 +26,7 @@ func SetFieldListLookup(SourceField string, DisplayField string) string {
 	for x, key := range FieldLookUps {
 		_ = key
 		if x == 0 {
-			result += fmt.Sprintf(",%s as id", FieldLookUps[x])
+			result += fmt.Sprintf(",%s as value", FieldLookUps[x])
 		} else if x == 1 {
 			result += fmt.Sprintf(",%s as label ", DisplayLookUp)
 			result += fmt.Sprintf(",%s", FieldLookUps[x])

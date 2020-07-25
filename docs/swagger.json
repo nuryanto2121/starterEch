@@ -107,6 +107,13 @@
         },
         "/api/auth/reset": {
             "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Reset Password",
                 "parameters": [
                     {
                         "description": "req param #changes are possible to adjust the form of the registration form from frontend",
@@ -516,7 +523,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.ResponseModelList"
+                            "$ref": "#/definitions/app.ResponseModel"
                         }
                     }
                 }

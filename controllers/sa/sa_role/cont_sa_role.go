@@ -9,14 +9,12 @@ import (
 	sa_models "property/framework/models/sa"
 	"property/framework/pkg/app"
 	"property/framework/pkg/logging"
-	"property/framework/pkg/setting"
 	util "property/framework/pkg/utils"
 
-	"github.com/dgrijalva/jwt-go"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
-	"github.com/mitchellh/mapstructure"
+	midd "property/framework/middleware"
 
+	"github.com/labstack/echo/v4"
+	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -33,12 +31,7 @@ func NewContSaRole(e *echo.Echo, a isarole.UseCase) {
 
 	r := e.Group("/api/role")
 	// Configure middleware with custom claims
-	var screet = setting.FileConfigSetting.App.JwtSecret
-	config := middleware.JWTConfig{
-		Claims:     &util.Claims{},
-		SigningKey: []byte(screet),
-	}
-	r.Use(middleware.JWTWithConfig(config))
+	r.Use(midd.JWT)
 
 	r.GET("/:id", controller.GetBySaRole)
 	r.GET("/menu_access", controller.GetMenuAccess)
@@ -180,8 +173,6 @@ func (u *ContSaRole) CreateSaRole(e echo.Context) error {
 		menuAccess []sa_models.MenuAccessLevel1
 	)
 
-	user := e.Get("user").(*jwt.Token)
-	claims := user.Claims.(*util.Claims)
 	// validasi and bind to struct
 	httpCode, errMsg := app.BindAndValid(e, &form)
 	logger.Info(util.Stringify(form))
@@ -201,7 +192,10 @@ func (u *ContSaRole) CreateSaRole(e echo.Context) error {
 		return appE.ResponseError(http.StatusInternalServerError, fmt.Sprintf("%v", err), nil)
 
 	}
-
+	claims, err := app.GetClaims(e)
+	if err != nil {
+		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
+	}
 	role.CreatedBy = claims.UserName
 	role.UpdatedBy = claims.UserName
 	err = u.useSaRole.CreateSaRole(ctx, &role, &menuAccess)
@@ -237,10 +231,7 @@ func (u *ContSaRole) UpdateSaRole(e echo.Context) error {
 		form = sa_models.EditRoleForm{}
 		// menuAccess []sa_models.MenuAccessLevel1
 	)
-	user := e.Get("user").(*jwt.Token)
-	claims := user.Claims.(*util.Claims)
 
-	form.UpdatedBy = claims.UserName
 	RoleID, err := uuid.FromString(id)
 	logger.Info(id)
 	if err != nil {
@@ -253,7 +244,11 @@ func (u *ContSaRole) UpdateSaRole(e echo.Context) error {
 	if httpCode != 200 {
 		return appE.ResponseError(http.StatusBadRequest, errMsg, nil)
 	}
-
+	claims, err := app.GetClaims(e)
+	if err != nil {
+		return appE.ResponseError(http.StatusBadRequest, fmt.Sprintf("%v", err), nil)
+	}
+	form.UpdatedBy = claims.UserName
 	err = u.useSaRole.UpdateSaRole(ctx, RoleID, &form)
 	if err != nil {
 		return appE.ResponseError(util.GetStatusCode(err), fmt.Sprintf("%v", err), nil)

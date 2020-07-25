@@ -161,7 +161,6 @@ func (u *ContAuth) ForgotPassword(e echo.Context) error {
 // @Summary Reset Password
 // @Tags Auth
 // @Produce json
-
 // @Param req body models.ResetPasswd true "req param #changes are possible to adjust the form of the registration form from frontend"
 // @Success 200 {object} app.ResponseModel
 // @Router /api/auth/reset [post]

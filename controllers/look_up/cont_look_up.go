@@ -34,7 +34,7 @@ func NewContLookUp(e *echo.Echo, a idynamic.Usecase) {
 // @Tags LookUp
 // @Produce  json
 // @Param req body models.ParamLookup true "req param #changes are possible to adjust the form of the registration form from frontend"
-// @Success 200 {object} models.ResponseModelList
+// @Success 200 {object} app.ResponseModel
 // @Router /api/lookup [post]
 func (c *ContLookUp) GetData(e echo.Context) error {
 	ctx := e.Request().Context()
