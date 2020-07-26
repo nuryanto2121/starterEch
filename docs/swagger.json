@@ -529,6 +529,42 @@
                 }
             }
         },
+        "/api/lookup/list": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "LookUp"
+                ],
+                "summary": "GetLookUpList Dynamic",
+                "parameters": [
+                    {
+                        "description": "req param #changes are possible to adjust the form of the registration form from frontend",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/models.ParamLookUpList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.ResponseModel"
+                        }
+                    }
+                }
+            }
+        },
         "/api/menu": {
             "get": {
                 "security": [
@@ -1485,6 +1521,35 @@
                     "type": "integer"
                 },
                 "menu_url": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "param_view": {
+                    "type": "string"
+                },
+                "per_page": {
+                    "type": "integer"
+                },
+                "search": {
+                    "type": "string"
+                },
+                "sort_field": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ParamLookUpList": {
+            "type": "object",
+            "properties": {
+                "column_db": {
+                    "type": "string"
+                },
+                "init_search": {
+                    "type": "string"
+                },
+                "look_up_cd": {
                     "type": "string"
                 },
                 "page": {

@@ -13,6 +13,7 @@ type Usecase interface {
 	GetDataBy(ctx context.Context, claims util.Claims, ParamGet models.ParamGet) (result interface{}, err error)
 	GetList(ctx context.Context, claims util.Claims, queryparam models.ParamDynamicList) (result models.ResponseModelList, err error)
 	GetDataLookUp(ctx context.Context, claims util.Claims, ParamGet models.ParamLookup) (result interface{}, err error)
+	GetDataLookUpList(ctx context.Context, claims util.Claims, ParamGet models.ParamLookUpList) (result models.ResponseModelListLookUp, err error)
 }
 type Repository interface {
 	GetOptionByUrl(ctx context.Context, Url string) (result []models.OptionDB, err error)

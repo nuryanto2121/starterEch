@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func SetFieldList(FieldSource []models.ParamFunction, DefineColumn models.DefineColumn, Len int, isList bool) (FieldQuery string, Field string, DefineSize string, FieldWhere string) {
+func SetFieldList(FieldSource []models.ParamFunction, DefineColumn string, Len int, isList bool) (FieldQuery string, Field string, DefineSize string, FieldWhere string) {
 	var (
 		dfColumn []string
 		// dtType   int
@@ -16,8 +16,8 @@ func SetFieldList(FieldSource []models.ParamFunction, DefineColumn models.Define
 		Len = len(FieldSource)
 	}
 
-	if DefineColumn.ColumnField != "" {
-		dfColumn = strings.Split(DefineColumn.ColumnField, ",")
+	if DefineColumn != "" {
+		dfColumn = strings.Split(DefineColumn, ",")
 	}
 	if len(dfColumn) > 0 {
 		if dfColumn[0] == "no" {

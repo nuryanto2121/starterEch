@@ -11,3 +11,13 @@ type ResponseModelList struct {
 	Data         interface{} `json:"data"`
 	Msg          string      `json:"message"`
 }
+
+// ResponseModelListLookUp :
+type ResponseModelListLookUp struct {
+	Page      int         `json:"page"`
+	Total     int         `json:"total"`
+	LastPage  int         `json:"last_page"`
+	AllColumn string      `json:"all_column"`
+	Data      interface{} `json:"data"`
+	Msg       string      `json:"message"`
+}

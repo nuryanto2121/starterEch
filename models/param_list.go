@@ -9,6 +9,18 @@ type ParamList struct {
 	SortField  string `json:"sort_field,omitempty"`
 }
 
+// ParamLookUpList :
+type ParamLookUpList struct {
+	LookUpCd   string `json:"look_up_cd" valid:"Required"`
+	ColumnDB   string `json:"column_db" valid:"Required"`
+	Page       int    `json:"page" valid:"Required"`
+	PerPage    int    `json:"per_page" valid:"Required"`
+	Search     string `json:"search,omitempty"`
+	InitSearch string `json:"init_search,omitempty"`
+	SortField  string `json:"sort_field,omitempty"`
+	ParamView  string `json:"param_view,omitempty"`
+}
+
 type ParamDynamicList struct {
 	ParamList
 	MenuUrl   string `json:"menu_url" valid:"Required"`

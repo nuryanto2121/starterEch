@@ -226,9 +226,9 @@ func (u *useOptionTemplate) GetList(ctx context.Context, claims util.Claims, que
 	if err != nil {
 		return result, err
 	}
-	AllColumnQuery, _, DefineSize, FieldWhere := tool.SetFieldList(FieldList, DefineColumn, 20, true)
+	AllColumnQuery, _, DefineSize, FieldWhere := tool.SetFieldList(FieldList, DefineColumn.ColumnField, 20, true)
 
-	_, AllColumn, _, _ := tool.SetFieldList(FieldList, DefineColumn, 0, true)
+	_, AllColumn, _, _ := tool.SetFieldList(FieldList, DefineColumn.ColumnField, 0, true)
 
 	if DefineColumn.ColumnField != "" {
 		DefineColumns = DefineColumn.ColumnField
@@ -347,5 +347,94 @@ func (u *useOptionTemplate) GetDataLookUp(ctx context.Context, claims util.Claim
 	if err != nil {
 		return nil, err
 	}
+	return result, nil
+}
+func (u *useOptionTemplate) GetDataLookUpList(ctx context.Context, claims util.Claims, queryparam models.ParamLookUpList) (result models.ResponseModelListLookUp, err error) {
+	ctx, cancel := context.WithTimeout(ctx, u.contextTimeOut)
+	defer cancel()
+
+	var (
+		iStart         int
+		iPerpage       int
+		isViewFunction bool
+		ViewName       string
+		FieldList      []models.ParamFunction
+		OptionLookup   = models.OptionLookup{}
+		// DefineColumnFormat string
+	)
+
+	iStart = queryparam.Page
+	iPerpage = queryparam.PerPage
+	isViewFunction = queryparam.ParamView != ""
+	ParamWhere := queryparam.Search
+	InitialWhere := queryparam.InitSearch
+	sSortField := queryparam.SortField
+
+	OptionLookup, err = u.repoOption.GetOptionLookupBy(ctx, queryparam.LookUpCd, queryparam.ColumnDB)
+	if err != nil || OptionLookup.OptionLookUpCD == "" {
+		if OptionLookup.OptionLookUpCD == "" {
+			return result, errors.New("Please Contact Your Administrator. (table setting Look up null)")
+		}
+		return result, err
+	}
+
+	if sSortField == "" {
+		sSortField = fmt.Sprintf("ORDER BY %s desc", strings.Split(OptionLookup.SourceField, ",")[0])
+	} else {
+		sSortField = "ORDER BY " + sSortField
+	}
+
+	ViewName = OptionLookup.ViewName
+
+	DefineColumn := OptionLookup.SourceField
+
+	FieldList, err = u.repoOption.GetFieldType(ctx, ViewName, isViewFunction)
+	if err != nil {
+		return result, err
+	}
+	AllColumnQuery, _, _, FieldWhere := tool.SetFieldList(FieldList, DefineColumn, 20, false)
+
+	AllColumn := DefineColumn
+
+	if InitialWhere != "" {
+		InitialWhere = "WHERE " + InitialWhere
+	}
+	sWhere := strings.Replace(InitialWhere, "claims.user_id", claims.UserID, -1)
+	// sWhereLike := ""
+	// if ParamWhere != "" {
+	// 	sWhereLike = tool.SetWhereLikeList(FieldWhere, ParamWhere)
+	// }
+
+	if ParamWhere != "" {
+		sWhereLike := tool.SetWhereLikeList(FieldWhere, ParamWhere)
+		if sWhere != "" {
+			sWhere += " AND " + sWhereLike
+		} else {
+			sWhere += " WHERE " + sWhereLike
+		}
+	}
+
+	if queryparam.ParamView != "" {
+		ViewName = fmt.Sprintf("%s(%s)", ViewName, queryparam.ParamView)
+	}
+	iOffset := (iStart * iPerpage) - iPerpage
+	// DataList := make(map[string]interface{}, 0)
+	// DataList["Limit"] = iPerpage
+	// DataList["Offset"] = iOffset
+
+	sQuery := tool.QueryFunctionList(ViewName, sSortField, AllColumnQuery, sWhere)
+	result.Data, err = u.repoOption.GetDataList(ctx, sQuery, iPerpage, iOffset)
+	if err != nil {
+		return result, err
+	}
+
+	result.Total, err = u.repoOption.CountList(ctx, ViewName, sWhere)
+	if err != nil {
+		return result, err
+	}
+	result.LastPage = int(math.Ceil(float64(result.Total) / float64(queryparam.PerPage)))
+	result.Page = queryparam.Page
+	result.AllColumn = AllColumn
+
 	return result, nil
 }
