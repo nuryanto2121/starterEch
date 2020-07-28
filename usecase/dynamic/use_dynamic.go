@@ -245,7 +245,7 @@ func (u *useOptionTemplate) GetList(ctx context.Context, claims util.Claims, que
 		DataPostSP["p_option_url"] = MenuUrl
 		DataPostSP["p_line_no"] = LineNo
 		DataPostSP["p_column_field"] = DefineColumns
-		DataPostSP["p_created_by"] = claims.UserID
+		DataPostSP["p_created_by"] = claims.UserName
 
 		sQuery := tool.QueryFunctionByID(SpName, DataParameter)
 		fmt.Printf(sQuery)
