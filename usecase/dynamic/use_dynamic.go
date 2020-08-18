@@ -282,10 +282,12 @@ func (u *useOptionTemplate) GetList(ctx context.Context, claims util.Claims, que
 	// DataList["Offset"] = iOffset
 
 	sQuery := tool.QueryFunctionList(ViewName, sSortField, AllColumnQuery, sWhere)
+	fmt.Printf("%v", time.Now())
 	result.Data, err = u.repoOption.GetDataList(ctx, sQuery, iPerpage, iOffset)
 	if err != nil {
 		return result, err
 	}
+	fmt.Printf("%v", time.Now())
 
 	result.Total, err = u.repoOption.CountList(ctx, ViewName, sWhere)
 	if err != nil {

@@ -8,6 +8,7 @@ import (
 	iauth "property/framework/interface/auth"
 	isaclient "property/framework/interface/sa/sa_client"
 	isafileupload "property/framework/interface/sa/sa_file_upload"
+	isarolemenu "property/framework/interface/sa/sa_role_menu"
 	isauser "property/framework/interface/sa/sa_user"
 	"property/framework/models"
 	sa_models "property/framework/models/sa"
@@ -24,16 +25,18 @@ import (
 type useAuth struct {
 	repoSaUser isauser.Repository
 	// repoSaClient   isaclient.Repository
+	repoRoleMenu    isarolemenu.Repository
 	useSaClient     isaclient.Usecase
 	useSaFileUpload isafileupload.UseCase
 	contextTimeOut  time.Duration
 }
 
-func NewUserAuth(a isauser.Repository, b isaclient.Usecase, c isafileupload.UseCase, timeout time.Duration) iauth.Usecase {
+func NewUserAuth(a isauser.Repository, b isaclient.Usecase, c isafileupload.UseCase, d isarolemenu.Repository, timeout time.Duration) iauth.Usecase {
 	return &useAuth{
 		repoSaUser:      a,
 		useSaClient:     b,
 		useSaFileUpload: c,
+		repoRoleMenu:    d,
 		contextTimeOut:  timeout,
 	}
 }
@@ -99,6 +102,12 @@ func (u *useAuth) Login(ctx context.Context, dataLogin *models.LoginForm) (outpu
 
 	}
 
+	dataMenu, err := u.repoRoleMenu.GetMenuRole(ctx, DataUser.RoleID)
+	if err != nil {
+		return util.GoutputErr(err) //return result, models.ErrInternalServerError
+
+	}
+
 	redisdb.AddSession(token, DataUser.UserID, 0)
 
 	restUser := map[string]interface{}{
@@ -111,6 +120,7 @@ func (u *useAuth) Login(ctx context.Context, dataLogin *models.LoginForm) (outpu
 		"handphone_no": DataUser.HandphoneNo,
 		"company_id":   DataUser.CompanyID,
 		"picture_url":  dataFile,
+		"menu":         dataMenu,
 	}
 	response := map[string]interface{}{
 		"token":     token,

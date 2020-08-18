@@ -80,6 +80,6 @@ func Router(e *echo.Echo, timeoutContext time.Duration) {
 	useSaClient := _saclientuse.NewUseClient(repoSaClient, repoSaCompany, repoSaUser, repoSaBranch, timeoutContext)
 
 	//_saauthcont
-	useAuth := _authuse.NewUserAuth(repoSaUser, useSaClient, useSaFileUpload, timeoutContext)
+	useAuth := _authuse.NewUserAuth(repoSaUser, useSaClient, useSaFileUpload, repoRoleMenu, timeoutContext)
 	_saauthcont.NewContAuth(e, useAuth)
 }

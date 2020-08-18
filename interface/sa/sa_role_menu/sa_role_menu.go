@@ -9,6 +9,7 @@ import (
 
 // Repository :
 type Repository interface {
+	GetMenuRole(ctx context.Context, RoleID uuid.UUID) (result []*sa_models.MenuRole, err error)
 	CreateSaRoleMenu(ctx context.Context, clientData *sa_models.SaRoleMenu) (err error)
 	UpdateSaRoleMenu(ctx context.Context, clientData *sa_models.SaRoleMenu) (err error)
 	DeleteSaRoleMenu(ctx context.Context, userID uuid.UUID) (err error)
